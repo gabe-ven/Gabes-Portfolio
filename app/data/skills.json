@@ -6,7 +6,7 @@
         { "name": "C++", "level": 95, "icon": "SiCplusplus" },
         { "name": "Python", "level": 90, "icon": "SiPython" },
         { "name": "Java", "level": 85, "icon": "FaJava" },
-        { "name": "JavaScript", "level": 70, "icon": "SiJavascript" },
+        { "name": "JavaScript", "level": 78, "icon": "SiJavascript" },
         { "name": "TypeScript", "level": 70, "icon": "SiTypescript" },
         { "name": "HTML/CSS", "level": 90, "icon": "SiHtml5" }
       ]
@@ -15,13 +15,17 @@
       "name": "Frameworks & Libraries",
       "skills": [
         { "name": "React.js", "level": 70, "icon": "SiReact" },
+        { "name": "Next.js", "level": 40, "icon": "SiNextdotjs" },
         { "name": "SFML", "level": 80, "icon": "SiCplusplus" },
         { "name": "Flask", "level": 60, "icon": "SiFlask" }
       ]
     },
     {
       "name": "Tools & Others",
-      "skills": [{ "name": "Git & GitHub", "level": 90, "icon": "SiGithub" }]
+      "skills": [
+        { "name": "Git & GitHub", "level": 90, "icon": "SiGithub" },
+        { "name": "AWS", "level": 50, "icon": "FaAws" }
+      ]
     }
   ]
 }

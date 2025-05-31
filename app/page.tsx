@@ -35,7 +35,7 @@ export default function Home() {
             Computer Science Student
           </h3>
           <p className="text-pretty tracking-tight mt-3 text-neutral-300">
-            Rising junior at the University of California, Davis studing
+            Rising junior at the University of California, Davis studying
             Computer Science with career interests in software development and
             artifical intelligence.{" "}
             <Link
