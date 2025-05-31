@@ -1,31 +1,27 @@
 {
   "categories": [
     {
-      "name": "Frontend Development",
+      "name": "Languages",
       "skills": [
-        { "name": "React.js", "level": 95 },
-        { "name": "Next.js", "level": 90 },
-        { "name": "TypeScript", "level": 85 },
-        { "name": "Tailwind CSS", "level": 95 }
+        { "name": "C++", "level": 95, "icon": "SiCplusplus" },
+        { "name": "Python", "level": 90, "icon": "SiPython" },
+        { "name": "Java", "level": 85, "icon": "FaJava" },
+        { "name": "JavaScript", "level": 70, "icon": "SiJavascript" },
+        { "name": "TypeScript", "level": 70, "icon": "SiTypescript" },
+        { "name": "HTML/CSS", "level": 90, "icon": "SiHtml5" }
       ]
     },
     {
-      "name": "Backend Development",
+      "name": "Frameworks & Libraries",
       "skills": [
-        { "name": "Node.js", "level": 90 },
-        { "name": "Express.js", "level": 85 },
-        { "name": "MongoDB", "level": 80 },
-        { "name": "PostgreSQL", "level": 75 }
+        { "name": "React.js", "level": 70, "icon": "SiReact" },
+        { "name": "SFML", "level": 80, "icon": "SiCplusplus" },
+        { "name": "Flask", "level": 60, "icon": "SiFlask" }
       ]
     },
     {
       "name": "Tools & Others",
-      "skills": [
-        { "name": "Git & GitHub", "level": 90 },
-        { "name": "Docker", "level": 80 },
-        { "name": "AWS", "level": 75 },
-        { "name": "CI/CD", "level": 85 }
-      ]
+      "skills": [{ "name": "Git & GitHub", "level": 90, "icon": "SiGithub" }]
     }
   ]
 }

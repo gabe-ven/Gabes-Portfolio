@@ -2,31 +2,27 @@
   "projects": [
     {
       "id": 1,
-      "title": "E-commerce Platform",
-      "description": "A full-stack e-commerce solution with real-time inventory management and secure payment processing.",
-      "image": "/1.png",
-      "tags": ["Next.js", "TypeScript", "Stripe", "Prisma"]
+      "title": "Graphing Calculator",
+      "description": "A C++ desktop app built with SFML for plotting and exploring mathematical functions using an interactive, real-time graphing interface.",
+      "image": "/gc.png",
+      "tags": ["C++", "SFML", "CMake"],
+      "github": "https://github.com/gabe-ven/SFML-Graphing-Calculator"
     },
     {
       "id": 2,
-      "title": "Social Media Dashboard",
-      "description": "Analytics dashboard for social media management with real-time data visualization.",
+      "title": "DSA Visualizer",
+      "description": "A collection of interactive C++ projects showcasing advanced data structures and algorithms—like backtracking, A* search, heaps, and DFAs—visualized using SFML and the Malena framework.",
       "image": "/2.png",
-      "tags": ["React", "D3.js", "Node.js", "MongoDB"]
+      "tags": ["C++", "SFML", "Malena", "CMake"],
+      "github": "https://github.com/gabe-ven/DSA-Showcase"
     },
     {
       "id": 3,
-      "title": "AI-Powered Chat Application",
-      "description": "Real-time chat application with AI integration for automated responses and content moderation.",
-      "image": "/3.png",
-      "tags": ["Next.js", "OpenAI", "WebSocket", "Tailwind"]
-    },
-    {
-      "id": 4,
-      "title": "Portfolio Website",
-      "description": "Modern portfolio website with dynamic content management and responsive design.",
-      "image": "/4.png",
-      "tags": ["Next.js", "Tailwind", "Framer Motion", "Sanity"]
+      "title": "Blackjack",
+      "description": "A simple web-based Blackjack game built with HTML, CSS, and JavaScript, featuring interactive gameplay and traditional casino rules.",
+      "image": "/blackjack.jpg",
+      "tags": ["HTML", "CSS", "JavaScript"],
+      "github": "https://github.com/gabe-ven/Blackjack"
     }
   ]
 }
