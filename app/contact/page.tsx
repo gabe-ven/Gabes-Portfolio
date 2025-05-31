@@ -44,9 +44,13 @@ const ContactPage = () => {
         setFormData({ name: "", email: "", message: "" });
         alert("Message sent successfully!");
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error details:", error);
-      alert(error.text || "Failed to send message. Please try again.");
+      alert(
+        error instanceof Error
+          ? error.message
+          : "Failed to send message. Please try again."
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -78,8 +82,8 @@ const ContactPage = () => {
           </h1>
           <div className="space-y-6">
             <p className="text-pretty text-neutral-200 tracking-tight">
-              I'm always open to discussing new projects, creative ideas, or
-              opportunities to be part of your vision.
+              I&apos;m always open to discussing new projects, creative ideas,
+              or opportunities to be part of your vision.
             </p>
             <div className="space-y-4">
               <div className="flex items-center gap-3 p-4 rounded-lg border border-gray-700/50 bg-black/40">

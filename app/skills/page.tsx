@@ -5,9 +5,14 @@ import * as Si from "react-icons/si";
 import * as Fa from "react-icons/fa";
 import skillsData from "../data/skills.json";
 
+interface IconComponents {
+  [key: string]: React.ComponentType<{ className?: string }>;
+}
+
 const page = () => {
   const getIcon = (iconName: string) => {
-    const Icon = (Si as any)[iconName] || (Fa as any)[iconName];
+    const iconComponents: IconComponents = { ...Si, ...Fa };
+    const Icon = iconComponents[iconName];
     return Icon ? <Icon className="w-5 h-5 text-emerald-400" /> : null;
   };
 

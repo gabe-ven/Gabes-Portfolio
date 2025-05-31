@@ -1,15 +1,10 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-
 import {
   BiBuilding,
   BiChevronRight,
   BiLogoGithub,
-  BiLogoInstagram,
   BiLogoLinkedin,
-  BiLogoTwitter,
-  BiLogoTiktok,
-  BiLogoYoutube,
 } from "react-icons/bi";
 import { HiArrowDown } from "react-icons/hi";
 
