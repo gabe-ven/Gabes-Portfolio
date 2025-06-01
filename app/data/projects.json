@@ -22,7 +22,8 @@
       "description": "A simple web-based Blackjack game built with HTML, CSS, and JavaScript, featuring interactive gameplay and traditional casino rules.",
       "image": "/blackjack.jpg",
       "tags": ["HTML", "CSS", "JavaScript"],
-      "github": "https://github.com/gabe-ven/Blackjack"
+      "github": "https://github.com/gabe-ven/Blackjack",
+      "demo": "https://gabe-ven.github.io/Blackjack/"
     }
   ]
 }

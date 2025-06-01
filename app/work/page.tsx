@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { BiLogoGithub } from "react-icons/bi";
 import { BsArrowLeft } from "react-icons/bs";
+import { CgExternal } from "react-icons/cg";
 import projectsData from "../data/projects.json";
 
 const page = () => {
@@ -66,16 +67,23 @@ const page = () => {
                       Code
                     </a>
                   </Button>
-                  {/* <Button
-                    variant="ghost"
-                    className="flex-1 text-gray-300 backdrop-blur-sm border-neutral-800/70 transition-colors duration-200 ease-linear"
-                    asChild
-                  >
-                    <a href="" className="flex items-center justify-center">
-                      <CgExternal className="h-4 w-4 mr-2" />
-                      Live Demo
-                    </a>
-                  </Button> */}
+                  {project.demo && (
+                    <Button
+                      variant="ghost"
+                      className="flex-1 text-gray-300 backdrop-blur-sm border-neutral-800/70 transition-colors duration-200 ease-linear"
+                      asChild
+                    >
+                      <a
+                        href={project.demo}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center justify-center"
+                      >
+                        <CgExternal className="h-4 w-4 mr-2" />
+                        Live Demo
+                      </a>
+                    </Button>
+                  )}
                 </div>
               </div>
             </div>
