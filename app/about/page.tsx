@@ -26,10 +26,10 @@ const page = () => {
               development and computer science.
             </p>
             <p>
-              I have a keen interest in web development, artificial
+              I have a keen interest in software development, artificial
               intelligence, and machine learning. My journey in the tech world
               has been fueled by a desire to create innovative solutions that
-              make a difference.
+              make a difference!
             </p>
           </div>
           <div className="space-y-4">
@@ -54,7 +54,7 @@ const page = () => {
             </h2>
             <div className="space-y-4">
               <div>
-                <p className="font-medium">Research Intern</p>
+                <p className="font-medium">AI & Software Engineer Intern</p>
                 <p className="text-neutral-500">
                   NASA Jet Propulsion Laboratory (JPL)
                   <br />

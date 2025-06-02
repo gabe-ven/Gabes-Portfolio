@@ -3,28 +3,80 @@
     {
       "name": "Languages",
       "skills": [
-        { "name": "C++", "level": 95, "icon": "SiCplusplus" },
-        { "name": "Python", "level": 90, "icon": "SiPython" },
-        { "name": "Java", "level": 85, "icon": "FaJava" },
-        { "name": "JavaScript", "level": 78, "icon": "SiJavascript" },
-        { "name": "TypeScript", "level": 70, "icon": "SiTypescript" },
-        { "name": "HTML/CSS", "level": 90, "icon": "SiHtml5" }
+        {
+          "name": "C++",
+          "level": 95,
+          "icon": "SiCplusplus",
+          "color": "#00599C"
+        },
+        {
+          "name": "Python",
+          "level": 90,
+          "icon": "SiPython",
+          "color": "#3776AB"
+        },
+        { "name": "Java", "level": 85, "icon": "FaJava", "color": "#007396" },
+        {
+          "name": "JavaScript",
+          "level": 78,
+          "icon": "SiJavascript",
+          "color": "#F7DF1E"
+        },
+        {
+          "name": "TypeScript",
+          "level": 70,
+          "icon": "SiTypescript",
+          "color": "#3178C6"
+        },
+        {
+          "name": "HTML/CSS",
+          "level": 90,
+          "icon": "SiHtml5",
+          "color": "#E34F26"
+        }
       ]
     },
     {
       "name": "Frameworks & Libraries",
       "skills": [
-        { "name": "React.js", "level": 70, "icon": "SiReact" },
-        { "name": "Next.js", "level": 40, "icon": "SiNextdotjs" },
-        { "name": "SFML", "level": 80, "icon": "SiCplusplus" },
-        { "name": "Flask", "level": 60, "icon": "SiFlask" }
+        {
+          "name": "React.js",
+          "level": 70,
+          "icon": "SiReact",
+          "color": "#61DAFB"
+        },
+        {
+          "name": "Next.js",
+          "level": 40,
+          "icon": "SiNextdotjs",
+          "color": "#000000"
+        },
+        {
+          "name": "SFML",
+          "level": 80,
+          "icon": "SiCplusplus",
+          "color": "#00599C"
+        },
+        { "name": "Flask", "level": 60, "icon": "SiFlask", "color": "#000000" }
       ]
     },
     {
       "name": "Tools & Others",
       "skills": [
-        { "name": "Git & GitHub", "level": 90, "icon": "SiGithub" },
-        { "name": "AWS", "level": 50, "icon": "FaAws" }
+        {
+          "name": "Git & GitHub",
+          "level": 90,
+          "icon": "SiGithub",
+          "color": "#181717"
+        },
+        { "name": "AWS", "level": 50, "icon": "FaAws", "color": "#FF9900" },
+        { "name": "CMake", "level": 75, "icon": "SiCmake", "color": "#064F8C" },
+        {
+          "name": "Apache Kafka",
+          "level": 60,
+          "icon": "SiApachekafka",
+          "color": "#231F20"
+        }
       ]
     }
   ]

@@ -6,14 +6,16 @@ import * as Fa from "react-icons/fa";
 import skillsData from "../data/skills.json";
 
 interface IconComponents {
-  [key: string]: React.ComponentType<{ className?: string }>;
+  [key: string]: React.ComponentType<any>;
 }
 
 const page = () => {
-  const getIcon = (iconName: string) => {
+  const getIcon = (iconName: string, color?: string) => {
     const iconComponents: IconComponents = { ...Si, ...Fa };
     const Icon = iconComponents[iconName];
-    return Icon ? <Icon className="w-5 h-5 text-emerald-400" /> : null;
+    return Icon ? (
+      <Icon className="w-5 h-5" style={color ? { color } : {}} />
+    ) : null;
   };
 
   return (
@@ -43,7 +45,7 @@ const page = () => {
                       className="p-4 rounded-lg border border-gray-700/50 bg-black/40"
                     >
                       <div className="flex items-center gap-2 mb-2">
-                        {getIcon(skill.icon)}
+                        {getIcon(skill.icon, skill.color)}
                         <h3 className="font-medium">{skill.name}</h3>
                       </div>
                       <div className="w-full bg-gray-200 rounded-full h-2.5">
