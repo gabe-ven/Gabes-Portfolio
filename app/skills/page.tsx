@@ -6,7 +6,10 @@ import * as Fa from "react-icons/fa";
 import skillsData from "../data/skills.json";
 
 interface IconComponents {
-  [key: string]: React.ComponentType<any>;
+  [key: string]: React.ComponentType<{
+    className?: string;
+    style?: React.CSSProperties;
+  }>;
 }
 
 const page = () => {
