@@ -57,7 +57,13 @@
           "icon": "SiCplusplus",
           "color": "#00599C"
         },
-        { "name": "Flask", "level": 60, "icon": "SiFlask", "color": "#000000" }
+        { "name": "Flask", "level": 60, "icon": "SiFlask", "color": "#000000" },
+        {
+          "name": "LangChain",
+          "level": 70,
+          "icon": "SiLangchain",
+          "color": "#092E20"
+        }
       ]
     },
     {
