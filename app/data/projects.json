@@ -24,6 +24,22 @@
       "tags": ["HTML", "CSS", "JavaScript"],
       "github": "https://github.com/gabe-ven/Blackjack",
       "demo": "https://gabe-ven.github.io/Blackjack/"
+    },
+    {
+      "id": 4,
+      "title": "Random Song Generator",
+      "description": "A Python app that uses the Spotify API to generate popular songs by genre with a simple Tkinter interface.",
+      "image": "/music.jpg",
+      "tags": ["Python", "tkinter", "Spotify API"],
+      "github": "https://github.com/gabe-ven/Random-Song-Generator"
+    },
+    {
+      "id": 5,
+      "title": "Bookstore Management System",
+      "description": "A Java Swing–based GUI application that uses object-oriented programming (OOP) principles to manage an online bookstore, with modular classes for inventory, customers, orders, and payments.",
+      "image": "/bookstore.jpg",
+      "tags": ["Java", "Java Swing"],
+      "github": "https://github.com/gabe-ven/Online-Bookstore-Management-System"
     }
   ]
 }

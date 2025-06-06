@@ -18,7 +18,7 @@
         { "name": "Java", "level": 85, "icon": "FaJava", "color": "#007396" },
         {
           "name": "JavaScript",
-          "level": 78,
+          "level": 80,
           "icon": "SiJavascript",
           "color": "#F7DF1E"
         },
