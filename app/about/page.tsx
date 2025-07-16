@@ -54,6 +54,14 @@ const page = () => {
             </h2>
             <div className="space-y-4">
               <div>
+                <p className="font-medium">Software Engineer Intern</p>
+                <p className="text-neutral-500">
+                  NASA Jet Propulsion Laboratory (JPL)
+                  <br />
+                  Jun 2025 - Present
+                </p>
+              </div>
+              <div>
                 <p className="font-medium">AI & Software Engineer Intern</p>
                 <p className="text-neutral-500">
                   NASA Jet Propulsion Laboratory (JPL)

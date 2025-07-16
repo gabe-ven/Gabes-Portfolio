@@ -33,6 +33,12 @@
           "level": 90,
           "icon": "SiHtml5",
           "color": "#E34F26"
+        },
+        {
+          "name": "SQL",
+          "level": 75,
+          "icon": "SiMysql",
+          "color": "#4479A1"
         }
       ]
     },
@@ -63,6 +69,12 @@
           "level": 70,
           "icon": "SiLangchain",
           "color": "#092E21"
+        },
+        {
+          "name": "FastAPI",
+          "level": 70,
+          "icon": "SiFastapi",
+          "color": "#150458"
         }
       ]
     },
@@ -82,6 +94,12 @@
           "level": 60,
           "icon": "SiApachekafka",
           "color": "#231F20"
+        },
+        {
+          "name": "Docker",
+          "level": 60,
+          "icon": "SiDocker",
+          "color": "#2496ED"
         }
       ]
     }
