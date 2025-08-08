@@ -1,6 +1,23 @@
 {
   "projects": [
     {
+      "id": 0,
+      "title": "Vymix",
+      "description": "Developing a mobile app that uses AI to generate mood-based Spotify playlists from user input.",
+      "image": "/vymix.png",
+      "tags": [
+        "React Native",
+        "Expo",
+        "TypeScript",
+        "Firebase",
+        "NativeWind",
+        "Spotify API",
+        "OAuth",
+        "OpenAI"
+      ],
+      "github": "https://github.com/gabe-ven/Portfolio"
+    },
+    {
       "id": 1,
       "title": "Graphing Calculator",
       "description": "A C++ desktop app built with SFML for plotting and exploring mathematical functions using an interactive, real-time graphing interface.",

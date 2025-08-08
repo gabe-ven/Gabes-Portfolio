@@ -54,7 +54,7 @@ const page = () => {
             </h2>
             <div className="space-y-4">
               <div>
-                <p className="font-medium">Software Engineer Intern</p>
+                <p className="font-medium">Software Engineer Intern (Summer)</p>
                 <p className="text-neutral-500">
                   NASA Jet Propulsion Laboratory (JPL)
                   <br />
@@ -62,7 +62,7 @@ const page = () => {
                 </p>
               </div>
               <div>
-                <p className="font-medium">AI & Software Engineer Intern</p>
+                <p className="font-medium">Software Engineer Intern (Spring)</p>
                 <p className="text-neutral-500">
                   NASA Jet Propulsion Laboratory (JPL)
                   <br />
