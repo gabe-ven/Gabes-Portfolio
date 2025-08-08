@@ -20,13 +20,7 @@ export default function Home() {
           <Button
             variant="ghost"
             className="hover:bg-black/50 duration-300 hover:text-white rounded-full"
-          >
-            <div className="relative flex items-center justify-center h-3 w-3">
-              <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 inline-flex h-4 w-4 animate-ping rounded-full bg-green-500 opacity-50"></span>
-              <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
-            </div>
-            <p className="ml-2">Available For Work</p>
-          </Button>
+          ></Button>
         </div>
 
         <div>
