@@ -2,6 +2,27 @@
   "projects": [
     {
       "id": 0,
+      "title": "LabLink",
+      "description": "Building a platform for UC Davis students to find professors aligned with their research interests.",
+      "image": "/lablink.png",
+      "tags": [
+      "React", 
+      "TypeScript", 
+      "Vite", 
+      "Tailwind CSS", 
+      "FastAPI", 
+      "Python", 
+      "SQLAlchemy", 
+      "PostgreSQL", 
+      "SQLite", 
+      "Neon", 
+      "TF-IDF", 
+      "BM25"],
+      "github": "https://github.com/vish2285/LabLink",
+      "demo": "https://www.lablinkdavis.org/"
+    },
+    {
+      "id": 1,
       "title": "Vymix",
       "description": "Developing a mobile app that uses AI to generate mood-based Spotify playlists from user input.",
       "image": "/vymix.png",
@@ -18,7 +39,7 @@
       "github": "https://github.com/gabe-ven/Vymix"
     },
     {
-      "id": 1,
+      "id": 2,
       "title": "Graphing Calculator",
       "description": "A C++ desktop app built with SFML for plotting and exploring mathematical functions using an interactive, real-time graphing interface.",
       "image": "/gc.png",
@@ -26,7 +47,7 @@
       "github": "https://github.com/gabe-ven/SFML-Graphing-Calculator"
     },
     {
-      "id": 2,
+      "id": 3,
       "title": "DSA Visualizer",
       "description": "A collection of interactive C++ projects showcasing advanced data structures and algorithms—like backtracking, A* search, heaps, and DFAs—visualized using SFML and the Malena framework.",
       "image": "/puzzle.png",
@@ -34,7 +55,7 @@
       "github": "https://github.com/gabe-ven/DSA-Showcase"
     },
     {
-      "id": 3,
+      "id": 4,
       "title": "Gabe's Arcade",
       "description": "A collection of classic arcade games like Snake, Tetris, and Pong, built with HTML, CSS, and JavaScript, featuring interactive gameplay and nostalgic design.",
       "image": "/arcade.png",
@@ -43,7 +64,7 @@
       "demo": "https://gabe-ven.github.io/Arcade-Project/"
     },
     {
-      "id": 4,
+      "id": 5,
       "title": "Blackjack",
       "description": "A simple web-based Blackjack game built with HTML, CSS, and JavaScript, featuring interactive gameplay and traditional casino rules.",
       "image": "/blackjack.jpg",
@@ -52,7 +73,7 @@
       "demo": "https://gabe-ven.github.io/Blackjack/"
     },
     {
-      "id": 5,
+      "id": 6,
       "title": "Random Song Generator",
       "description": "A Python app that uses the Spotify API to generate popular songs by genre with a simple Tkinter interface.",
       "image": "/music.jpg",
@@ -60,7 +81,7 @@
       "github": "https://github.com/gabe-ven/Random-Song-Generator"
     },
     {
-      "id": 6,
+      "id": 7,
       "title": "Bookstore Management System",
       "description": "A Java Swing–based GUI application that uses object-oriented programming (OOP) principles to manage an online bookstore, with modular classes for inventory, customers, orders, and payments.",
       "image": "/bookstore.jpg",

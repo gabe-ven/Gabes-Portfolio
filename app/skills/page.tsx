@@ -4,6 +4,7 @@ import { BsArrowLeft } from "react-icons/bs";
 import * as Si from "react-icons/si";
 import * as Fa from "react-icons/fa";
 import skillsData from "../data/skills.json";
+import type React from "react";
 
 interface IconComponents {
   [key: string]: React.ComponentType<{

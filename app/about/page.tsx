@@ -53,12 +53,20 @@ const page = () => {
               Experience
             </h2>
             <div className="space-y-4">
+            <div>
+                <p className="font-medium">Frontend Developer</p>
+                <p className="text-neutral-500">
+                  #include at Davis
+                  <br />
+                  Oct 2025 - Present
+                </p>
+              </div>
               <div>
                 <p className="font-medium">Software Engineer Intern (Summer)</p>
                 <p className="text-neutral-500">
                   NASA Jet Propulsion Laboratory (JPL)
                   <br />
-                  Jun 2025 - Present
+                  Jun 2025 - Sep 2025
                 </p>
               </div>
               <div>
