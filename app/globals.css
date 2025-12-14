@@ -263,19 +263,17 @@ svg {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Minimal scrollbar */
+/* Hide scrollbar but keep functionality */
 ::-webkit-scrollbar {
-  width: 8px;
+  display: none;
 }
 
-::-webkit-scrollbar-track {
-  @apply bg-black;
+/* For Firefox */
+* {
+  scrollbar-width: none;
 }
 
-::-webkit-scrollbar-thumb {
-  @apply bg-white/10 rounded-full;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  @apply bg-white/20;
+/* For IE and Edge */
+body {
+  -ms-overflow-style: none;
 }
