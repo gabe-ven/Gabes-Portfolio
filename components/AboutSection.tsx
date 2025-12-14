@@ -20,7 +20,7 @@ export default function AboutSection() {
             <h3 className="text-orange-500 font-semibold mb-4 text-sm uppercase tracking-wider">
               This is me.
             </h3>
-            <h4 className="text-3xl font-bold mb-6">Hi, I'm Gabriel.</h4>
+            <h4 className="text-3xl font-bold mb-6">Hi, I&apos;m Gabriel.</h4>
             <p className="text-gray-400 leading-relaxed mb-6">
               I enjoy turning ideas into well-crafted software through hands-on
               projects. I focus on creating clean, intuitive user experiences
@@ -67,4 +67,3 @@ export default function AboutSection() {
     </section>
   );
 }
-

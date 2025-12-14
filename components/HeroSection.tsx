@@ -42,7 +42,7 @@ export default function HeroSection() {
               ease: [0.22, 1, 0.36, 1],
             }}
           >
-            Hi! I'm Gabriel. I'm a{" "}
+            Hi! I&apos;m Gabriel. I&apos;m a{" "}
             <span className="text-orange-500 font-semibold">
               passionate Computer Science student at UC Davis
             </span>
@@ -92,4 +92,3 @@ export default function HeroSection() {
     </section>
   );
 }
-
