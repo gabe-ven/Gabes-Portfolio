@@ -7,12 +7,12 @@ const experiences = [
   {
     title: "Software Engineer Associate",
     company: "AI Student Collective",
-    period: "Dec 2024 - Present",
+    period: "Oct 2025 - Present",
   },
   {
     title: "Frontend Developer",
     company: "#include at Davis",
-    period: "Oct 2023 - Nov 2024",
+    period: "Oct 2025 - Present",
   },
   {
     title: "Software Engineer Intern",
@@ -60,4 +60,3 @@ export default function ExperienceSection() {
     </section>
   );
 }
-
