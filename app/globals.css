@@ -253,9 +253,7 @@
   }
 
   body {
-    @apply bg-black text-white antialiased;
-    font-family: "JetBrains Mono", "Fira Code", "Consolas", "Monaco",
-      "Courier New", monospace;
+    @apply bg-black text-white antialiased font-mono;
     position: relative;
 
     /* Respect prefers-reduced-motion */
@@ -304,35 +302,34 @@
   }
 
   /* Clean Typography with Monospace Font */
+  h1,
+  h2,
+  h3,
+  p,
+  a,
+  button {
+    @apply font-mono;
+  }
+
   h1 {
     @apply text-7xl md:text-8xl lg:text-9xl font-bold tracking-tight leading-none;
-    font-family: "JetBrains Mono", "Fira Code", "Consolas", "Monaco",
-      "Courier New", monospace;
   }
 
   h2 {
     @apply text-4xl md:text-5xl font-bold tracking-tight;
-    font-family: "JetBrains Mono", "Fira Code", "Consolas", "Monaco",
-      "Courier New", monospace;
   }
 
   h3 {
     @apply text-2xl font-semibold;
-    font-family: "JetBrains Mono", "Fira Code", "Consolas", "Monaco",
-      "Courier New", monospace;
   }
 
   p {
     @apply text-base md:text-lg text-gray-400 leading-relaxed;
-    font-family: "JetBrains Mono", "Fira Code", "Consolas", "Monaco",
-      "Courier New", monospace;
   }
 
   a,
   button {
     @apply transition-colors duration-200;
-    font-family: "JetBrains Mono", "Fira Code", "Consolas", "Monaco",
-      "Courier New", monospace;
   }
 
   ::selection {

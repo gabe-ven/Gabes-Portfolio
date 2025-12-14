@@ -1,8 +1,11 @@
-import { Inter } from "next/font/google";
+import { JetBrains_Mono } from "next/font/google";
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"] });
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-jetbrains-mono",
+});
 
 export const metadata: Metadata = {
   title: "Gabriel Venezia - Portfolio",
@@ -25,7 +28,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${inter.className} antialiased bg-black text-white`}>
+      <body
+        className={`${jetbrainsMono.variable} font-mono antialiased bg-black text-white`}
+      >
         {children}
       </body>
     </html>
