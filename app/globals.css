@@ -1,122 +1,281 @@
 @import "tailwindcss";
-@import "tw-animate-css";
 
-@custom-variant dark (&:is(.dark *));
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-  --color-sidebar-ring: var(--sidebar-ring);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar: var(--sidebar);
-  --color-chart-5: var(--chart-5);
-  --color-chart-4: var(--chart-4);
-  --color-chart-3: var(--chart-3);
-  --color-chart-2: var(--chart-2);
-  --color-chart-1: var(--chart-1);
-  --color-ring: var(--ring);
-  --color-input: var(--input);
-  --color-border: var(--border);
-  --color-destructive: var(--destructive);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-accent: var(--accent);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-muted: var(--muted);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-secondary: var(--secondary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-primary: var(--primary);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-popover: var(--popover);
-  --color-card-foreground: var(--card-foreground);
-  --color-card: var(--card);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
+/* Better Animated Starfield Background */
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 1;
+  }
 }
 
-:root {
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+  100% {
+    transform: translateY(-2000px);
+  }
 }
 
-.dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+@keyframes grain {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  10% {
+    transform: translate(-5%, -10%);
+  }
+  20% {
+    transform: translate(-15%, 5%);
+  }
+  30% {
+    transform: translate(7%, -25%);
+  }
+  40% {
+    transform: translate(-5%, 25%);
+  }
+  50% {
+    transform: translate(-15%, 10%);
+  }
+  60% {
+    transform: translate(15%, 0%);
+  }
+  70% {
+    transform: translate(0%, 15%);
+  }
+  80% {
+    transform: translate(3%, 35%);
+  }
+  90% {
+    transform: translate(-10%, 10%);
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.stars {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  background: white;
+  box-shadow: 100px 200px white, 250px 400px white, 500px 100px white,
+    750px 300px white, 1000px 500px white, 1200px 150px white,
+    1400px 350px white, 1600px 250px white, 200px 600px white, 400px 800px white,
+    600px 700px white, 800px 900px white, 1100px 650px white, 1300px 850px white,
+    1500px 750px white, 50px 450px white, 350px 650px white, 550px 850px white,
+    850px 550px white, 1050px 350px white, 1250px 550px white,
+    1450px 650px white, 1650px 450px white, 150px 250px white, 450px 450px white,
+    650px 550px white, 950px 750px white, 1150px 450px white, 1350px 250px white,
+    1550px 350px white, 1750px 550px white, 300px 100px white, 700px 200px white,
+    900px 400px white, 1400px 100px white, 1700px 300px white, 120px 320px white,
+    340px 540px white, 760px 180px white, 980px 620px white, 1220px 420px white,
+    1540px 220px white, 280px 480px white, 620px 820px white, 940px 240px white,
+    1360px 680px white, 1680px 380px white, 380px 720px white, 820px 120px white,
+    1260px 520px white, 1580px 920px white, 220px 580px white, 560px 380px white,
+    880px 680px white, 1320px 180px white, 1640px 780px white,
+    100px 1200px white, 250px 1400px white, 500px 1100px white,
+    750px 1300px white, 1000px 1500px white, 1200px 1150px white,
+    1400px 1350px white, 1600px 1250px white, 200px 1600px white,
+    400px 1800px white, 600px 1700px white, 800px 1900px white,
+    1100px 1650px white, 1300px 1850px white;
+  animation: float 150s linear infinite;
+  opacity: 0.6;
+}
+
+.stars2 {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: white;
+  box-shadow: 180px 300px white, 380px 500px white, 680px 200px white,
+    980px 400px white, 1280px 600px white, 1480px 250px white,
+    1680px 450px white, 280px 700px white, 580px 900px white, 880px 800px white,
+    1180px 750px white, 1580px 850px white, 480px 550px white, 780px 650px white,
+    1080px 450px white, 1380px 550px white, 130px 350px white, 530px 750px white,
+    930px 550px white, 1330px 350px white, 1730px 650px white, 90px 270px white,
+    410px 490px white, 730px 170px white, 1050px 590px white, 1370px 390px white,
+    1690px 190px white, 310px 670px white, 630px 870px white, 950px 270px white,
+    1270px 670px white, 1590px 470px white, 430px 330px white, 750px 530px white,
+    1070px 730px white, 1390px 130px white, 1710px 830px white,
+    190px 430px white, 510px 630px white, 830px 230px white, 1150px 830px white,
+    180px 1300px white, 380px 1500px white, 680px 1200px white,
+    980px 1400px white, 1280px 1600px white, 1480px 1250px white,
+    1680px 1450px white, 280px 1700px white, 580px 1900px white,
+    880px 1800px white;
+  animation: float 180s linear infinite;
+  opacity: 0.5;
+}
+
+.stars3 {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  background: white;
+  border-radius: 50%;
+  box-shadow: 220px 250px white, 520px 450px white, 820px 150px white,
+    1120px 350px white, 1420px 550px white, 1620px 200px white,
+    320px 650px white, 720px 850px white, 1020px 700px white, 1520px 800px white,
+    420px 500px white, 920px 600px white, 1320px 400px white, 1720px 500px white,
+    170px 310px white, 470px 510px white, 770px 110px white, 1070px 710px white,
+    1370px 310px white, 1670px 910px white, 270px 610px white, 570px 810px white,
+    870px 410px white, 1170px 210px white, 1470px 610px white,
+    1770px 410px white, 70px 470px white, 370px 670px white, 670px 270px white,
+    970px 870px white, 220px 1250px white, 520px 1450px white,
+    820px 1150px white, 1120px 1350px white, 1420px 1550px white,
+    1620px 1200px white, 320px 1650px white, 720px 1850px white,
+    1020px 1700px white, 1520px 1800px white;
+  animation: float 220s linear infinite;
+  opacity: 0.4;
 }
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    @apply border-white/10;
   }
+
+  html {
+    @apply scroll-smooth;
+  }
+
   body {
-    @apply bg-background text-foreground;
+    @apply bg-black text-white antialiased;
+    font-family: "JetBrains Mono", "Fira Code", "Consolas", "Monaco",
+      "Courier New", monospace;
+    position: relative;
+
+    /* Respect prefers-reduced-motion */
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+
+      .stars,
+      .stars2,
+      .stars3 {
+        animation: none !important;
+        opacity: 0.2 !important;
+      }
+    }
   }
+
+  /* Film grain texture overlay */
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.015;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    mask-image: linear-gradient(
+      to bottom,
+      transparent 0%,
+      black 80px,
+      black calc(100% - 200px),
+      transparent 100%
+    );
+    -webkit-mask-image: linear-gradient(
+      to bottom,
+      transparent 0%,
+      black 80px,
+      black calc(100% - 200px),
+      transparent 100%
+    );
+  }
+
+  /* Clean Typography with Monospace Font */
+  h1 {
+    @apply text-7xl md:text-8xl lg:text-9xl font-bold tracking-tight leading-none;
+    font-family: "JetBrains Mono", "Fira Code", "Consolas", "Monaco",
+      "Courier New", monospace;
+  }
+
+  h2 {
+    @apply text-4xl md:text-5xl font-bold tracking-tight;
+    font-family: "JetBrains Mono", "Fira Code", "Consolas", "Monaco",
+      "Courier New", monospace;
+  }
+
+  h3 {
+    @apply text-2xl font-semibold;
+    font-family: "JetBrains Mono", "Fira Code", "Consolas", "Monaco",
+      "Courier New", monospace;
+  }
+
+  p {
+    @apply text-base md:text-lg text-gray-400 leading-relaxed;
+    font-family: "JetBrains Mono", "Fira Code", "Consolas", "Monaco",
+      "Courier New", monospace;
+  }
+
+  a,
+  button {
+    @apply transition-colors duration-200;
+    font-family: "JetBrains Mono", "Fira Code", "Consolas", "Monaco",
+      "Courier New", monospace;
+  }
+
+  ::selection {
+    @apply bg-orange-500/20 text-white;
+  }
+}
+
+/* Spinning animation for decorative elements */
+.spin-slow {
+  animation: spin 20s linear infinite;
+}
+
+.spin-slow:hover {
+  animation: spin 3s linear infinite;
+}
+
+/* Ensure all SVG icons have no background */
+svg {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+/* Smooth scroll behavior */
+* {
+  scroll-behavior: smooth;
+}
+
+/* Enhanced smooth transitions for all motion elements */
+[data-projection-id] {
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Minimal scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-black;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-white/10 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-white/20;
 }
