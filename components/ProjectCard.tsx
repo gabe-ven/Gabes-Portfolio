@@ -5,7 +5,7 @@ import Image from "next/image";
 
 interface ProjectCardProps {
   project: {
-    id: string;
+    id: number;
     title: string;
     image: string;
     tags: string[];
@@ -72,4 +72,3 @@ export default function ProjectCard({
     </motion.div>
   );
 }
-

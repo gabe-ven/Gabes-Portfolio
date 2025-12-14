@@ -6,7 +6,7 @@ import * as Fa from "react-icons/fa";
 
 interface ProjectModalProps {
   project: {
-    id: string;
+    id: number;
     title: string;
     image: string;
     tags: string[];
@@ -108,4 +108,3 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
     </motion.div>
   );
 }
-

@@ -15,34 +15,54 @@
   0%,
   100% {
     opacity: 0.3;
-    transform: scale(1);
   }
   50% {
     opacity: 1;
-    transform: scale(1.3);
   }
 }
 
-@keyframes float {
+@keyframes randomFloat1 {
   0% {
-    transform: translateY(0px);
+    transform: translate(0, 0);
   }
   100% {
-    transform: translateY(-2000px);
+    transform: translate(200px, 500px);
   }
 }
 
-@keyframes shootingStar {
+@keyframes randomFloat2 {
   0% {
-    transform: translateX(0) translateY(0) rotate(-45deg);
-    opacity: 1;
-  }
-  70% {
-    opacity: 1;
+    transform: translate(0, 0);
   }
   100% {
-    transform: translateX(300px) translateY(300px) rotate(-45deg);
-    opacity: 0;
+    transform: translate(-250px, -450px);
+  }
+}
+
+@keyframes randomFloat3 {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(350px, 480px);
+  }
+}
+
+@keyframes randomFloat4 {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(-180px, 520px);
+  }
+}
+
+@keyframes randomFloat5 {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(280px, -490px);
   }
 }
 
@@ -50,11 +70,9 @@
   0%,
   100% {
     opacity: 0.5;
-    transform: scale(1);
   }
   50% {
     opacity: 1;
-    transform: scale(1.2);
   }
 }
 
@@ -129,7 +147,8 @@
     425px 225px white, 875px 325px white, 1425px 525px white, 1875px 725px white,
     325px 925px white, 775px 1025px white, 1225px 1125px white,
     1675px 1225px white, 125px 1425px white;
-  animation: float 120s linear infinite, twinkle 3s ease-in-out infinite;
+  animation: randomFloat1 80s linear infinite alternate,
+    twinkle 3s ease-in-out infinite;
   opacity: 0.7;
 }
 
@@ -155,7 +174,8 @@
     880px 1800px white, 55px 155px white, 455px 255px white, 905px 355px white,
     1455px 555px white, 1905px 755px white, 355px 955px white,
     805px 1055px white, 1255px 1155px white, 1705px 1255px white;
-  animation: float 150s linear infinite, twinkle 4s ease-in-out infinite;
+  animation: randomFloat2 70s linear infinite alternate,
+    twinkle 4s ease-in-out infinite;
   animation-delay: 1s;
   opacity: 0.6;
 }
@@ -179,7 +199,8 @@
     1620px 1200px white, 320px 1650px white, 720px 1850px white,
     1020px 1700px white, 1520px 1800px white, 95px 95px white, 495px 295px white,
     945px 395px white, 1495px 595px white;
-  animation: float 180s linear infinite, pulse 5s ease-in-out infinite;
+  animation: randomFloat3 90s linear infinite alternate,
+    pulse 5s ease-in-out infinite;
   animation-delay: 2s;
   opacity: 0.5;
 }
@@ -199,7 +220,8 @@
     1740px 680px rgba(255, 255, 255, 0.8), 340px 1280px rgba(255, 255, 255, 0.8),
     640px 1480px rgba(255, 255, 255, 0.8), 940px 1180px rgba(255, 255, 255, 0.8),
     1240px 1380px rgba(255, 255, 255, 0.8);
-  animation: float 100s linear infinite, twinkleFast 2s ease-in-out infinite;
+  animation: randomFloat4 60s linear infinite alternate,
+    twinkleFast 2s ease-in-out infinite;
   animation-delay: 0.5s;
   opacity: 0.6;
 }
@@ -216,41 +238,9 @@
     1300px 1050px white, 1600px 1250px white, 500px 1350px white,
     800px 1550px white, 1100px 1450px white, 1400px 1650px white,
     1700px 1750px white;
-  animation: twinkleFast 1.5s ease-in-out infinite;
+  animation: randomFloat5 75s linear infinite alternate,
+    twinkleFast 1.5s ease-in-out infinite;
   opacity: 0.7;
-}
-
-.shooting-stars-container {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-}
-
-.shooting-star {
-  position: absolute;
-  width: 2px;
-  height: 2px;
-  background: white;
-  border-radius: 50%;
-  box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.8);
-  animation: shootingStar 1.5s ease-out forwards;
-}
-
-.shooting-star::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 50px;
-  height: 1px;
-  background: linear-gradient(
-    to left,
-    rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0.8) 100%
-  );
-  transform: translateX(-50px) rotate(-45deg);
-  border-radius: 50%;
 }
 
 @layer base {

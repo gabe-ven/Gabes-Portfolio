@@ -40,7 +40,7 @@ export default function ProjectsSection() {
           >
             <div className="text-orange-500 text-4xl spin-slow">✦</div>
             <h2 className="text-4xl md:text-5xl font-bold uppercase tracking-wider">
-              Selected <span className="text-orange-500">Projects</span>
+              Projects
             </h2>
           </motion.div>
 
@@ -67,4 +67,3 @@ export default function ProjectsSection() {
     </>
   );
 }
-
