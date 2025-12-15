@@ -22,8 +22,6 @@ export default function ProjectCard({
   index,
   onClick,
 }: ProjectCardProps) {
-  const ACCENT = "#f59e0b";
-
   return (
     <motion.div
       className="group cursor-pointer will-change-transform"
