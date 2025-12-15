@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import projectsData from "@/app/data/projects.json";
 import ProjectCard from "./ProjectCard";
 import ProjectModal from "./ProjectModal";
@@ -39,7 +39,7 @@ export default function ProjectsSection() {
             }}
           >
             <motion.div
-              style={{ color: "#E63946" }}
+              style={{ color: "#f59e0b" }}
               className="text-4xl spin-slow"
               whileInView={{ rotate: 360 }}
               transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
@@ -65,12 +65,14 @@ export default function ProjectsSection() {
       </section>
 
       {/* Project Modal */}
-      {selectedProject && (
-        <ProjectModal
-          project={selectedProject}
-          onClose={() => setSelectedProject(null)}
-        />
-      )}
+      <AnimatePresence>
+        {selectedProject && (
+          <ProjectModal
+            project={selectedProject}
+            onClose={() => setSelectedProject(null)}
+          />
+        )}
+      </AnimatePresence>
     </>
   );
 }

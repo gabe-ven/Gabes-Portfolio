@@ -11,7 +11,7 @@ export default function Footer() {
           <div className="text-lg font-bold">GABRIEL VENEZIA</div>
           <a
             href="mailto:gabrielvenezia6@gmail.com"
-            className="text-sm text-gray-400 transition-colors duration-100 hover:text-[#E63946]"
+            className="text-sm text-gray-400 transition-colors duration-50 hover:text-[#1d4ed8]"
           >
             gabrielvenezia6@gmail.com
           </a>
@@ -22,12 +22,12 @@ export default function Footer() {
             href="https://github.com/gabe-ven"
             target="_blank"
             rel="noopener noreferrer"
-            className="w-10 h-10 flex items-center justify-center rounded-lg border border-white/10 transition-all duration-150"
+            className="w-10 h-10 flex items-center justify-center rounded-lg border border-white/10 transition-all duration-75"
             whileHover={{
-              borderColor: "rgba(230, 57, 70, 1)",
-              backgroundColor: "rgba(230, 57, 70, 0.1)",
+              borderColor: "rgba(29, 78, 216, 1)",
+              backgroundColor: "rgba(29, 78, 216, 0.12)",
               scale: 1.1,
-              transition: { duration: 0.15 },
+              transition: { duration: 0.05, ease: "linear" },
             }}
           >
             <Fa.FaGithub className="w-5 h-5" />
@@ -36,12 +36,12 @@ export default function Footer() {
             href="https://www.linkedin.com/in/gabriel-venezia/"
             target="_blank"
             rel="noopener noreferrer"
-            className="w-10 h-10 flex items-center justify-center rounded-lg border border-white/10 transition-all duration-150"
+            className="w-10 h-10 flex items-center justify-center rounded-lg border border-white/10 transition-all duration-75"
             whileHover={{
-              borderColor: "rgba(230, 57, 70, 1)",
-              backgroundColor: "rgba(230, 57, 70, 0.1)",
+              borderColor: "rgba(29, 78, 216, 1)",
+              backgroundColor: "rgba(29, 78, 216, 0.12)",
               scale: 1.1,
-              transition: { duration: 0.15 },
+              transition: { duration: 0.05, ease: "linear" },
             }}
           >
             <Fa.FaLinkedin className="w-5 h-5" />

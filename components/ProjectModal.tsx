@@ -40,20 +40,6 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
         onClick={(e) => e.stopPropagation()}
         style={{ transformStyle: "preserve-3d" }}
       >
-        {/* Close Button */}
-        <motion.button
-          onClick={onClose}
-          className="absolute top-3 right-3 w-8 h-8 flex items-center justify-center rounded-full bg-white/5 border border-white/10 transition-all z-10"
-          whileHover={{
-            backgroundColor: "rgba(230, 57, 70, 0.2)",
-            borderColor: "rgba(230, 57, 70, 1)",
-            scale: 1.1,
-            rotate: 90,
-          }}
-        >
-          <span className="text-xl text-white">×</span>
-        </motion.button>
-
         {/* Project Image */}
         <div className="relative aspect-video w-full overflow-hidden rounded-lg mb-4 bg-gradient-to-br from-white/5 to-white/10">
           <Image
@@ -78,7 +64,7 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
         <div className="mb-5">
           <h3
             className="text-lg font-bold mb-3 uppercase tracking-wider"
-            style={{ color: "#E63946" }}
+            style={{ color: "#f59e0b" }}
           >
             Tech Stack
           </h3>
@@ -88,8 +74,8 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
                 key={idx}
                 className="px-3 py-1 bg-white/5 text-white rounded-md border border-white/10 transition-colors text-xs font-medium"
                 whileHover={{
-                  borderColor: "rgba(230, 57, 70, 0.5)",
-                  backgroundColor: "rgba(230, 57, 70, 0.1)",
+                  borderColor: "rgba(245, 158, 11, 0.5)",
+                  backgroundColor: "rgba(245, 158, 11, 0.1)",
                   scale: 1.05,
                 }}
               >
@@ -109,7 +95,7 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
               className="flex items-center gap-2 px-5 py-2.5 bg-white/5 border border-white/10 rounded-lg font-semibold text-sm"
               whileHover={{
                 backgroundColor: "rgba(255, 255, 255, 0.1)",
-                borderColor: "rgba(230, 57, 70, 1)",
+                borderColor: "rgba(245, 158, 11, 1)",
                 scale: 1.05,
               }}
             >
@@ -123,11 +109,11 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2 px-5 py-2.5 text-white rounded-lg font-semibold text-sm"
-              style={{ backgroundColor: "#E63946" }}
+              style={{ backgroundColor: "#f59e0b" }}
               whileHover={{
-                backgroundColor: "#D32F3C",
+                backgroundColor: "#d97706",
                 scale: 1.05,
-                boxShadow: "0 0 20px rgba(230, 57, 70, 0.6)",
+                boxShadow: "0 0 20px rgba(245, 158, 11, 0.6)",
               }}
             >
               <Fa.FaExternalLinkAlt className="w-3.5 h-3.5" />

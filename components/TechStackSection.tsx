@@ -6,7 +6,7 @@ import SkillCard from "./SkillCard";
 
 export default function TechStackSection() {
   return (
-    <section className="py-32 px-6">
+    <section id="tech" className="py-32 px-6">
       <div className="max-w-6xl mx-auto">
         <motion.div
           className="flex items-center gap-4 mb-20"
@@ -19,14 +19,13 @@ export default function TechStackSection() {
           }}
         >
           <motion.div
-            style={{ color: "#E63946" }}
-            className="text-4xl spin-slow"
+            className="text-4xl spin-slow text-cyan-400"
             whileInView={{ rotate: 360 }}
             transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
           >
             ✦
           </motion.div>
-          <h2 className="text-4xl md:text-5xl font-bold uppercase tracking-wider">
+          <h2 className="text-4xl md:text-5xl font-bold uppercase tracking-wider text-white">
             My Stack
           </h2>
         </motion.div>
@@ -35,7 +34,7 @@ export default function TechStackSection() {
           {skillsData.categories.map((category) => (
             <div key={category.name}>
               <motion.h3
-                className="text-3xl md:text-4xl text-white font-bold mb-10 uppercase tracking-wider"
+                className="text-3xl md:text-4xl font-bold mb-10 uppercase tracking-wider text-cyan-300"
                 initial={{ opacity: 0, x: -15 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: false, amount: 0.8 }}
@@ -58,8 +57,3 @@ export default function TechStackSection() {
     </section>
   );
 }
-
-
-
-
-

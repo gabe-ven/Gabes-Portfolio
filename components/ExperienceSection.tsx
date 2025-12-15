@@ -46,7 +46,7 @@ export default function ExperienceSection() {
           }}
         >
           <motion.div
-            style={{ color: "#E63946" }}
+            style={{ color: "#a855f7" }}
             className="text-4xl spin-slow"
             whileInView={{ rotate: 360 }}
             transition={{ duration: 20, repeat: Infinity, ease: "linear" }}

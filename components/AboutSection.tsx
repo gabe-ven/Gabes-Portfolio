@@ -29,7 +29,7 @@ export default function AboutSection() {
             }}
           >
             <h3
-              style={{ color: "#E63946" }}
+              style={{ color: "#10b981" }}
               className="font-semibold mb-4 text-sm uppercase tracking-wider"
             >
               This is me.
@@ -49,19 +49,13 @@ export default function AboutSection() {
             </p>
           </motion.div>
           <motion.div
-            style={{
-              y,
-              opacity,
-            }}
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
+            style={{ y, opacity }}
+            initial={{ opacity: 0, scale: 0.94, rotateZ: -1.5 }}
+            whileInView={{ opacity: 1, scale: 1, rotateZ: 0 }}
             viewport={{ once: false, amount: 0.2, margin: "0px 0px -100px 0px" }}
-            transition={{
-              duration: 0.8,
-              ease: [0.25, 0.46, 0.45, 0.94],
-            }}
+            transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
           >
-            <div
+            <motion.div
               className="relative aspect-square overflow-hidden select-none isolate"
               style={{
                 borderRadius: "30% 70% 70% 30% / 30% 30% 70% 70%",
@@ -73,6 +67,13 @@ export default function AboutSection() {
                 backfaceVisibility: "hidden",
                 WebkitBackfaceVisibility: "hidden",
               }}
+              whileHover={{
+                scale: 1.03,
+                rotateZ: 1.5,
+                y: -6,
+                transition: { duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] },
+              }}
+              transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
             >
               <Image
                 src="/headshot.JPG"
@@ -91,13 +92,13 @@ export default function AboutSection() {
                 className="absolute inset-0 pointer-events-none z-10"
                 style={{
                   background:
-                    "radial-gradient(circle at 30% 30%, rgba(230, 57, 70, 0.28), transparent 45%), radial-gradient(circle at 75% 70%, rgba(147, 51, 234, 0.2), transparent 50%), linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(0, 0, 0, 0))",
+                    "radial-gradient(circle at 30% 30%, rgba(16, 185, 129, 0.22), transparent 45%), radial-gradient(circle at 75% 70%, rgba(59, 130, 246, 0.2), transparent 50%), linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(0, 0, 0, 0))",
                   opacity: 1,
                   filter: "blur(4px)",
                   mixBlendMode: "normal",
                 }}
               />
-            </div>
+            </motion.div>
           </motion.div>
         </div>
       </div>

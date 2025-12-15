@@ -27,21 +27,18 @@ export default function ContactSection() {
 
           <motion.a
             href="mailto:gabrielvenezia6@gmail.com"
-            className="text-3xl md:text-4xl font-bold inline-block"
-            style={{ color: "#E63946" }}
+            className="text-3xl md:text-4xl font-bold inline-block text-[#1d4ed8] transition-colors duration-50"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: false }}
             transition={{ duration: 0.8, delay: 0.3 }}
             whileHover={{
-              scale: 1.1,
-              rotateZ: [0, -2, 2, -2, 0],
-              color: "#FF1B2D",
-              textShadow: "0 0 20px rgba(230, 57, 70, 0.8)",
+              scale: 1.03,
+              color: "#1d4ed8",
+              textShadow: "0 0 12px rgba(30, 64, 175, 0.45)",
               transition: {
-                duration: 0.5,
-                type: "spring",
-                stiffness: 300,
+                duration: 0.05,
+                ease: "linear",
               },
             }}
           >

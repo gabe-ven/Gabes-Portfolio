@@ -34,8 +34,8 @@ export default function ExperienceCard({
       }}
       whileHover={{
         x: 8,
-        borderColor: "rgba(230, 57, 70, 0.5)",
-        backgroundColor: "rgba(230, 57, 70, 0.03)",
+        borderColor: "rgba(168, 85, 247, 0.5)",
+        backgroundColor: "rgba(168, 85, 247, 0.03)",
         transition: {
           duration: 0.15,
         },
@@ -44,7 +44,7 @@ export default function ExperienceCard({
       <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-3">
         <div>
           <h3
-            className="text-xl font-bold mb-1 transition-colors duration-100 group-hover:text-[#E63946]"
+            className="text-xl font-bold mb-1 transition-colors duration-100 group-hover:text-[#a855f7]"
           >
             {experience.company}
           </h3>
@@ -52,7 +52,7 @@ export default function ExperienceCard({
         </div>
         <span
           className="text-sm font-medium whitespace-nowrap"
-          style={{ color: "#E63946" }}
+          style={{ color: "#a855f7" }}
         >
           {experience.period}
         </span>
