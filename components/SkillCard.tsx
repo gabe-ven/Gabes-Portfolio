@@ -58,3 +58,5 @@ export default function SkillCard({ skill, index }: SkillCardProps) {
   );
 }
 
+
+

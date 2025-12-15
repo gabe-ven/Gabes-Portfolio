@@ -6,18 +6,19 @@
       "description": "Building a platform for UC Davis students to find professors aligned with their research interests.",
       "image": "/lablink.png",
       "tags": [
-      "React", 
-      "TypeScript", 
-      "Vite", 
-      "Tailwind CSS", 
-      "FastAPI", 
-      "Python", 
-      "SQLAlchemy", 
-      "PostgreSQL", 
-      "SQLite", 
-      "Neon", 
-      "TF-IDF", 
-      "BM25"],
+        "React",
+        "TypeScript",
+        "Vite",
+        "Tailwind CSS",
+        "FastAPI",
+        "Python",
+        "SQLAlchemy",
+        "PostgreSQL",
+        "SQLite",
+        "Neon",
+        "TF-IDF",
+        "BM25"
+      ],
       "github": "https://github.com/vish2285/LabLink",
       "demo": "https://www.lablinkdavis.org/"
     },
@@ -56,6 +57,14 @@
     },
     {
       "id": 4,
+      "title": "AniLog",
+      "description": "An interactive anime catalog that displays comprehensive data and statistics for various anime series, featuring detailed information, ratings, and visual analytics.",
+      "image": "/anilog.png",
+      "tags": ["JavaScript", "HTML", "CSS"],
+      "github": "https://github.com/gabe-ven/Anilog"
+    },
+    {
+      "id": 5,
       "title": "Gabe's Arcade",
       "description": "A collection of classic arcade games like Snake, Tetris, and Pong, built with HTML, CSS, and JavaScript, featuring interactive gameplay and nostalgic design.",
       "image": "/arcade.png",
@@ -64,7 +73,7 @@
       "demo": "https://gabe-ven.github.io/Arcade-Project/"
     },
     {
-      "id": 5,
+      "id": 6,
       "title": "Blackjack",
       "description": "A simple web-based Blackjack game built with HTML, CSS, and JavaScript, featuring interactive gameplay and traditional casino rules.",
       "image": "/blackjack.jpg",
@@ -73,7 +82,7 @@
       "demo": "https://gabe-ven.github.io/Blackjack/"
     },
     {
-      "id": 6,
+      "id": 7,
       "title": "Random Song Generator",
       "description": "A Python app that uses the Spotify API to generate popular songs by genre with a simple Tkinter interface.",
       "image": "/music.jpg",
@@ -81,7 +90,7 @@
       "github": "https://github.com/gabe-ven/Random-Song-Generator"
     },
     {
-      "id": 7,
+      "id": 8,
       "title": "Bookstore Management System",
       "description": "A Java Swing–based GUI application that uses object-oriented programming (OOP) principles to manage an online bookstore, with modular classes for inventory, customers, orders, and payments.",
       "image": "/bookstore.jpg",

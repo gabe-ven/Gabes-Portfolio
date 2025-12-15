@@ -55,7 +55,7 @@
           "name": "Next.js",
           "level": 40,
           "icon": "SiNextdotjs",
-          "color": "#000000"
+          "color": "#FFFFFF"
         },
         {
           "name": "SFML",
@@ -63,7 +63,7 @@
           "icon": "SiCplusplus",
           "color": "#00599C"
         },
-        { "name": "Flask", "level": 60, "icon": "SiFlask", "color": "#000000" },
+        { "name": "Flask", "level": 60, "icon": "SiFlask", "color": "#FF0000" },
         {
           "name": "LangChain",
           "level": 70,
@@ -81,6 +81,30 @@
     {
       "name": "Tools & Others",
       "skills": [
+        {
+          "name": "Node.js",
+          "level": 75,
+          "icon": "SiNodedotjs",
+          "color": "#339933"
+        },
+        {
+          "name": "Firebase",
+          "level": 70,
+          "icon": "SiFirebase",
+          "color": "#FFCA28"
+        },
+        {
+          "name": "Supabase",
+          "level": 65,
+          "icon": "SiSupabase",
+          "color": "#3ECF8E"
+        },
+        {
+          "name": "PostgreSQL",
+          "level": 70,
+          "icon": "SiPostgresql",
+          "color": "#4169E1"
+        },
         {
           "name": "Git & GitHub",
           "level": 90,
