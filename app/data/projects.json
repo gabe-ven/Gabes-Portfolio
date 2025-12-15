@@ -61,7 +61,8 @@
       "description": "An interactive anime catalog that displays comprehensive data and statistics for various anime series, featuring detailed information, ratings, and visual analytics.",
       "image": "/anilog.png",
       "tags": ["JavaScript", "HTML", "CSS"],
-      "github": "https://github.com/gabe-ven/Anilog"
+      "github": "https://github.com/gabe-ven/Anilog",
+      "demo": "https://gabe-ven.github.io/Anilog/"
     },
     {
       "id": 5,

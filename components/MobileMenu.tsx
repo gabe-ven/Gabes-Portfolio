@@ -36,14 +36,16 @@ export default function MobileMenu({
 
           {/* Menu panel */}
           <motion.div
-            className="fixed top-0 right-0 bottom-0 w-full max-w-md h-full bg-orange-500 p-12 overflow-y-auto z-50 shadow-2xl"
-            initial={{ x: "100%" }}
-            animate={{ x: 0 }}
-            exit={{ x: "100%" }}
+            className="fixed top-0 right-0 bottom-0 w-full max-w-md h-full p-12 overflow-y-auto z-50 shadow-2xl"
+            style={{ backgroundColor: "#E63946" }}
+            initial={{ x: "100%", rotateY: 45 }}
+            animate={{ x: 0, rotateY: 0 }}
+            exit={{ x: "100%", rotateY: 45 }}
             transition={{
-              type: "tween",
-              duration: 0.5,
-              ease: [0.22, 1, 0.36, 1],
+              type: "spring",
+              duration: 0.8,
+              stiffness: 100,
+              damping: 20,
             }}
           >
             <div className="flex flex-col h-full">
@@ -121,6 +123,8 @@ export default function MobileMenu({
     </AnimatePresence>
   );
 }
+
+
 
 
 

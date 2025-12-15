@@ -1,26 +1,42 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import Image from "next/image";
+import { useRef } from "react";
 
 export default function AboutSection() {
+  const ref = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "end start"],
+  });
+
+  // Subtle parallax effect - moves slower than scroll
+  const y = useTransform(scrollYProgress, [0, 1], [50, -50]);
+  const opacity = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0.5, 1, 1, 0.5]);
+
   return (
-    <section id="about" className="py-32 px-6">
+    <section ref={ref} id="about" className="py-32 px-6">
       <div className="max-w-6xl mx-auto">
         <div className="grid md:grid-cols-2 gap-16">
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: false, amount: 0.3 }}
+            viewport={{ once: false, amount: 0.2, margin: "0px 0px -100px 0px" }}
             transition={{
               duration: 0.7,
               ease: [0.25, 0.46, 0.45, 0.94],
             }}
           >
-            <h3 className="text-orange-500 font-semibold mb-4 text-sm uppercase tracking-wider">
+            <h3
+              style={{ color: "#E63946" }}
+              className="font-semibold mb-4 text-sm uppercase tracking-wider"
+            >
               This is me.
             </h3>
-            <h4 className="text-3xl font-bold mb-6">Hi, I&apos;m Gabriel.</h4>
+            <h4 className="text-3xl font-bold mb-6">
+              Hi, I&apos;m Gabriel.
+            </h4>
             <p className="text-gray-400 leading-relaxed mb-6">
               I enjoy turning ideas into well-crafted software through hands-on
               projects. I focus on creating clean, intuitive user experiences
@@ -33,39 +49,62 @@ export default function AboutSection() {
             </p>
           </motion.div>
           <motion.div
-            className="relative aspect-square overflow-hidden"
             style={{
-              borderRadius: "30% 70% 70% 30% / 30% 30% 70% 70%",
+              y,
+              opacity,
             }}
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: false, amount: 0.3 }}
+            viewport={{ once: false, amount: 0.2, margin: "0px 0px -100px 0px" }}
             transition={{
-              duration: 0.7,
-              delay: 0.15,
+              duration: 0.8,
               ease: [0.25, 0.46, 0.45, 0.94],
             }}
           >
-            {/* Animated gradient overlay */}
             <div
-              className="absolute inset-0 bg-gradient-to-br from-orange-500/40 via-red-500/30 to-purple-600/40 z-10 mix-blend-hard-light animate-pulse"
-              style={{ animationDuration: "3s" }}
-            />
+              className="relative aspect-square overflow-hidden select-none isolate"
+              style={{
+                borderRadius: "30% 70% 70% 30% / 30% 30% 70% 70%",
+                outline: "none",
+                border: "none",
+                boxShadow: "none",
+                transform: "translate3d(0, 0, 0)",
+                WebkitTransform: "translate3d(0, 0, 0)",
+                backfaceVisibility: "hidden",
+                WebkitBackfaceVisibility: "hidden",
+              }}
+            >
+              <Image
+                src="/headshot.JPG"
+                alt="Gabriel Venezia"
+                fill
+                className="object-cover select-none z-0"
+                draggable={false}
+                style={{
+                  transform: "translate3d(0, 0, 0)",
+                  WebkitTransform: "translate3d(0, 0, 0)",
+                }}
+              />
 
-            {/* Additional gradient layer */}
-            <div className="absolute inset-0 bg-gradient-to-tl from-cyan-500/20 via-transparent to-yellow-500/20 z-10 mix-blend-overlay" />
-
-            <Image
-              src="/headshot.JPG"
-              alt="Gabriel Venezia"
-              fill
-              className="object-cover"
-            />
+              {/* Soft gradient film overlay (no blend modes to avoid artifacts) */}
+              <div
+                className="absolute inset-0 pointer-events-none z-10"
+                style={{
+                  background:
+                    "radial-gradient(circle at 30% 30%, rgba(230, 57, 70, 0.28), transparent 45%), radial-gradient(circle at 75% 70%, rgba(147, 51, 234, 0.2), transparent 50%), linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(0, 0, 0, 0))",
+                  opacity: 1,
+                  filter: "blur(4px)",
+                  mixBlendMode: "normal",
+                }}
+              />
+            </div>
           </motion.div>
         </div>
       </div>
     </section>
   );
 }
+
+
 
 

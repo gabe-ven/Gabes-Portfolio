@@ -10,9 +10,11 @@ export default function ScrollIndicator() {
     <div className="fixed right-8 top-1/2 -translate-y-1/2 z-40 hidden md:flex flex-col items-center gap-2">
       <div className="relative w-1 h-40 bg-white/20 rounded-full">
         <motion.div
-          className="absolute top-0 left-0 w-full bg-orange-500 rounded-full"
+          className="absolute top-0 left-0 w-full rounded-full"
           style={{
             height: scrollHeight,
+            backgroundColor: "#E63946",
+            boxShadow: "0 0 10px rgba(230, 57, 70, 0.8)",
           }}
         />
       </div>

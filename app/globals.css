@@ -333,7 +333,8 @@
   }
 
   ::selection {
-    @apply bg-orange-500/20 text-white;
+    @apply text-white;
+    background-color: rgba(230, 57, 70, 0.2);
   }
 }
 
@@ -361,8 +362,27 @@ svg {
 [data-projection-id] {
   will-change: transform, opacity;
   backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+}
+
+/* Prevent outline artifacts on images */
+img {
+  outline: none !important;
+  border: none !important;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  transform: translate3d(0, 0, 0);
+  -webkit-transform: translate3d(0, 0, 0);
+}
+
+/* Better rendering for rounded containers */
+.isolate {
+  isolation: isolate;
+  contain: paint;
 }
 
 /* Hide scrollbar but keep functionality */

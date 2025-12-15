@@ -10,15 +10,22 @@ export default function TechStackSection() {
       <div className="max-w-6xl mx-auto">
         <motion.div
           className="flex items-center gap-4 mb-20"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: false, amount: 0.3 }}
+          initial={{ opacity: 0, x: -50 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: false, amount: 0.5 }}
           transition={{
-            duration: 0.6,
+            duration: 0.7,
             ease: [0.25, 0.46, 0.45, 0.94],
           }}
         >
-          <div className="text-orange-500 text-4xl spin-slow">✦</div>
+          <motion.div
+            style={{ color: "#E63946" }}
+            className="text-4xl spin-slow"
+            whileInView={{ rotate: 360 }}
+            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+          >
+            ✦
+          </motion.div>
           <h2 className="text-4xl md:text-5xl font-bold uppercase tracking-wider">
             My Stack
           </h2>
@@ -31,7 +38,7 @@ export default function TechStackSection() {
                 className="text-3xl md:text-4xl text-white font-bold mb-10 uppercase tracking-wider"
                 initial={{ opacity: 0, x: -15 }}
                 whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: false, amount: 0.5 }}
+                viewport={{ once: false, amount: 0.8 }}
                 transition={{
                   duration: 0.5,
                   ease: [0.25, 0.46, 0.45, 0.94],
@@ -51,6 +58,8 @@ export default function TechStackSection() {
     </section>
   );
 }
+
+
 
 
 
