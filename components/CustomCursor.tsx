@@ -8,46 +8,46 @@ export default function CustomCursor() {
   const [hidden, setHidden] = useState(false);
   const lastPos = useRef({ x: 0, y: 0 });
 
+  const updatePosition = (x: number, y: number) => {
+    const next = { x, y };
+    lastPos.current = next;
+    setPos(next);
+    setHidden(false);
+  };
+
   useEffect(() => {
     const hasFinePointer = window.matchMedia("(pointer: fine)").matches;
     if (!hasFinePointer) return;
     setEnabled(true);
 
     const handleMove = (e: PointerEvent) => {
-      lastPos.current = { x: e.clientX, y: e.clientY };
-      setPos(lastPos.current);
-      setHidden(false);
+      updatePosition(e.clientX, e.clientY);
+    };
+
+    // Track wheel/trackpad scroll so the custom cursor relocates even
+    // when the user scrolls before moving the mouse.
+    const handleWheel = (e: WheelEvent) => {
+      updatePosition(e.clientX, e.clientY);
     };
 
     const handleScroll = () => {
-      const { x, y } = lastPos.current;
-      if (x === 0 && y === 0) return;
-
-      setPos({ x, y });
-
-      // Force hover recalculation on scroll (when mouse doesn't move)
-      const evt = new MouseEvent("mousemove", {
-        clientX: x,
-        clientY: y,
-        bubbles: true,
-      });
-      window.dispatchEvent(evt);
-      const target = document.elementFromPoint(x, y);
-      if (target) target.dispatchEvent(evt);
-    };
-
-    const handleLeave = () => setHidden(true);
-    const handleEnter = () => {
-      setHidden(false);
+      // Force a re-render at the same logical pointer position so the cursor doesn't appear "stuck"
       setPos({ ...lastPos.current });
     };
 
+    const handleLeave = () => setHidden(true);
+    const handleEnter = (e: PointerEvent) => {
+      updatePosition(e.clientX, e.clientY);
+    };
+
     window.addEventListener("pointermove", handleMove, { passive: true });
+    window.addEventListener("wheel", handleWheel, { passive: true });
     window.addEventListener("scroll", handleScroll, { passive: true });
     window.addEventListener("pointerleave", handleLeave);
     window.addEventListener("pointerenter", handleEnter);
     return () => {
       window.removeEventListener("pointermove", handleMove);
+      window.removeEventListener("wheel", handleWheel);
       window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("pointerleave", handleLeave);
       window.removeEventListener("pointerenter", handleEnter);

@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import Image from "next/image";
 import { useRef } from "react";
 
@@ -18,6 +18,27 @@ export default function AboutSection() {
     [0, 0.3, 0.7, 1],
     [0.5, 1, 1, 0.5]
   );
+  // Add depth: gently grow and un-tilt on enter, then tilt the other way on exit
+  const scale = useTransform(scrollYProgress, [0, 0.5, 1], [0.9, 1, 1.05]);
+  const rotate = useTransform(scrollYProgress, [0, 0.5, 1], [-6, 0, 6]);
+
+  // Soften all transforms to prevent snappy jumps as the element enters/leaves view
+  const smoothY = useSpring(y, { stiffness: 120, damping: 20, mass: 0.4 });
+  const smoothOpacity = useSpring(opacity, {
+    stiffness: 140,
+    damping: 26,
+    mass: 0.45,
+  });
+  const smoothScale = useSpring(scale, {
+    stiffness: 140,
+    damping: 24,
+    mass: 0.4,
+  });
+  const smoothRotate = useSpring(rotate, {
+    stiffness: 120,
+    damping: 20,
+    mass: 0.38,
+  });
 
   return (
     <section ref={ref} id="about" className="py-32 px-6">
@@ -56,19 +77,13 @@ export default function AboutSection() {
           </motion.div>
           <motion.div
             style={{
-              y,
-              opacity,
+              y: smoothY,
+              opacity: smoothOpacity,
+              scale: smoothScale,
+              rotate: smoothRotate,
               borderRadius: "30% 70% 70% 30% / 30% 30% 70% 70%",
             }}
             className="relative overflow-visible"
-            initial={{ opacity: 0, scale: 0.94, rotateZ: -1.5 }}
-            whileInView={{ opacity: 1, scale: 1, rotateZ: 0 }}
-            viewport={{
-              once: false,
-              amount: 0.2,
-              margin: "0px 0px -100px 0px",
-            }}
-            transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
           >
             {/* Outer liquid ring hugging the blob shape */}
             <div
@@ -78,7 +93,7 @@ export default function AboutSection() {
               }}
             />
 
-            <motion.div
+            <div
               className="relative aspect-square overflow-hidden select-none isolate"
               style={{
                 borderRadius: "30% 70% 70% 30% / 30% 30% 70% 70%",
@@ -91,7 +106,6 @@ export default function AboutSection() {
                 backfaceVisibility: "hidden",
                 WebkitBackfaceVisibility: "hidden",
               }}
-              transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
             >
               <Image
                 src="/headshot.JPG"
@@ -111,7 +125,7 @@ export default function AboutSection() {
 
               {/* Edge vignette to hide source outline */}
               <div className="headshot-vignette" aria-hidden="true" />
-            </motion.div>
+            </div>
           </motion.div>
         </div>
       </div>
