@@ -20,8 +20,20 @@ export default function CustomCursor() {
     };
 
     const handleScroll = () => {
-      // Force a re-render at the same logical pointer position so the cursor doesn't appear "stuck"
-      setPos({ ...lastPos.current });
+      const { x, y } = lastPos.current;
+      if (x === 0 && y === 0) return;
+
+      setPos({ x, y });
+
+      // Force hover recalculation on scroll (when mouse doesn't move)
+      const evt = new MouseEvent("mousemove", {
+        clientX: x,
+        clientY: y,
+        bubbles: true,
+      });
+      window.dispatchEvent(evt);
+      const target = document.elementFromPoint(x, y);
+      if (target) target.dispatchEvent(evt);
     };
 
     const handleLeave = () => setHidden(true);
@@ -59,4 +71,3 @@ export default function CustomCursor() {
     />
   );
 }
-

@@ -65,9 +65,7 @@ export default function ProjectCard({
         </div>
       </div>
 
-      <h3
-        className="text-2xl font-bold mb-3 transition-colors duration-100 group-hover:text-[#f59e0b]"
-      >
+      <h3 className="text-2xl font-bold mb-3 transition-colors duration-100 group-hover:text-[#f59e0b]">
         {project.title}
       </h3>
 
@@ -84,7 +82,3 @@ export default function ProjectCard({
     </motion.div>
   );
 }
-
-
-
-

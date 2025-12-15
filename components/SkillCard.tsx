@@ -60,16 +60,9 @@ export default function SkillCard({ skill, index }: SkillCardProps) {
       >
         {getIcon(skill.icon)}
       </motion.div>
-      <span
-        className="text-xl font-medium text-white transition-colors duration-75 group-hover:text-[#22d3ee]"
-      >
+      <span className="text-xl font-medium text-white transition-colors duration-75 group-hover:text-[#22d3ee]">
         {skill.name}
       </span>
     </motion.div>
   );
 }
-
-
-
-
-

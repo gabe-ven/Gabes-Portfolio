@@ -125,7 +125,3 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
     </motion.div>
   );
 }
-
-
-
-
