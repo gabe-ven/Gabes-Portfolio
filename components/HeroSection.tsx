@@ -87,7 +87,7 @@ export default function HeroSection() {
 
   const descDelay = line2Delay + line2.totalLength * titleSpeed + 250;
   const descSegments: Segment[] = [
-    { text: "Computer Science + Tech Management @ UC Davis. " },
+    { text: "Computer Science + Tech Management @ UC Davis." },
     { text: "Building software and fighting merge conflicts." },
   ];
   const desc = useSegmentedTypewriter(descSegments, descSpeed, descDelay);
@@ -148,6 +148,7 @@ export default function HeroSection() {
             {desc.displayedSegments.map((seg, idx) => (
               <span key={idx} className={seg.className}>
                 {seg.display}
+                {idx === 0 ? <br /> : null}
               </span>
             ))}
           </motion.p>
@@ -158,15 +159,15 @@ export default function HeroSection() {
             rel="noopener noreferrer"
             className="inline-block px-10 py-4 text-white font-semibold rounded-lg relative overflow-hidden group hover:scale-105 active:scale-98 transition-all duration-100 shadow-none hover:shadow-[0_0_30px_rgba(230,57,70,0.7)]"
             style={{ backgroundColor: "#E63946" }}
-            initial={{ opacity: 0, y: 30, scale: 0.96 }}
+            initial={{ opacity: 0, x: -60, scale: 0.96 }}
             animate={
               desc.done
-                ? { opacity: 1, y: 0, scale: 1, pointerEvents: "auto" }
-                : { opacity: 0, y: 30, scale: 0.96, pointerEvents: "none" }
+                ? { opacity: 1, x: 0, scale: 1, pointerEvents: "auto" }
+                : { opacity: 0, x: -60, scale: 0.96, pointerEvents: "none" }
             }
             transition={{
-              duration: 0.55,
-              ease: [0.16, 1, 0.3, 1],
+              duration: 0.9,
+              ease: [0.33, 1, 0.68, 1],
             }}
           >
             {/* Animated shine effect */}

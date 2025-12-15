@@ -1,6 +1,7 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useMemo, useState } from "react";
 
 interface MobileMenuProps {
   isOpen: boolean;
@@ -9,17 +10,70 @@ interface MobileMenuProps {
 }
 
 const menuItems = [
-  { name: "Home", id: "hero", color: "bg-yellow-400" },
-  { name: "About Me", id: "about", color: "bg-blue-500" },
-  { name: "Experience", id: "experience", color: "bg-cyan-400" },
-  { name: "Projects", id: "projects", color: "bg-blue-600" },
+  { name: "Home", id: "hero" },
+  { name: "About Me", id: "about" },
+  { name: "Experience", id: "experience" },
+  { name: "Projects", id: "projects" },
 ];
+
+const SECTION_COLORS = [
+  { id: "hero", color: "#E63946" },
+  { id: "about", color: "#10b981" },
+  { id: "experience", color: "#a855f7" },
+  { id: "tech", color: "#22d3ee" },
+  { id: "projects", color: "#f59e0b" },
+  { id: "contact", color: "#1d4ed8" },
+];
+
+function useSectionAccent() {
+  const [accent, setAccent] = useState(SECTION_COLORS[0]);
+
+  const computeAccent = useMemo(() => {
+    return () => {
+      const scrollMid = window.scrollY + window.innerHeight * 0.35;
+      for (const section of SECTION_COLORS) {
+        const el = document.getElementById(section.id);
+        if (!el) continue;
+        const rect = el.getBoundingClientRect();
+        const top = rect.top + window.scrollY;
+        const bottom = top + rect.height;
+        if (scrollMid >= top && scrollMid < bottom) {
+          setAccent(section);
+          return;
+        }
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    let frame: number | null = null;
+    const handle = () => {
+      if (frame) cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        computeAccent();
+      });
+    };
+
+    handle();
+    window.addEventListener("scroll", handle, { passive: true });
+    window.addEventListener("resize", handle);
+    return () => {
+      if (frame) cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", handle);
+      window.removeEventListener("resize", handle);
+    };
+  }, [computeAccent]);
+
+  return accent;
+}
 
 export default function MobileMenu({
   isOpen,
   onClose,
   scrollToSection,
 }: MobileMenuProps) {
+  const accent = useSectionAccent();
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -37,7 +91,10 @@ export default function MobileMenu({
           {/* Menu panel */}
           <motion.div
             className="fixed top-0 right-0 bottom-0 w-full max-w-md h-full p-12 overflow-y-auto z-50 shadow-2xl"
-            style={{ backgroundColor: "#E63946" }}
+            style={{
+              backgroundColor: accent.color,
+              transition: "background-color 0.25s ease",
+            }}
             initial={{ x: "100%", rotateY: 45 }}
             animate={{ x: 0, rotateY: 0 }}
             exit={{ x: "100%", rotateY: 45 }}
@@ -97,7 +154,6 @@ export default function MobileMenu({
                       }}
                       className="flex items-center gap-3 text-white text-xl hover:translate-x-2 transition-transform w-full text-left"
                     >
-                      <span className={`w-2 h-2 rounded-full ${item.color}`} />
                       {item.name}
                     </button>
                   ))}

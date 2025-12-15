@@ -385,6 +385,25 @@ img {
   contain: paint;
 }
 
+.custom-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  border-radius: 9999px;
+  background: white;
+  mix-blend-mode: difference;
+  pointer-events: none;
+  z-index: 999;
+  transition: transform 80ms ease-out, opacity 150ms ease;
+  opacity: 0.9;
+}
+
+@media (max-width: 768px) {
+  .custom-cursor {
+    display: none;
+  }
+}
+
 /* Hide scrollbar but keep functionality */
 ::-webkit-scrollbar {
   display: none;
@@ -398,4 +417,10 @@ img {
 /* For IE and Edge */
 body {
   -ms-overflow-style: none;
+}
+
+@media (pointer: fine) {
+  * {
+    cursor: none !important;
+  }
 }
