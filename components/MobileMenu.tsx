@@ -18,7 +18,7 @@ const menuItems = [
 
 const SECTION_COLORS = [
   { id: "hero", color: "#E63946" },
-  { id: "about", color: "#10b981" },
+  { id: "about", color: "#22c55e" },
   { id: "experience", color: "#a855f7" },
   { id: "tech", color: "#22d3ee" },
   { id: "projects", color: "#f59e0b" },

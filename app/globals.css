@@ -385,6 +385,55 @@ img {
   contain: paint;
 }
 
+.blob {
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  filter: blur(60px);
+  opacity: 0.5;
+  mix-blend-mode: screen;
+  transform: translate3d(0, 0, 0);
+  animation: blob-float 14s ease-in-out infinite alternate;
+}
+
+.blob-emerald {
+  background: radial-gradient(circle, rgba(34, 197, 94, 0.4), transparent 45%);
+  animation-duration: 16s;
+  animation-delay: -4s;
+}
+
+.blob-cyan {
+  background: radial-gradient(
+    circle,
+    rgba(74, 222, 128, 0.32),
+    transparent 45%
+  );
+  animation-duration: 18s;
+  animation-delay: -2s;
+}
+
+.blob-purple {
+  background: radial-gradient(
+    circle,
+    rgba(190, 242, 100, 0.28),
+    transparent 45%
+  );
+  animation-duration: 20s;
+  animation-delay: -6s;
+}
+
+@keyframes blob-float {
+  0% {
+    transform: translate3d(-8%, -6%, 0) scale(0.95);
+  }
+  50% {
+    transform: translate3d(6%, 4%, 0) scale(1.05);
+  }
+  100% {
+    transform: translate3d(-4%, 8%, 0) scale(1);
+  }
+}
+
 .custom-cursor {
   position: fixed;
   top: 0;
@@ -402,6 +451,132 @@ img {
   .custom-cursor {
     display: none;
   }
+}
+
+.halo-ring {
+  position: absolute;
+  width: 92%;
+  height: 92%;
+  border-radius: 9999px;
+  background: conic-gradient(
+    from 0deg,
+    rgba(34, 197, 94, 0.45),
+    rgba(74, 222, 128, 0.4),
+    rgba(190, 242, 100, 0.42),
+    rgba(34, 197, 94, 0.45)
+  );
+  opacity: 0.7;
+  filter: blur(18px);
+  animation: halo-pulse 6s ease-in-out infinite alternate;
+}
+
+@keyframes halo-pulse {
+  0% {
+    transform: scale(0.96) rotate(0deg);
+    opacity: 0.55;
+  }
+  50% {
+    transform: scale(1.02) rotate(8deg);
+    opacity: 0.78;
+  }
+  100% {
+    transform: scale(0.98) rotate(-6deg);
+    opacity: 0.65;
+  }
+}
+
+.halo-ring {
+  position: absolute;
+  inset: -2%;
+  border-radius: inherit;
+  background: conic-gradient(
+    from 45deg,
+    rgba(34, 197, 94, 0.75),
+    rgba(74, 222, 128, 0.68),
+    rgba(190, 242, 100, 0.7),
+    rgba(34, 197, 94, 0.75)
+  );
+  opacity: 0.95;
+  filter: blur(8px);
+  box-shadow: 0 0 25px rgba(34, 197, 94, 0.48),
+    0 0 35px rgba(74, 222, 128, 0.38);
+  animation: halo-pulse 6.5s ease-in-out infinite alternate;
+}
+
+.halo-ring-outline {
+  position: absolute;
+  inset: -1%;
+  border-radius: inherit;
+  border: 3px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 0 30px rgba(34, 197, 94, 0.45),
+    0 0 40px rgba(74, 222, 128, 0.35);
+  animation: halo-pulse 7s ease-in-out infinite alternate-reverse;
+}
+
+@keyframes halo-pulse {
+  0% {
+    transform: scale(0.97) rotate(0deg);
+    opacity: 0.6;
+  }
+  50% {
+    transform: scale(1.02) rotate(6deg);
+    opacity: 0.82;
+  }
+  100% {
+    transform: scale(0.99) rotate(-4deg);
+    opacity: 0.7;
+  }
+}
+
+.liquid-outline {
+  position: absolute;
+  inset: -5%;
+  border-radius: inherit;
+  background: transparent;
+  border: 2px solid rgba(34, 197, 94, 0.55);
+  box-shadow: 0 0 20px rgba(34, 197, 94, 0.5), 0 0 30px rgba(16, 185, 129, 0.45),
+    0 0 42px rgba(74, 222, 128, 0.35);
+  mix-blend-mode: screen;
+  opacity: 0.85;
+  animation: liquid-drip 7s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 15;
+}
+
+@keyframes liquid-drip {
+  0% {
+    border-radius: 30% 70% 68% 32% / 32% 28% 72% 68%;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  25% {
+    border-radius: 32% 68% 70% 30% / 34% 30% 70% 66%;
+    transform: translate3d(0.6%, -0.6%, 0) scale(1.01);
+  }
+  50% {
+    border-radius: 33% 67% 66% 34% / 36% 28% 68% 64%;
+    transform: translate3d(-0.6%, 0.6%, 0) scale(0.995);
+  }
+  75% {
+    border-radius: 31% 69% 72% 28% / 34% 32% 66% 70%;
+    transform: translate3d(0.3%, 0.3%, 0) scale(1.008);
+  }
+  100% {
+    border-radius: 30% 70% 68% 32% / 32% 28% 72% 68%;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+.headshot-vignette {
+  position: absolute;
+  inset: 0;
+  z-index: 7;
+  pointer-events: none;
+  background: radial-gradient(
+    circle at 50% 50%,
+    transparent 60%,
+    rgba(0, 0, 0, 0.6) 88%
+  );
+  mix-blend-mode: normal;
 }
 
 /* Hide scrollbar but keep functionality */

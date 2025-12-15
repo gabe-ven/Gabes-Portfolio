@@ -37,7 +37,7 @@ export default function AboutSection() {
             }}
           >
             <h3
-              style={{ color: "#10b981" }}
+              style={{ color: "#22c55e" }}
               className="font-semibold mb-4 text-6xl uppercase tracking-wider"
             >
               This is me.
@@ -55,7 +55,12 @@ export default function AboutSection() {
             </p>
           </motion.div>
           <motion.div
-            style={{ y, opacity }}
+            style={{
+              y,
+              opacity,
+              borderRadius: "30% 70% 70% 30% / 30% 30% 70% 70%",
+            }}
+            className="relative overflow-visible"
             initial={{ opacity: 0, scale: 0.94, rotateZ: -1.5 }}
             whileInView={{ opacity: 1, scale: 1, rotateZ: 0 }}
             viewport={{
@@ -65,6 +70,14 @@ export default function AboutSection() {
             }}
             transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
           >
+            {/* Outer liquid ring hugging the blob shape */}
+            <div
+              className="liquid-outline pointer-events-none"
+              style={{
+                borderRadius: "30% 70% 70% 30% / 30% 30% 70% 70%",
+              }}
+            />
+
             <motion.div
               className="relative aspect-square overflow-hidden select-none isolate"
               style={{
@@ -72,16 +85,11 @@ export default function AboutSection() {
                 outline: "none",
                 border: "none",
                 boxShadow: "none",
+                backgroundColor: "#000",
                 transform: "translate3d(0, 0, 0)",
                 WebkitTransform: "translate3d(0, 0, 0)",
                 backfaceVisibility: "hidden",
                 WebkitBackfaceVisibility: "hidden",
-              }}
-              whileHover={{
-                scale: 1.03,
-                rotateZ: 1.5,
-                y: -6,
-                transition: { duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] },
               }}
               transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
             >
@@ -92,22 +100,17 @@ export default function AboutSection() {
                 className="object-cover select-none z-0"
                 draggable={false}
                 style={{
-                  transform: "translate3d(0, 0, 0)",
-                  WebkitTransform: "translate3d(0, 0, 0)",
+                  transform: "translate3d(0, 0, 0) scale(1.05)",
+                  WebkitTransform: "translate3d(0, 0, 0) scale(1.05)",
+                  borderRadius: "30% 70% 70% 30% / 30% 30% 70% 70%",
+                  objectPosition: "50% 50%",
+                  maskImage: "none",
+                  WebkitMaskImage: "none",
                 }}
               />
 
-              {/* Soft gradient film overlay (no blend modes to avoid artifacts) */}
-              <div
-                className="absolute inset-0 pointer-events-none z-10"
-                style={{
-                  background:
-                    "radial-gradient(circle at 30% 30%, rgba(16, 185, 129, 0.22), transparent 45%), radial-gradient(circle at 75% 70%, rgba(59, 130, 246, 0.2), transparent 50%), linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(0, 0, 0, 0))",
-                  opacity: 1,
-                  filter: "blur(4px)",
-                  mixBlendMode: "normal",
-                }}
-              />
+              {/* Edge vignette to hide source outline */}
+              <div className="headshot-vignette" aria-hidden="true" />
             </motion.div>
           </motion.div>
         </div>

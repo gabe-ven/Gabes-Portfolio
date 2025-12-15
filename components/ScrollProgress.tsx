@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 
 const SECTION_COLORS = [
   { id: "hero", color: "#E63946", shadow: "rgba(230, 57, 70, 0.6)" },
-  { id: "about", color: "#10b981", shadow: "rgba(16, 185, 129, 0.6)" },
+  { id: "about", color: "#22c55e", shadow: "rgba(34, 197, 94, 0.6)" },
   { id: "experience", color: "#a855f7", shadow: "rgba(168, 85, 247, 0.6)" },
   { id: "tech", color: "#22d3ee", shadow: "rgba(34, 211, 238, 0.6)" },
   { id: "projects", color: "#f59e0b", shadow: "rgba(245, 158, 11, 0.6)" },
