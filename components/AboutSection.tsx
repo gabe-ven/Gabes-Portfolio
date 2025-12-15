@@ -13,7 +13,11 @@ export default function AboutSection() {
 
   // Subtle parallax effect - moves slower than scroll
   const y = useTransform(scrollYProgress, [0, 1], [50, -50]);
-  const opacity = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0.5, 1, 1, 0.5]);
+  const opacity = useTransform(
+    scrollYProgress,
+    [0, 0.3, 0.7, 1],
+    [0.5, 1, 1, 0.5]
+  );
 
   return (
     <section ref={ref} id="about" className="py-32 px-6">
@@ -22,7 +26,11 @@ export default function AboutSection() {
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: false, amount: 0.2, margin: "0px 0px -100px 0px" }}
+            viewport={{
+              once: false,
+              amount: 0.2,
+              margin: "0px 0px -100px 0px",
+            }}
             transition={{
               duration: 0.7,
               ease: [0.25, 0.46, 0.45, 0.94],
@@ -30,13 +38,11 @@ export default function AboutSection() {
           >
             <h3
               style={{ color: "#10b981" }}
-              className="font-semibold mb-4 text-sm uppercase tracking-wider"
+              className="font-semibold mb-4 text-6xl uppercase tracking-wider"
             >
               This is me.
             </h3>
-            <h4 className="text-3xl font-bold mb-6">
-              Hi, I&apos;m Gabriel.
-            </h4>
+            <h4 className="text-3xl font-bold mb-6">Hi, I&apos;m Gabriel.</h4>
             <p className="text-gray-400 leading-relaxed mb-6">
               I enjoy turning ideas into well-crafted software through hands-on
               projects. I focus on creating clean, intuitive user experiences
@@ -52,7 +58,11 @@ export default function AboutSection() {
             style={{ y, opacity }}
             initial={{ opacity: 0, scale: 0.94, rotateZ: -1.5 }}
             whileInView={{ opacity: 1, scale: 1, rotateZ: 0 }}
-            viewport={{ once: false, amount: 0.2, margin: "0px 0px -100px 0px" }}
+            viewport={{
+              once: false,
+              amount: 0.2,
+              margin: "0px 0px -100px 0px",
+            }}
             transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
           >
             <motion.div
@@ -105,7 +115,3 @@ export default function AboutSection() {
     </section>
   );
 }
-
-
-
-

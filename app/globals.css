@@ -394,7 +394,7 @@ img {
   mix-blend-mode: difference;
   pointer-events: none;
   z-index: 999;
-  transition: transform 80ms ease-out, opacity 150ms ease;
+  transition: transform 50ms ease-out, opacity 120ms ease;
   opacity: 0.9;
 }
 
