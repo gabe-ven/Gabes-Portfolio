@@ -1,50 +1,128 @@
 "use client";
 
 import { motion } from "framer-motion";
+import * as Fa from "react-icons/fa";
 
 export default function ContactSection() {
   return (
-    <section id="contact" className="py-32 px-6">
-      <div className="max-w-4xl mx-auto text-center">
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
+    <section
+      id="contact"
+      className="snap-start overflow-hidden relative flex flex-col justify-center px-6"
+      style={{ height: "100vh", scrollSnapStop: "always", background: "#000000" }}
+    >
+      {/* Architectural cross-hatch */}
+      <div
+        className="absolute inset-0 z-0 pointer-events-none"
+        style={{
+          backgroundImage:
+            "linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px)," +
+            "linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px)",
+          backgroundSize: "80px 80px",
+        }}
+      />
+      {/* Single white horizontal line — architectural accent */}
+      <div
+        className="absolute left-0 right-0 z-0 pointer-events-none"
+        style={{
+          top: "50%",
+          height: 1,
+          background: "rgba(255,255,255,0.06)",
+        }}
+      />
+      {/* Subtle center glow */}
+      <div
+        className="absolute inset-0 z-0 pointer-events-none"
+        style={{
+          background: "radial-gradient(ellipse at 50% 50%, rgba(255,255,255,0.03) 0%, transparent 65%)",
+        }}
+      />
+
+      {/* Content */}
+      <div className="relative z-10 max-w-4xl mx-auto w-full flex flex-col items-center text-center">
+        <motion.p
+          className="font-mono text-[0.58rem] tracking-[0.35em] uppercase text-white/30 mb-6"
+          initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: false, amount: 0.3 }}
-          transition={{
-            duration: 0.8,
-            ease: [0.25, 0.46, 0.45, 0.94],
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
+          Get in touch
+        </motion.p>
+
+        <motion.h2
+          className="text-5xl md:text-6xl font-bold mb-8 text-white"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7, delay: 0.1 }}
+        >
+          You know how to find me
+        </motion.h2>
+
+        <motion.a
+          href="mailto:gabrielvenezia6@gmail.com"
+          className="cursor-target text-2xl md:text-3xl font-bold inline-block text-[#1d4ed8] transition-colors duration-50"
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          whileHover={{
+            scale: 1.03,
+            color: "#3b82f6",
+            textShadow: "0 0 20px rgba(59,130,246,0.4)",
+            transition: { duration: 0.05, ease: "linear" },
           }}
         >
-          <motion.h2
-            className="text-5xl md:text-6xl font-bold mb-8"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: false }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-          >
-            You know how to find me
-          </motion.h2>
+          gabrielvenezia6@gmail.com
+        </motion.a>
 
+        {/* Footer content */}
+        <motion.div
+          className="mt-20 flex items-center gap-4"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+        >
           <motion.a
-            href="mailto:gabrielvenezia6@gmail.com"
-            className="text-3xl md:text-4xl font-bold inline-block text-[#1d4ed8] transition-colors duration-50"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: false }}
-            transition={{ duration: 0.8, delay: 0.3 }}
+            href="https://github.com/gabe-ven"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="cursor-target w-10 h-10 flex items-center justify-center rounded-lg border border-white/10 transition-all duration-75"
             whileHover={{
-              scale: 1.03,
-              color: "#1d4ed8",
-              textShadow: "0 0 12px rgba(30, 64, 175, 0.45)",
-              transition: {
-                duration: 0.05,
-                ease: "linear",
-              },
+              borderColor: "rgba(59,130,246,0.8)",
+              backgroundColor: "rgba(59,130,246,0.1)",
+              scale: 1.1,
+              transition: { duration: 0.05 },
             }}
           >
-            gabrielvenezia6@gmail.com
+            <Fa.FaGithub className="w-5 h-5" />
+          </motion.a>
+          <motion.a
+            href="https://www.linkedin.com/in/gabriel-venezia/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="cursor-target w-10 h-10 flex items-center justify-center rounded-lg border border-white/10 transition-all duration-75"
+            whileHover={{
+              borderColor: "rgba(59,130,246,0.8)",
+              backgroundColor: "rgba(59,130,246,0.1)",
+              scale: 1.1,
+              transition: { duration: 0.05 },
+            }}
+          >
+            <Fa.FaLinkedin className="w-5 h-5" />
           </motion.a>
         </motion.div>
+
+        <motion.p
+          className="mt-6 font-mono text-[0.52rem] tracking-widest uppercase text-white/15"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.5 }}
+        >
+          Gabriel Venezia · {new Date().getFullYear()}
+        </motion.p>
       </div>
     </section>
   );

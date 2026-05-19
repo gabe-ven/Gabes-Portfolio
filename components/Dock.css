@@ -1,0 +1,73 @@
+.dock-outer {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.dock-panel {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: flex-start;
+  width: fit-content;
+  gap: 0.35rem;
+  border-radius: 16px;
+  background: rgba(11, 11, 17, 0.88);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  padding: 0.45rem;
+  backdrop-filter: blur(24px) saturate(1.5);
+  -webkit-backdrop-filter: blur(24px) saturate(1.5);
+  box-shadow:
+    0 4px 28px rgba(0, 0, 0, 0.55),
+    0 1px 0 rgba(255, 255, 255, 0.06) inset;
+}
+
+.dock-item {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  outline: none;
+  color: rgba(255, 255, 255, 0.52);
+  transition: color 0.15s, background-color 0.15s;
+  flex-shrink: 0;
+}
+
+.dock-item:hover {
+  background: rgba(255, 255, 255, 0.07);
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.dock-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dock-label {
+  position: absolute;
+  top: calc(100% + 0.55rem);
+  left: 50%;
+  width: max-content;
+  white-space: pre;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  background: rgba(14, 14, 22, 0.94);
+  padding: 0.2rem 0.55rem;
+  font-size: 0.58rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-family: var(--font-jetbrains-mono), monospace;
+  color: rgba(255, 255, 255, 0.45);
+  transform: translateX(-50%);
+  pointer-events: none;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+}

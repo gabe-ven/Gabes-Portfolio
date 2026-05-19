@@ -119,6 +119,11 @@
   }
 }
 
+@keyframes blink {
+  0%, 49.99% { opacity: 1; }
+  50%, 100%  { opacity: 0; }
+}
+
 .stars {
   position: absolute;
   width: 1px;
@@ -250,6 +255,7 @@
 
   html {
     @apply scroll-smooth;
+    scroll-snap-type: y proximity;
   }
 
   body {

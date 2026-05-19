@@ -1,0 +1,7 @@
+.darkveil-canvas {
+  /* !important so CSS wins over OGL's inline style.width/height,
+     keeping the canvas visually full-screen even at sub-1x resolutionScale */
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+}
