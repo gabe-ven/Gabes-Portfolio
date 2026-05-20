@@ -20,7 +20,6 @@ const SECTION_COLORS = [
   { id: "hero", color: "#E63946" },
   { id: "about", color: "#22c55e" },
   { id: "experience", color: "#a855f7" },
-  { id: "tech", color: "#22d3ee" },
   { id: "projects", color: "#f59e0b" },
   { id: "contact", color: "#1d4ed8" },
 ];

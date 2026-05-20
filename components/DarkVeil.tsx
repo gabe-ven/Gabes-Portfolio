@@ -104,7 +104,7 @@ export default function DarkVeil({
     if (!parent) return;
 
     const renderer = new Renderer({
-      dpr: 1, // fixed at 1 — canvas is blurred so Retina resolution is wasted GPU
+      dpr: Math.min(window.devicePixelRatio, 2),
       canvas,
     });
 
@@ -130,12 +130,8 @@ export default function DarkVeil({
     const resize = () => {
       const w = parent.clientWidth;
       const h = parent.clientHeight;
-      // Render at reduced size; CSS !important keeps canvas visually full-screen.
-      // Pass the actual GL buffer dimensions to the shader for correct UV mapping.
-      const rw = Math.round(w * resolutionScale);
-      const rh = Math.round(h * resolutionScale);
-      renderer.setSize(rw, rh);
-      program.uniforms.uResolution.value.set(rw, rh);
+      renderer.setSize(w * resolutionScale, h * resolutionScale);
+      program.uniforms.uResolution.value.set(w, h);
     };
 
     window.addEventListener('resize', resize);
@@ -143,46 +139,23 @@ export default function DarkVeil({
 
     const start = performance.now();
     let frame = 0;
-    let active = true;
-    // Target ~30 fps to halve GPU cost; imperceptible on a blurred background.
-    const FRAME_MS = 1000 / 30;
-    let lastRender = 0;
 
-    const loop = (now: number) => {
-      if (!active) return;
-      frame = requestAnimationFrame(loop);
-      if (now - lastRender < FRAME_MS) return;
-      lastRender = now;
-
-      program.uniforms.uTime.value = ((now - start) / 1000) * speed;
+    const loop = () => {
+      program.uniforms.uTime.value = ((performance.now() - start) / 1000) * speed;
       program.uniforms.uHueShift.value = hueShift;
       program.uniforms.uNoise.value = noiseIntensity;
       program.uniforms.uScan.value = scanlineIntensity;
       program.uniforms.uScanFreq.value = scanlineFrequency;
       program.uniforms.uWarp.value = warpAmount;
       renderer.render({ scene: mesh });
+      frame = requestAnimationFrame(loop);
     };
 
-    // Pause rendering when the tab is hidden; resume when it becomes visible.
-    const onVisibility = () => {
-      if (document.hidden) {
-        active = false;
-        cancelAnimationFrame(frame);
-      } else {
-        active = true;
-        lastRender = 0;
-        frame = requestAnimationFrame(loop);
-      }
-    };
-    document.addEventListener('visibilitychange', onVisibility);
-
-    frame = requestAnimationFrame(loop);
+    loop();
 
     return () => {
-      active = false;
       cancelAnimationFrame(frame);
       window.removeEventListener('resize', resize);
-      document.removeEventListener('visibilitychange', onVisibility);
     };
   }, [hueShift, noiseIntensity, scanlineIntensity, speed, scanlineFrequency, warpAmount, resolutionScale]);
 

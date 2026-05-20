@@ -27,6 +27,7 @@
       "title": "Vymix",
       "description": "Developing a mobile app that uses AI to generate mood-based Spotify playlists from user input.",
       "image": "/vymix.png",
+      "imageBg": "#000000",
       "tags": [
         "React Native",
         "Expo",

@@ -22,7 +22,7 @@
   will-change: transform, filter;
   backface-visibility: hidden;
   transform-style: preserve-3d;
-  box-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
   height: 20rem;
   width: 100%;
   margin: 30px 0;
@@ -37,4 +37,64 @@
 .scroll-stack-end {
   width: 100%;
   height: 1px;
+}
+
+/* Experience — full viewport stack, extra headroom so cards aren't clipped on scroll up */
+.experience-stack-wrap {
+  pointer-events: none;
+  overflow: visible;
+}
+
+.experience-scroll-stack.scroll-stack-scroller {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  /* Extend above section so pinned cards can move up without a hard clip */
+  top: -14vh;
+  height: calc(100% + 14vh);
+  padding-top: 14vh;
+  box-sizing: border-box;
+  background: transparent;
+  pointer-events: auto;
+  overscroll-behavior-y: auto;
+  overflow-x: visible;
+  overflow-y: auto;
+}
+
+.experience-scroll-stack .scroll-stack-inner {
+  padding: 20vh 1.5rem 50rem;
+  min-height: 100%;
+}
+
+@media (min-width: 768px) {
+  .experience-scroll-stack .scroll-stack-inner {
+    padding: 20vh 2rem 50rem;
+  }
+}
+
+
+.experience-scroll-stack .scroll-stack-card {
+  width: 100%;
+  max-width: min(42rem, 90vw);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.experience-scroll-stack .scroll-stack-card h2 {
+  margin: 0 0 0.85rem;
+  font-size: clamp(1.85rem, 3.2vw, 2.25rem);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.experience-scroll-stack .scroll-stack-card p {
+  margin: 0;
+  font-size: clamp(1.05rem, 1.8vw, 1.2rem);
+  line-height: 1.55;
+}
+
+.experience-scroll-stack .scroll-stack-card p + p {
+  margin-top: 0.35rem;
 }

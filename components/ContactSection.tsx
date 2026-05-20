@@ -1,41 +1,59 @@
 "use client";
 
+import { useRef } from "react";
 import { motion } from "framer-motion";
+import { useSectionBackgroundFade } from "@/hooks/useSectionBackgroundFade";
 import * as Fa from "react-icons/fa";
+import SectionTransitionOverlays from "./SectionTransitionOverlays";
 
 export default function ContactSection() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const { opacity: bgOpacity } = useSectionBackgroundFade(sectionRef);
+
   return (
     <section
+      ref={sectionRef}
       id="contact"
       className="snap-start overflow-hidden relative flex flex-col justify-center px-6"
-      style={{ height: "100vh", scrollSnapStop: "always", background: "#000000" }}
+      style={{ height: "100vh", scrollSnapStop: "always" }}
     >
-      {/* Architectural cross-hatch */}
-      <div
+      <SectionTransitionOverlays
+        sectionRef={sectionRef}
+        fromSection="projects"
+        section="contact"
+        showTop
+        showBottom={false}
+      />
+
+      <motion.div
         className="absolute inset-0 z-0 pointer-events-none"
-        style={{
-          backgroundImage:
-            "linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px)," +
-            "linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px)",
-          backgroundSize: "80px 80px",
-        }}
-      />
-      {/* Single white horizontal line — architectural accent */}
-      <div
-        className="absolute left-0 right-0 z-0 pointer-events-none"
-        style={{
-          top: "50%",
-          height: 1,
-          background: "rgba(255,255,255,0.06)",
-        }}
-      />
-      {/* Subtle center glow */}
-      <div
-        className="absolute inset-0 z-0 pointer-events-none"
-        style={{
-          background: "radial-gradient(ellipse at 50% 50%, rgba(255,255,255,0.03) 0%, transparent 65%)",
-        }}
-      />
+        style={{ opacity: bgOpacity }}
+      >
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage:
+              "linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px)," +
+              "linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px)",
+            backgroundSize: "80px 80px",
+          }}
+        />
+        <div
+          className="absolute left-0 right-0"
+          style={{
+            top: "50%",
+            height: 1,
+            background: "rgba(255,255,255,0.06)",
+          }}
+        />
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "radial-gradient(ellipse at 50% 50%, rgba(255,255,255,0.03) 0%, transparent 65%)",
+          }}
+        />
+      </motion.div>
 
       {/* Content */}
       <div className="relative z-10 max-w-4xl mx-auto w-full flex flex-col items-center text-center">

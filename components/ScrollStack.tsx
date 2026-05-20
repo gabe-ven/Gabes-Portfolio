@@ -1,16 +1,19 @@
 'use client';
 
-import { useLayoutEffect, useRef, useCallback, ReactNode } from 'react';
+import { useLayoutEffect, useRef, useCallback, ReactNode, CSSProperties } from 'react';
 import Lenis from 'lenis';
 import './ScrollStack.css';
 
 interface ScrollStackItemProps {
   children: ReactNode;
   itemClassName?: string;
+  style?: CSSProperties;
 }
 
-export const ScrollStackItem = ({ children, itemClassName = '' }: ScrollStackItemProps) => (
-  <div className={`scroll-stack-card ${itemClassName}`.trim()}>{children}</div>
+export const ScrollStackItem = ({ children, itemClassName = '', style }: ScrollStackItemProps) => (
+  <div className={`scroll-stack-card ${itemClassName}`.trim()} style={style}>
+    {children}
+  </div>
 );
 
 interface ScrollStackProps {
@@ -27,6 +30,7 @@ interface ScrollStackProps {
   blurAmount?: number;
   useWindowScroll?: boolean;
   onStackComplete?: () => void;
+  onLenisReady?: (lenis: InstanceType<typeof Lenis>) => void;
 }
 
 const ScrollStack = ({
@@ -43,6 +47,7 @@ const ScrollStack = ({
   blurAmount = 0,
   useWindowScroll = false,
   onStackComplete,
+  onLenisReady,
 }: ScrollStackProps) => {
   const scrollerRef = useRef<HTMLDivElement>(null);
   const stackCompletedRef = useRef(false);
@@ -74,7 +79,11 @@ const ScrollStack = ({
       return { scrollTop: window.scrollY, containerHeight: window.innerHeight };
     }
     const scroller = scrollerRef.current!;
-    return { scrollTop: scroller.scrollTop, containerHeight: scroller.clientHeight };
+    const scrollTop =
+      lenisRef.current != null
+        ? lenisRef.current.scroll
+        : scroller.scrollTop;
+    return { scrollTop, containerHeight: scroller.clientHeight };
   }, [useWindowScroll]);
 
   const updateCardTransforms = useCallback(() => {
@@ -167,6 +176,71 @@ const ScrollStack = ({
     isUpdatingRef.current = false;
   }, [itemScale, itemStackDistance, stackPosition, scaleEndPosition, baseScale, rotationAmount, blurAmount, useWindowScroll, onStackComplete, calculateProgress, parsePercentage, getScrollData]);
 
+  const handleScroll = useCallback(() => {
+    updateCardTransforms();
+  }, [updateCardTransforms]);
+
+  const setupLenis = useCallback(() => {
+    if (useWindowScroll) {
+      const lenis = new Lenis({
+        duration: 1.2,
+        easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        smoothWheel: true,
+        touchMultiplier: 2,
+        infinite: false,
+        wheelMultiplier: 1,
+        lerp: 0.1,
+        syncTouch: true,
+        syncTouchLerp: 0.075,
+      });
+
+      lenis.on('scroll', handleScroll);
+
+      const raf = (time: number) => {
+        lenis.raf(time);
+        animationFrameRef.current = requestAnimationFrame(raf);
+      };
+      animationFrameRef.current = requestAnimationFrame(raf);
+
+      lenisRef.current = lenis;
+      return lenis;
+    }
+
+    const scroller = scrollerRef.current;
+    if (!scroller) return;
+
+    const inner = scroller.querySelector('.scroll-stack-inner') as HTMLElement;
+    const lenis = new Lenis({
+      wrapper: scroller,
+      content: inner,
+      duration: 1.2,
+      easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      smoothWheel: true,
+      touchMultiplier: 2,
+      infinite: false,
+      gestureOrientation: 'vertical',
+      normalizeWheel: true,
+      wheelMultiplier: 1,
+      touchInertiaMultiplier: 35,
+      lerp: 0.1,
+      syncTouch: true,
+      syncTouchLerp: 0.075,
+      touchInertia: 0.6,
+    } as ConstructorParameters<typeof Lenis>[0]);
+
+    lenis.on('scroll', handleScroll);
+
+    const raf = (time: number) => {
+      lenis.raf(time);
+      animationFrameRef.current = requestAnimationFrame(raf);
+    };
+    animationFrameRef.current = requestAnimationFrame(raf);
+
+    lenisRef.current = lenis;
+    onLenisReady?.(lenis);
+    return lenis;
+  }, [handleScroll, useWindowScroll, onLenisReady]);
+
   useLayoutEffect(() => {
     const scroller = scrollerRef.current;
     if (!scroller) return;
@@ -182,10 +256,15 @@ const ScrollStack = ({
 
     // Apply initial styles (no transform yet so getBoundingClientRect is clean)
     cards.forEach((card, i) => {
-      if (i < cards.length - 1) (card as HTMLElement).style.marginBottom = `${itemDistance}px`;
-      (card as HTMLElement).style.willChange = 'transform, filter';
-      (card as HTMLElement).style.transformOrigin = 'top center';
-      (card as HTMLElement).style.backfaceVisibility = 'hidden';
+      const el = card as HTMLElement;
+      if (i < cards.length - 1) el.style.marginBottom = `${itemDistance}px`;
+      el.style.willChange = 'transform, filter';
+      el.style.transformOrigin = 'top center';
+      el.style.backfaceVisibility = 'hidden';
+      el.style.transform = 'translateZ(0)';
+      el.style.webkitTransform = 'translateZ(0)';
+      el.style.perspective = '1000px';
+      el.style.webkitPerspective = '1000px';
     });
 
     // Cache layout positions BEFORE any transforms are applied
@@ -200,59 +279,46 @@ const ScrollStack = ({
       }
     }
 
+    setupLenis();
     updateCardTransforms();
 
-    if (useWindowScroll) {
-      // Native scroll events — Lenis on window conflicts with CSS scroll-snap
-      const onScroll = () => {
-        if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
-        animationFrameRef.current = requestAnimationFrame(updateCardTransforms);
-      };
-      window.addEventListener('scroll', onScroll, { passive: true });
-
-      return () => {
-        window.removeEventListener('scroll', onScroll);
-        if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
-        stackCompletedRef.current = false;
-        cardsRef.current = [];
-        cardInitOffsetsRef.current = [];
-        transformsCache.clear();
-        isUpdatingRef.current = false;
-      };
-    } else {
-      const inner = scroller.querySelector('.scroll-stack-inner') as HTMLElement;
-      const lenis = new Lenis({
-        wrapper: scroller,
-        content: inner,
-        duration: 1.2,
-        easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-        smoothWheel: true,
-      } as ConstructorParameters<typeof Lenis>[0]);
-
-      lenis.on('scroll', () => updateCardTransforms());
-      const raf = (time: number) => {
-        lenis.raf(time);
-        animationFrameRef.current = requestAnimationFrame(raf);
-      };
-      animationFrameRef.current = requestAnimationFrame(raf);
-      lenisRef.current = lenis;
-
-      return () => {
-        if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
-        if (lenisRef.current) { lenisRef.current.destroy(); lenisRef.current = null; }
-        stackCompletedRef.current = false;
-        cardsRef.current = [];
-        transformsCache.clear();
-        isUpdatingRef.current = false;
-      };
-    }
-  }, [itemDistance, itemScale, itemStackDistance, stackPosition, scaleEndPosition, baseScale, scaleDuration, rotationAmount, blurAmount, useWindowScroll, onStackComplete, updateCardTransforms]);
+    return () => {
+      if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
+      if (lenisRef.current) {
+        lenisRef.current.destroy();
+        lenisRef.current = null;
+      }
+      stackCompletedRef.current = false;
+      cardsRef.current = [];
+      cardInitOffsetsRef.current = [];
+      transformsCache.clear();
+      isUpdatingRef.current = false;
+    };
+  }, [
+    itemDistance,
+    itemScale,
+    itemStackDistance,
+    stackPosition,
+    scaleEndPosition,
+    baseScale,
+    scaleDuration,
+    rotationAmount,
+    blurAmount,
+    useWindowScroll,
+    onStackComplete,
+    setupLenis,
+    updateCardTransforms,
+  ]);
 
   return (
     <div
       className={`scroll-stack-scroller ${className}`.trim()}
       ref={scrollerRef}
-      style={useWindowScroll ? { overflow: 'visible', height: 'auto' } : undefined}
+      style={
+        useWindowScroll
+          ? { overflow: "visible", height: "auto", pointerEvents: "none" }
+          : undefined
+      }
     >
       <div className="scroll-stack-inner">
         {children}

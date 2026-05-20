@@ -21,6 +21,7 @@ interface TiltedCardProps {
   overlayContent?: React.ReactNode;
   displayOverlayContent?: boolean;
   onHoverChange?: (hovered: boolean) => void;
+  imageFit?: "cover" | "contain";
 }
 
 export default function TiltedCard({
@@ -38,6 +39,7 @@ export default function TiltedCard({
   overlayContent = null,
   displayOverlayContent = false,
   onHoverChange,
+  imageFit = "cover",
 }: TiltedCardProps) {
   const ref = useRef<HTMLElement>(null);
   const x = useMotionValue(0);
@@ -100,7 +102,7 @@ export default function TiltedCard({
         <motion.img
           src={imageSrc}
           alt={altText}
-          className="tilted-card-img"
+          className={`tilted-card-img${imageFit === "contain" ? " tilted-card-img--contain" : ""}`}
           style={{ width: imageWidth, height: imageHeight }}
         />
         {displayOverlayContent && overlayContent && (

@@ -4,20 +4,11 @@ import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 
 const TABS = [
-  { label: "index.js",        id: "hero",       ext: "js"   },
-  { label: "about.md",        id: "about",      ext: "md"   },
-  { label: "experience.json", id: "experience", ext: "json" },
-  { label: "projects.ts",     id: "projects",   ext: "ts"   },
-  { label: "contact.tsx",     id: "contact",    ext: "tsx"  },
+  { label: "home",       id: "hero"       },
+  { label: "about",      id: "about"      },
+  { label: "experience", id: "experience" },
+  { label: "projects",   id: "projects"   },
 ] as const;
-
-const EXT_COLOR: Record<string, string> = {
-  js:   "#f7df1e",
-  md:   "#9ca3af",
-  json: "#a78bfa",
-  ts:   "#60a5fa",
-  tsx:  "#34d399",
-};
 
 export default function Header() {
   const [activeId, setActiveId] = useState<string>("hero");
@@ -62,14 +53,13 @@ export default function Header() {
           scrollbarWidth: "none",
         }}
       >
-        {TABS.map(({ label, id, ext }) => {
+        {TABS.map(({ label, id }) => {
           const isActive = activeId === id;
-          const dotColor = EXT_COLOR[ext];
           return (
             <button
               key={id}
               onClick={() => scrollTo(id)}
-              className="cursor-target relative flex items-center gap-1.5 px-3.5 py-2.5 shrink-0 font-mono text-[0.65rem] tracking-wide transition-colors duration-150"
+              className="cursor-target relative flex items-center px-4 py-2.5 shrink-0 font-mono text-[0.65rem] tracking-wide transition-colors duration-150"
               style={{
                 borderRight: "1px solid rgba(255,255,255,0.06)",
                 background: isActive ? "rgba(255,255,255,0.055)" : "transparent",
@@ -77,17 +67,12 @@ export default function Header() {
               }}
               aria-current={isActive ? "page" : undefined}
             >
-              <span
-                className="w-1.5 h-1.5 rounded-full shrink-0 transition-colors duration-150"
-                style={{ background: isActive ? dotColor : "rgba(255,255,255,0.18)" }}
-              />
               {label}
 
               {isActive && (
                 <motion.span
                   layoutId="header-tab-line"
-                  className="absolute bottom-0 inset-x-0 h-px"
-                  style={{ background: dotColor }}
+                  className="absolute bottom-0 inset-x-0 h-px bg-white/50"
                   transition={{ type: "spring", bounce: 0.18, duration: 0.38 }}
                 />
               )}

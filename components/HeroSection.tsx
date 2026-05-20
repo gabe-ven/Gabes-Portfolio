@@ -5,7 +5,12 @@ import { motion } from "framer-motion";
 import Dock from "./Dock";
 import type { DockItemData } from "./Dock";
 import Shuffle from "./Shuffle";
-import DarkVeil from "./DarkVeil";
+import { useHeroAboutBlend } from "./HeroAboutBlend";
+import LogoLoop from "./LogoLoop";
+import { buildSkillLogos } from "@/lib/skillLogos";
+import { ContainerScroll } from "./ui/container-scroll-animation";
+
+const SKILL_LOGOS = buildSkillLogos();
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -87,6 +92,7 @@ function BlockCursor() {
 // ─── Main Component ───────────────────────────────────────────────────────────
 
 export default function HeroSection() {
+  useHeroAboutBlend(); // keep context subscription active for sibling components
   const [tagsVisible, setTagsVisible]     = useState(false);
   const [promptVisible, setPromptVisible] = useState(false);
 
@@ -109,22 +115,16 @@ export default function HeroSection() {
       className="snap-start overflow-hidden relative flex flex-col items-center justify-center px-4 sm:px-6 pt-16 pb-4"
       style={{ height: "100vh", scrollSnapStop: "always" }}
     >
-      {/* DarkVeil background */}
-      <div
-        className="absolute inset-0 z-0"
-        style={{ filter: "blur(2px)", transform: "scale(1.02)" }}
-      >
-        <DarkVeil speed={0.4} noiseIntensity={0.06} warpAmount={0.3} resolutionScale={0.45} />
-      </div>
       <motion.div
         className="relative z-10 w-full max-w-3xl"
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.95, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5, delay: 0.1 }}
       >
         {/* ══════════════════════════════════════════════
-            Terminal Window
+            Terminal Window (wrapped in ContainerScroll for 3D entrance)
         ══════════════════════════════════════════════ */}
+        <ContainerScroll mode="inline">
         <div
           className="rounded-xl overflow-hidden"
           style={{
@@ -363,6 +363,7 @@ export default function HeroSection() {
             </div>
           </div>
         </div>
+        </ContainerScroll>
 
         {/* ══════════════════════════════════════════════
             Dock
@@ -381,6 +382,30 @@ export default function HeroSection() {
             magnification={58}
             dockHeight={90}
             distance={160}
+          />
+        </motion.div>
+
+        {/* ══════════════════════════════════════════════
+            Skills marquee
+        ══════════════════════════════════════════════ */}
+        <motion.div
+          className="mt-5 mx-auto w-full max-w-3xl"
+          style={{ height: 64 }}
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 1.1, ease: [0.16, 1, 0.3, 1] }}
+        >
+          <LogoLoop
+            logos={SKILL_LOGOS}
+            speed={80}
+            direction="left"
+            logoHeight={44}
+            gap={56}
+            pauseOnHover={false}
+            constantVelocity
+            scaleOnHover
+            className="hero-skills-loop"
+            ariaLabel="Skills and technologies"
           />
         </motion.div>
 

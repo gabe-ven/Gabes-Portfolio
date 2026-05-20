@@ -13,9 +13,11 @@ void main() {
 
 const fragmentShader = /* glsl */ `
 varying vec2 v_texcoord;
+
 uniform vec2 u_mouse;
 uniform vec2 u_resolution;
 uniform float u_pixelRatio;
+
 uniform float u_shapeSize;
 uniform float u_roundness;
 uniform float u_borderSize;
@@ -28,6 +30,7 @@ uniform float u_circleEdge;
 #ifndef TWO_PI
 #define TWO_PI 6.2831853071795864769252867665590
 #endif
+
 #ifndef VAR
 #define VAR 0
 #endif
@@ -62,6 +65,7 @@ float sdPoly(in vec2 p, in float w, in int sides) {
     float d = cos(floor(0.5 + a / r) * r - a) * length(max(abs(p) * 1.0, 0.0));
     return d * 2.0 - w;
 }
+
 float aastep(float threshold, float value) {
     float afwidth = length(vec2(dFdx(value), dFdy(value))) * 0.70710678118654757;
     return smoothstep(threshold - afwidth, threshold + afwidth, value);
@@ -83,11 +87,22 @@ void main() {
 
     float sdfCircle = fill(sdCircle(st, posMouse), u_circleSize, u_circleEdge);
 
-    float sdf = sdRoundRect(st, vec2(u_shapeSize), u_roundness);
-    sdf = strokeAA(sdf, 0.0, u_borderSize, sdfCircle) * 4.0;
+    float sdf;
+    if (VAR == 0) {
+        sdf = sdRoundRect(st, vec2(u_shapeSize), u_roundness);
+        sdf = strokeAA(sdf, 0.0, u_borderSize, sdfCircle) * 4.0;
+    } else if (VAR == 1) {
+        sdf = sdCircle(st, vec2(0.5));
+        sdf = fill(sdf, 0.6, sdfCircle) * 1.2;
+    } else if (VAR == 2) {
+        sdf = sdCircle(st, vec2(0.5));
+        sdf = strokeAA(sdf, 0.58, 0.02, sdfCircle) * 4.0;
+    } else if (VAR == 3) {
+        sdf = sdPoly(st - vec2(0.5, 0.45), 0.3, 3);
+        sdf = fill(sdf, 0.05, sdfCircle) * 1.4;
+    }
 
-    vec3 color = vec3(1.0);
-    gl_FragColor = vec4(color.rgb, sdf);
+    gl_FragColor = vec4(1.0, 1.0, 1.0, sdf);
 }
 `;
 
@@ -102,15 +117,16 @@ interface ShapeBlurProps {
   circleEdge?: number;
 }
 
-export default function ShapeBlur({
+const ShapeBlur = ({
   className = "",
+  variation = 0,
   pixelRatioProp = 2,
   shapeSize = 1.2,
   roundness = 0.4,
   borderSize = 0.05,
   circleSize = 0.3,
   circleEdge = 0.5,
-}: ShapeBlurProps) {
+}: ShapeBlurProps) => {
   const mountRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -147,6 +163,7 @@ export default function ShapeBlur({
         u_circleSize: { value: circleSize },
         u_circleEdge: { value: circleEdge },
       },
+      defines: { VAR: variation },
       transparent: true,
     });
 
@@ -159,19 +176,23 @@ export default function ShapeBlur({
     };
 
     document.addEventListener("mousemove", onPointerMove);
+    document.addEventListener("pointermove", onPointerMove as EventListener);
 
     const resize = () => {
       if (!active) return;
       const w = mount.clientWidth;
       const h = mount.clientHeight;
       const dpr = Math.min(window.devicePixelRatio, 2);
+
       renderer.setSize(w, h);
       renderer.setPixelRatio(dpr);
+
       camera.left = -w / 2;
       camera.right = w / 2;
       camera.top = h / 2;
       camera.bottom = -h / 2;
       camera.updateProjectionMatrix();
+
       quad.scale.set(w, h, 1);
       vResolution.set(w, h).multiplyScalar(dpr);
       material.uniforms.u_pixelRatio.value = dpr;
@@ -179,6 +200,7 @@ export default function ShapeBlur({
 
     resize();
     window.addEventListener("resize", resize);
+
     const ro = new ResizeObserver(() => { if (active) resize(); });
     ro.observe(mount);
 
@@ -187,9 +209,11 @@ export default function ShapeBlur({
       time = performance.now() * 0.001;
       const dt = time - lastTime;
       lastTime = time;
+
       (["x", "y"] as const).forEach((k) => {
         vMouseDamp[k] = THREE.MathUtils.damp(vMouseDamp[k], vMouse[k], 8, dt);
       });
+
       renderer.render(scene, camera);
       animationFrameId = requestAnimationFrame(update);
     };
@@ -201,17 +225,20 @@ export default function ShapeBlur({
       window.removeEventListener("resize", resize);
       ro.disconnect();
       document.removeEventListener("mousemove", onPointerMove);
+      document.removeEventListener("pointermove", onPointerMove as EventListener);
       if (mount.contains(renderer.domElement)) mount.removeChild(renderer.domElement);
       renderer.dispose();
       renderer.forceContextLoss();
     };
-  }, [pixelRatioProp, shapeSize, roundness, borderSize, circleSize, circleEdge]);
+  }, [variation, pixelRatioProp, shapeSize, roundness, borderSize, circleSize, circleEdge]);
 
   return (
     <div
-      className={className}
       ref={mountRef}
+      className={className}
       style={{ width: "100%", height: "100%" }}
     />
   );
-}
+};
+
+export default ShapeBlur;

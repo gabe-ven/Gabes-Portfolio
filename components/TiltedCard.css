@@ -43,6 +43,16 @@
   transform: translateZ(0);
 }
 
+.tilted-card-img--contain {
+  object-fit: contain;
+  object-position: center center;
+}
+
+.about-photo-card .tilted-card-inner {
+  width: 100% !important;
+  height: 100% !important;
+}
+
 .tilted-card-overlay {
   position: absolute;
   top: 0;

@@ -1,0 +1,31 @@
+.text-block {
+  margin: 7vw;
+  max-width: 800px;
+  font-family: monospace;
+  font-size: clamp(14px, 4vw, 32px);
+  color: #fff;
+}
+
+.word {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.char {
+  will-change: transform;
+  display: inline-block;
+}
+
+/* About terminal: reset demo margins, keep React Bits char behavior */
+.about-scramble-line.text-block {
+  margin: 0;
+  max-width: none;
+  width: 100%;
+}
+
+.about-scramble-line p {
+  margin: 0;
+  white-space: normal;
+  word-break: normal;
+  overflow-wrap: normal;
+}

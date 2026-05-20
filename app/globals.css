@@ -255,11 +255,22 @@
 
   html {
     @apply scroll-smooth;
-    scroll-snap-type: y proximity;
+    scroll-snap-type: y mandatory;
+  }
+
+  /* Full-page sections snap to the viewport (hero, about, experience, …) */
+  section[id] {
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+  }
+
+  html {
+    background: #000000; /* fallback behind fixed PageBackground */
   }
 
   body {
-    @apply bg-black text-white antialiased font-mono;
+    @apply text-white antialiased font-mono;
+    background: transparent;
     position: relative;
 
     /* Respect prefers-reduced-motion */
@@ -604,4 +615,13 @@ body {
   * {
     cursor: none !important;
   }
+}
+
+/* Aceternity CometCard */
+.perspective-distant {
+  perspective: 1200px;
+}
+
+.transform-3d {
+  transform-style: preserve-3d;
 }

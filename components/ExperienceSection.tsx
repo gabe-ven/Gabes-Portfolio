@@ -1,144 +1,232 @@
 "use client";
 
+import { useCallback, useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
+import type Lenis from "lenis";
 import ScrollStack, { ScrollStackItem } from "./ScrollStack";
+import SplitText from "./SplitText";
 
 const experiences = [
   {
+    title: "Software Engineer Intern",
+    company: "BS Code",
+    period: "Jun 2026 – Aug 2026",
+    location: "Tokyo, Japan",
+    bg: "#0055ff",
+  },
+  {
     title: "Software Engineer Associate",
-    company: "AI Student Collective",
+    company: "AI Collective",
     period: "Oct 2025 – Present",
-    index: "01",
-    bg: "#1e0f45",
+    location: "Davis, CA",
+    bg: "#e82020",
   },
   {
     title: "Frontend Developer",
     company: "#include at Davis",
     period: "Oct 2025 – Present",
-    index: "02",
-    bg: "#0f1e45",
+    location: "Davis, CA",
+    bg: "#f5a800",
   },
   {
     title: "Software Engineer Intern",
     company: "NASA Jet Propulsion Laboratory",
-    period: "Jun 2025 – Sep 2025",
-    index: "03",
-    bg: "#1e0f36",
-  },
-  {
-    title: "Software Engineer Intern",
-    company: "NASA Jet Propulsion Laboratory",
-    period: "Feb 2025 – Jun 2025",
-    index: "04",
-    bg: "#0f2036",
+    period: "Feb 2025 – Sep 2026",
+    location: "Pasadena, CA",
+    bg: "#00a85a",
   },
   {
     title: "Math Instructor",
     company: "Mathnasium",
     period: "Aug 2022 – Aug 2024",
-    index: "05",
-    bg: "#20100f",
+    location: "La Cañada, CA",
+    bg: "#ff5c00",
   },
 ];
 
+const SCROLL_EDGE = 8;
+
+/** Space between cards so only the active one is visible until you scroll */
+function useCardGap() {
+  const [gap, setGap] = useState(480);
+
+  useEffect(() => {
+    const update = () => {
+      const vh = window.innerHeight;
+      setGap(Math.round(vh * 0.48));
+    };
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, []);
+
+  return gap;
+}
+
 export default function ExperienceSection() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const lenisRef = useRef<Lenis | null>(null);
+  const sectionActiveRef = useRef(false);
+  const itemDistance = useCardGap();
+  const [titleDone, setTitleDone] = useState(false);
+
+  const handleLenisReady = useCallback((lenis: Lenis) => {
+    lenisRef.current = lenis;
+  }, []);
+
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        sectionActiveRef.current = entry.isIntersecting && entry.intersectionRatio > 0.45;
+      },
+      { threshold: [0, 0.45, 0.75, 1] },
+    );
+    observer.observe(section);
+
+    const onWheel = (e: WheelEvent) => {
+      if (!sectionActiveRef.current) return;
+      if (!section.contains(e.target as Node)) return;
+
+      const lenis = lenisRef.current;
+      const scroller = section.querySelector(
+        ".scroll-stack-scroller",
+      ) as HTMLElement | null;
+      if (!lenis || !scroller) return;
+
+      const maxScroll = Math.max(0, scroller.scrollHeight - scroller.clientHeight);
+      if (maxScroll < 16) return;
+
+      const scrollTop = scroller.scrollTop;
+      const limit = lenis.limit;
+      const goingUp = e.deltaY < 0;
+      const goingDown = e.deltaY > 0;
+
+      const atTop =
+        scrollTop <= SCROLL_EDGE || lenis.scroll <= SCROLL_EDGE;
+      const atBottom =
+        scrollTop >= maxScroll - SCROLL_EDGE ||
+        lenis.scroll >= limit - SCROLL_EDGE ||
+        lenis.progress >= 0.97;
+
+      // Hand off to page snap (About ↑ / Projects ↓)
+      if (goingUp && atTop) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        document.getElementById("about")?.scrollIntoView({ behavior: "smooth", block: "start" });
+        return;
+      }
+      if (goingDown && atBottom) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        document.getElementById("projects")?.scrollIntoView({ behavior: "smooth", block: "start" });
+        return;
+      }
+
+      e.preventDefault();
+      lenis.scrollTo(lenis.scroll + e.deltaY, { immediate: false });
+    };
+
+    window.addEventListener("wheel", onWheel, { passive: false, capture: true });
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("wheel", onWheel, { capture: true });
+    };
+  }, []);
+
   return (
     <section
+      ref={sectionRef}
       id="experience"
-      className="snap-start relative"
-      style={{ background: "#06000e", minHeight: "100vh" }}
+      className="snap-start snap-always relative"
+      style={{
+        height: "100svh",
+        scrollSnapStop: "always",
+        overflow: "visible",
+      }}
     >
-      {/* Purple radial glows */}
       <div
-        className="absolute inset-0 z-0 pointer-events-none"
-        style={{
-          background:
-            "radial-gradient(ellipse at 15% 40%, rgba(168,85,247,0.14) 0%, transparent 55%)," +
-            "radial-gradient(ellipse at 85% 20%, rgba(139,92,246,0.07) 0%, transparent 45%)",
-        }}
-      />
-      <div
-        className="absolute inset-0 z-0 pointer-events-none"
-        style={{
-          backgroundImage: "radial-gradient(circle, rgba(168,85,247,0.06) 1px, transparent 1px)",
-          backgroundSize: "32px 32px",
-        }}
-      />
-
-      {/* Section title */}
-      <div className="relative z-10 flex items-center gap-4 px-8 pt-24">
-        <motion.div
-          style={{ color: "#a855f7" }}
-          className="text-2xl"
-          animate={{ rotate: 360 }}
-          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-        >
-          ✦
-        </motion.div>
-        <h2 className="text-3xl md:text-4xl font-bold uppercase tracking-wider">
-          My Experience
-        </h2>
+        className="absolute left-0 right-0 pointer-events-none"
+        style={{ top: "11vh", zIndex: 5, textAlign: "center" }}
+      >
+        <SplitText
+          text="Experience"
+          tag="p"
+          splitType="chars"
+          delay={60}
+          duration={0.7}
+          ease="power3.out"
+          from={{ opacity: 0, y: 20 }}
+          to={{ opacity: 1, y: 0 }}
+          threshold={0.1}
+          rootMargin="-50px"
+          textAlign="center"
+          onLetterAnimationComplete={() => setTitleDone(true)}
+          className="experience-section-label"
+          style={{
+            fontSize: "clamp(0.85rem, 1.4vw, 1.05rem)",
+            fontWeight: 600,
+            letterSpacing: "0.22em",
+            textTransform: "uppercase",
+            color: "rgba(255,255,255,0.45)",
+            margin: 0,
+            fontFamily: "var(--font-space-grotesk)",
+          }}
+        />
       </div>
 
-      {/* ScrollStack — window scroll, one card visible at first */}
-      <div className="relative z-10">
-        <ScrollStack useWindowScroll={true}>
-          {experiences.map((exp) => (
-            <ScrollStackItem key={exp.index}>
-              <div
+      <div
+        className="absolute inset-0 z-10 experience-stack-wrap"
+        style={{
+          opacity: titleDone ? 1 : 0,
+          transform: titleDone ? "translateY(0)" : "translateY(32px)",
+          transition: "opacity 0.6s cubic-bezier(0.16,1,0.3,1), transform 0.6s cubic-bezier(0.16,1,0.3,1)",
+          pointerEvents: titleDone ? undefined : "none",
+        }}
+      >
+        <ScrollStack
+          className="experience-scroll-stack h-full w-full"
+          itemDistance={itemDistance}
+          stackPosition="30%"
+          onLenisReady={handleLenisReady}
+        >
+          {experiences.map((exp, index) => (
+            <ScrollStackItem
+              key={`${exp.company}-${exp.period}`}
+              style={{ padding: 0, background: "transparent", boxShadow: "none", border: "none" }}
+            >
+              <motion.div
+                initial={{ rotateX: 20, scale: 0.97, opacity: 0 }}
+                animate={
+                  titleDone
+                    ? { rotateX: 0, scale: 1, opacity: 1 }
+                    : { rotateX: 20, scale: 0.97, opacity: 0 }
+                }
+                transition={{
+                  duration: 1.25,
+                  delay: index * 0.1,
+                  ease: [0.16, 1, 0.3, 1],
+                }}
                 style={{
-                  background: exp.bg,
-                  height: "100%",
+                  position: "absolute",
+                  inset: 0,
                   borderRadius: "40px",
+                  background: exp.bg,
                   padding: "3rem",
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "space-between",
+                  boxShadow: `0 0 35px 8px ${exp.bg}66, 0 12px 40px rgba(0,0,0,0.4)`,
+                  color: "#ffffff",
+                  transformOrigin: "50% 0%",
+                  willChange: "transform",
                 }}
               >
-                {/* Top: index */}
-                <span
-                  className="font-mono"
-                  style={{
-                    fontSize: "0.6rem",
-                    color: "rgba(168,85,247,0.5)",
-                    letterSpacing: "0.18em",
-                  }}
-                >
-                  {exp.index} / {experiences.length.toString().padStart(2, "0")}
-                </span>
-
-                {/* Bottom: content */}
-                <div>
-                  <h3
-                    className="font-bold text-white"
-                    style={{ fontSize: "clamp(1.3rem, 2.5vw, 1.9rem)", marginBottom: "0.5rem", lineHeight: 1.2 }}
-                  >
-                    {exp.company}
-                  </h3>
-                  <div className="flex flex-wrap items-center gap-3 mt-2">
-                    <span
-                      className="font-mono text-white/50"
-                      style={{ fontSize: "0.75rem", letterSpacing: "0.04em" }}
-                    >
-                      {exp.title}
-                    </span>
-                    <span
-                      className="font-mono"
-                      style={{
-                        fontSize: "0.65rem",
-                        color: "rgba(168,85,247,0.8)",
-                        background: "rgba(168,85,247,0.12)",
-                        border: "1px solid rgba(168,85,247,0.25)",
-                        borderRadius: "999px",
-                        padding: "0.2em 0.8em",
-                      }}
-                    >
-                      {exp.period}
-                    </span>
-                  </div>
-                </div>
-              </div>
+                <h2>{exp.company}</h2>
+                <p style={{ color: "rgba(255, 255, 255, 0.85)" }}>
+                  {exp.title} · {exp.period}
+                </p>
+                <p style={{ color: "rgba(255, 255, 255, 0.85)" }}>{exp.location}</p>
+              </motion.div>
             </ScrollStackItem>
           ))}
         </ScrollStack>

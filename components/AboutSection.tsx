@@ -1,13 +1,37 @@
 "use client";
 
 import { useState, useEffect, useLayoutEffect, useRef, useCallback } from "react";
-import { motion, useAnimationControls } from "framer-motion";
-import Particles from "./Particles";
+import {
+  motion,
+  useAnimationControls,
+  useScroll,
+  useSpring,
+  useTransform,
+} from "framer-motion";
+import ScrambledText from "./ScrambledText";
+import { useHeroAboutBlend } from "./HeroAboutBlend";
+import Antigravity from "./Antigravity";
+import BounceCards from "./BounceCards";
+import Noise from "./Noise";
 import TiltedCard from "./TiltedCard";
 
 const ABOUT_PHOTO_SRC = encodeURI(
-  "/Screenshot 2026-05-19 at 10.44.18\u202fAM.png",
+  "/Screenshot 2026-05-19 at 11.19.35\u202fAM.png",
 );
+
+const BOUNCE_CARD_PHOTOS = [
+  "/IMG_0217.jpg",
+  "/IMG_0216.jpg",
+  "/headshot.JPG",
+  "/Screenshot 2026-05-19 at 10.44.18\u202fAM.png",
+].map(encodeURI);
+
+const BOUNCE_CARD_TRANSFORMS = [
+  "rotate(16deg) translate(-48px)",
+  "rotate(10deg) translate(-10px)",
+  "rotate(4deg) translate(42px)",
+  "rotate(-4deg) translate(82px)",
+];
 
 // ─── Duck pixel maps ──────────────────────────────────────────────────────────
 const K = "#111111", WW = "#FFFFFF", OO = "#E8921A", GG = "#C8C8C8";
@@ -165,29 +189,36 @@ type Line =
 const README: Line[] = [
   { kind: "h1",   text: "# About Me" },
   { kind: "blank" },
-  { kind: "body", text: "I'm a student at UC Davis studying Computer Science" },
-  { kind: "body", text: "alongside Technology Management. I love building" },
-  { kind: "body", text: "things that are fast, clean, and actually useful." },
+  { kind: "body", text: "I'm a student at UC Davis studying Computer Science alongside Technology Management. I love building things that are fast, clean, and actually useful." },
   { kind: "blank" },
-  { kind: "body", text: "I've interned at NASA JPL, built AI tools, and" },
-  { kind: "body", text: "contributed to student organizations that bring" },
-  { kind: "body", text: "together engineers and entrepreneurs on campus." },
+  { kind: "body", text: "I've interned at NASA JPL, built AI tools, and contributed to student organizations that bring together engineers and entrepreneurs on campus." },
   { kind: "blank" },
-  { kind: "rule" },
-  { kind: "blank" },
-  { kind: "h2",   text: "## What I Care About" },
-  { kind: "blank" },
-  { kind: "body", text: "Good engineering and thoughtful design. I believe" },
-  { kind: "body", text: "the best software is invisible — it just works." },
+  { kind: "body", text: "I care about good engineering and thoughtful design — the best software is invisible and just works." },
   { kind: "blank" },
   { kind: "body", text: "Always learning. Always shipping." },
 ];
 
 // ─── Animation variants ───────────────────────────────────────────────────────
-const STAGGER = { hidden: {}, visible: { transition: { staggerChildren: 0.045, delayChildren: 0.1 } } };
-const LINE_V  = {
-  hidden:  { opacity: 0, x: -6 },
-  visible: { opacity: 1, x: 0, transition: { duration: 0.28, ease: [0.16, 1, 0.3, 1] as const } },
+const STAGGER = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.07, delayChildren: 0.12 } },
+};
+const LINE_V = {
+  hidden: { opacity: 0, x: -32, filter: "blur(8px)" },
+  visible: {
+    opacity: 1,
+    x: 0,
+    filter: "blur(0px)",
+    transition: { duration: 0.62, ease: [0.22, 1, 0.36, 1] as const },
+  },
+};
+const BODY_V = {
+  hidden: { opacity: 0, y: 10 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] as const },
+  },
 };
 const LH = "1.65rem";
 
@@ -200,8 +231,30 @@ const W = {
 
 // ─── Main section ─────────────────────────────────────────────────────────────
 export default function AboutSection() {
+  const { aboutRef } = useHeroAboutBlend();
   const cardRef = useRef<HTMLDivElement>(null);
   const [cardWidth, setCardWidth] = useState(0);
+
+  const { scrollYProgress } = useScroll({
+    target: aboutRef,
+    offset: ["start end", "end start"],
+  });
+
+  const smoothScroll = useSpring(scrollYProgress, {
+    stiffness: 65,
+    damping: 24,
+    mass: 0.85,
+    restDelta: 0.0008,
+  });
+
+  const cardX = useTransform(smoothScroll, [0, 0.24, 0.76, 1], [-96, 0, 0, -56]);
+  const cardY = useTransform(smoothScroll, [0, 0.24, 0.76, 1], [36, 0, 0, -24]);
+  const cardScale = useTransform(smoothScroll, [0, 0.24, 0.76, 1], [0.88, 1, 1, 0.92]);
+  const cardOpacity = useTransform(smoothScroll, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
+  const photoX = useTransform(smoothScroll, [0, 0.24, 0.76, 1], [96, 0, 0, 56]);
+  const photoY = useTransform(smoothScroll, [0, 0.24, 0.76, 1], [36, 0, 0, -24]);
+  const photoScale = useTransform(smoothScroll, [0, 0.24, 0.76, 1], [0.88, 1, 1, 0.92]);
+  const photoOpacity = useTransform(smoothScroll, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
 
   useLayoutEffect(() => {
     const el = cardRef.current;
@@ -218,33 +271,27 @@ export default function AboutSection() {
 
   return (
     <section
+      ref={aboutRef}
       id="about"
       className="snap-start overflow-hidden relative flex items-center py-24 px-4 sm:px-8"
-      style={{ height: "100vh", scrollSnapStop: "always", background: "#04040a" }}
+      style={{
+        height: "100vh",
+        scrollSnapStop: "always",
+      }}
     >
-      <div className="absolute inset-0 z-0">
-        <Particles
-          particleColors={["#ffffff"]}
-          particleCount={200}
-          particleSpread={10}
-          speed={0.1}
-          particleBaseSize={100}
-          moveParticlesOnHover={true}
-          alphaParticles={false}
-          disableRotation={false}
-        />
-      </div>
-
       <div className="relative z-10 max-w-6xl mx-auto w-full">
+
         <div className="flex flex-col md:flex-row gap-12 items-center">
 
           {/* ── Left: README card ─────────────────────────────────────────── */}
           <motion.div
             className="flex-1 min-w-0 w-full"
-            initial={{ opacity: 0, y: 28 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.1 }}
-            transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+            style={{
+              x: cardX,
+              y: cardY,
+              scale: cardScale,
+              opacity: cardOpacity,
+            }}
           >
             <div
               ref={cardRef}
@@ -298,11 +345,23 @@ export default function AboutSection() {
                     variants={STAGGER}
                     initial="hidden"
                     whileInView="visible"
-                    viewport={{ once: true, amount: 0.2 }}
+                    viewport={{ once: false, amount: 0.35, margin: "-8% 0px" }}
                   >
-                    {README.map((line, i) => (
-                      <motion.div key={i} variants={LINE_V}
-                        style={{ height: LH, lineHeight: LH, display: "flex", alignItems: "center" }}>
+                    {README.map((line, i) => {
+                      const isBody = line.kind === "body";
+                      return (
+                      <motion.div
+                        key={i}
+                        variants={isBody ? BODY_V : LINE_V}
+                        style={{
+                          minHeight: LH,
+                          height: line.kind === "blank" ? LH : isBody ? "auto" : LH,
+                          lineHeight: LH,
+                          display: "flex",
+                          alignItems: isBody ? "flex-start" : "center",
+                          paddingBottom: isBody ? "0.35rem" : undefined,
+                        }}
+                      >
                         {line.kind === "h1" && (
                           <span style={{
                             fontFamily: "var(--font-press-start)",
@@ -326,17 +385,27 @@ export default function AboutSection() {
                           <div style={{ width: "100%", height: 1, background: "rgba(255,255,255,0.09)" }} />
                         )}
                         {line.kind === "body" && (
-                          <span style={{
-                            fontFamily: '"JetBrains Mono","Fira Code",monospace',
-                            fontSize: "0.7rem",
-                            color: W.mid,
-                          }}>
+                          <ScrambledText
+                            className="about-scramble-line"
+                            radius={100}
+                            duration={1.2}
+                            speed={0.5}
+                            scrambleChars=".:"
+                            style={{
+                              fontFamily: '"JetBrains Mono","Fira Code",monospace',
+                              fontSize: "0.82rem",
+                              color: W.mid,
+                              lineHeight: "1.55",
+                              width: "100%",
+                            }}
+                          >
                             {line.text}
-                          </span>
+                          </ScrambledText>
                         )}
                         {line.kind === "blank" && null}
                       </motion.div>
-                    ))}
+                    );
+                    })}
                   </motion.div>
                 </div>
               </motion.div>
@@ -364,21 +433,29 @@ export default function AboutSection() {
 
           {/* ── Right: photo panel ────────────────────────────────────────── */}
           <motion.div
-            className="shrink-0 w-full md:w-auto"
-            initial={{ opacity: 0, x: 40 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.9, delay: 0.18, ease: [0.16, 1, 0.3, 1] }}
+            className="shrink-0 w-full md:w-auto relative"
+            style={{
+              x: photoX,
+              y: photoY,
+              scale: photoScale,
+              opacity: photoOpacity,
+            }}
           >
+
             <div
+              className="about-photo-card"
               style={{
-                width: "clamp(190px, 24vw, 270px)",
-                aspectRatio: "3 / 4",
+                position: "relative",
+                zIndex: 1,
+                overflow: "visible",
+                width: "clamp(280px, 42vw, 480px)",
+                aspectRatio: "1254 / 1096",
                 margin: "0 auto",
-                filter: "drop-shadow(0 28px 80px rgba(0,0,0,0.55)) drop-shadow(0 6px 24px rgba(0,0,0,0.4))",
+                borderRadius: "15px",
+                filter:
+                  "drop-shadow(0 28px 80px rgba(0,0,0,0.55)) drop-shadow(0 6px 24px rgba(0,0,0,0.4))",
               }}
             >
-
               <TiltedCard
                 imageSrc={ABOUT_PHOTO_SRC}
                 altText="Gabriel Venezia"
@@ -386,12 +463,44 @@ export default function AboutSection() {
                 containerHeight="100%"
                 imageWidth="100%"
                 imageHeight="100%"
+                imageFit="contain"
                 rotateAmplitude={12}
                 scaleOnHover={1.08}
                 showMobileWarning={false}
                 showTooltip={false}
                 displayOverlayContent={false}
               />
+              <Noise
+                patternSize={250}
+                patternRefreshInterval={2}
+                patternAlpha={18}
+              />
+              <div
+                style={{
+                  position: "absolute",
+                  bottom: "-1.15rem",
+                  right: "-1.35rem",
+                  zIndex: 20,
+                  transform: "rotate(-8deg)",
+                  transformOrigin: "100% 100%",
+                }}
+                onPointerDown={(e) => e.stopPropagation()}
+              >
+                <BounceCards
+                  className="about-photo-bounce"
+                  images={BOUNCE_CARD_PHOTOS}
+                  containerWidth={228}
+                  containerHeight={118}
+                  animationDelay={0.12}
+                  animationStagger={0.09}
+                  easeType="elastic.out(1, 0.55)"
+                  entranceDuration={1}
+                  transformStyles={BOUNCE_CARD_TRANSFORMS}
+                  animateOnView
+                  enableHover
+                  hoverPushOffset={48}
+                />
+              </div>
             </div>
           </motion.div>
 

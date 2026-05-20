@@ -1,148 +1,138 @@
 "use client";
 
-import React from "react";
-import { motion } from "framer-motion";
+import { useRef } from "react";
+import * as Fa from "react-icons/fa";
 import projectsData from "@/app/data/projects.json";
+import DecryptedText from "./DecryptedText";
+import { CometCard } from "@/components/ui/comet-card";
+import { ScrollAnimatedCard } from "@/components/ui/container-scroll-animation";
 
 const { projects } = projectsData;
 
-interface Project {
-  id: number;
-  title: string;
-  description: string;
-  image: string;
-  tags: string[];
-  github: string;
-  demo?: string;
+type Project = (typeof projects)[number] & { imageBg?: string };
+
+function ProjectCardActions({ project }: { project: Project }) {
+  return (
+    <div className="grid w-full grid-cols-2 gap-2">
+      <a
+        href={project.github}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="cursor-target cursor-target-tight box-border inline-flex h-8 w-full items-center justify-center gap-1.5 rounded-lg border border-white/20 bg-white/5 px-2 text-[10px] font-semibold tracking-wide text-white transition-colors hover:border-white/45 hover:bg-white/10 sm:h-9 sm:text-[11px]"
+      >
+        <Fa.FaGithub className="h-3.5 w-3.5 shrink-0" aria-hidden />
+        <span className="truncate">GitHub</span>
+      </a>
+      {project.demo ? (
+        <a
+          href={project.demo}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="cursor-target cursor-target-tight box-border inline-flex h-8 w-full items-center justify-center gap-1.5 rounded-lg border border-white bg-white px-2 text-[10px] font-semibold tracking-wide text-black transition-colors hover:bg-white/90 sm:h-9 sm:text-[11px]"
+        >
+          <Fa.FaExternalLinkAlt className="h-3 w-3 shrink-0" aria-hidden />
+          <span className="truncate">Live Demo</span>
+        </a>
+      ) : (
+        <span className="h-8 sm:h-9" aria-hidden />
+      )}
+    </div>
+  );
 }
 
 function ProjectCard({ project, index }: { project: Project; index: number }) {
+  const imageBg = project.imageBg;
+
   return (
-    <motion.div
-      className="shrink-0 rounded-xl overflow-hidden border border-white/[0.08] flex flex-col"
-      style={{ width: 300, background: "rgba(12,8,2,0.9)", backdropFilter: "blur(16px)" }}
-      initial={{ opacity: 0, y: 24 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.3 }}
-      transition={{ duration: 0.5, delay: index * 0.08, ease: [0.16, 1, 0.3, 1] }}
-      whileHover={{ borderColor: "rgba(251,146,60,0.35)", transition: { duration: 0.15 } }}
-    >
-      {/* Image */}
-      <div className="relative overflow-hidden" style={{ height: 160 }}>
-        <img
-          src={project.image}
-          alt={project.title}
-          className="w-full h-full object-cover"
-          style={{ filter: "brightness(0.85)" }}
-        />
+    <CometCard className="h-full w-full" footer={<ProjectCardActions project={project} />}>
+      <div className="flex min-h-0 flex-1 flex-col p-2 sm:p-2.5 sm:pb-0">
+        <div className="relative aspect-square w-full shrink-0 overflow-hidden rounded-xl bg-black">
+          <img
+            loading="lazy"
+            className={`absolute inset-0 h-full w-full ${
+              imageBg ? "object-contain p-2" : "object-cover"
+            }`}
+            style={{ backgroundColor: imageBg ?? "#000000" }}
+            alt={project.title}
+            src={project.image}
+          />
+        </div>
+
         <div
-          className="absolute inset-0"
-          style={{ background: "linear-gradient(to bottom, transparent 40%, rgba(12,8,2,0.9) 100%)" }}
-        />
-      </div>
-
-      {/* Body */}
-      <div className="flex flex-col flex-1 p-4 gap-3">
-        <h3 className="text-base font-bold text-white tracking-tight">{project.title}</h3>
-        <p className="text-xs text-white/50 leading-relaxed line-clamp-2">{project.description}</p>
-
-        {/* Tags */}
-        <div className="flex flex-wrap gap-1 mt-auto">
-          {project.tags.slice(0, 3).map((tag) => (
-            <span
-              key={tag}
-              className="text-[0.5rem] tracking-wider uppercase px-1.5 py-0.5 rounded-full"
-              style={{
-                background: "rgba(251,146,60,0.08)",
-                border: "1px solid rgba(251,146,60,0.18)",
-                color: "rgba(251,146,60,0.6)",
-              }}
-            >
-              {tag}
+          className="flex min-h-0 flex-1 flex-col gap-2 pt-2.5 pb-2 text-white"
+          style={{ fontFamily: "var(--font-space-grotesk)" }}
+        >
+          <div className="flex items-start justify-between gap-2">
+            <h3 className="text-sm font-bold leading-tight tracking-tight line-clamp-2 sm:text-[15px]">
+              {project.title}
+            </h3>
+            <span className="shrink-0 pt-0.5 text-[10px] font-medium tabular-nums text-white/35">
+              {String(index + 1).padStart(2, "0")}
             </span>
-          ))}
-          {project.tags.length > 3 && (
-            <span className="text-[0.5rem] text-white/20 px-1">+{project.tags.length - 3}</span>
-          )}
-        </div>
+          </div>
 
-        {/* Links */}
-        <div className="flex items-center gap-2 pt-1">
-          {project.demo && (
-            <a
-              href={project.demo}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="cursor-target text-[0.65rem] text-amber-400/70 hover:text-amber-400 transition-colors"
-            >
-              Live demo →
-            </a>
-          )}
-          {project.github && (
-            <a
-              href={project.github}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="cursor-target ml-auto flex items-center gap-1 text-[0.65rem] font-semibold text-white/60 hover:text-white transition-colors"
-            >
-              <svg width="11" height="11" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
-              </svg>
-              Code
-            </a>
-          )}
+          <p className="text-[11px] leading-relaxed text-white/55 line-clamp-2 sm:text-xs">
+            {project.description}
+          </p>
+
+          <div className="flex min-h-0 flex-col gap-1">
+            <span className="text-[9px] font-semibold uppercase tracking-[0.14em] text-white/40">
+              Stack
+            </span>
+            <div className="flex max-h-11 flex-wrap content-start gap-1 overflow-y-auto overscroll-contain sm:max-h-12 [scrollbar-width:thin]">
+              {project.tags.map((tag) => (
+                <span
+                  key={tag}
+                  className="rounded border border-white/15 bg-white/8 px-1.5 py-0.5 text-[9px] leading-tight text-white/75"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
-    </motion.div>
+    </CometCard>
   );
 }
 
 export default function ProjectsSection() {
+  const sectionRef = useRef<HTMLElement>(null);
+
   return (
     <section
+      ref={sectionRef}
       id="projects"
-      className="snap-start overflow-hidden relative flex flex-col justify-center py-16 px-6"
-      style={{ height: "100vh", scrollSnapStop: "always", background: "#080400" }}
+      className="snap-start relative overflow-hidden"
     >
-      {/* Warm amber blobs */}
-      <div
-        className="absolute inset-0 z-0 pointer-events-none"
-        style={{
-          background:
-            "radial-gradient(ellipse at 72% 50%, rgba(251,146,60,0.13) 0%, transparent 55%)," +
-            "radial-gradient(ellipse at 18% 75%, rgba(245,158,11,0.07) 0%, transparent 48%)",
-        }}
-      />
 
-      <div className="relative z-10 max-w-7xl mx-auto w-full">
-        {/* Header */}
-        <div className="mb-8">
-          <p className="font-mono text-[0.58rem] tracking-[0.32em] uppercase text-white/30 mb-2">
-            Selected Work
-          </p>
-          <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-white/90">
-            Projects
-          </h2>
-        </div>
+      <div className="relative z-10 flex flex-col items-center px-4 pb-24 pt-14 md:px-8 md:pt-20 md:pb-32">
+        <h2
+          className="text-4xl md:text-5xl font-semibold tracking-[0.18em] uppercase mb-10 md:mb-14 shrink-0 text-center"
+          style={{ fontFamily: "var(--font-space-grotesk)" }}
+        >
+          <DecryptedText
+            text="PROJECTS"
+            animateOn="view"
+            sequential={true}
+            revealDirection="center"
+            speed={80}
+            characters="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+            className="text-white/90"
+            encryptedClassName="text-white/25"
+          />
+        </h2>
 
-        {/* Horizontal scroll row */}
         <div
-          className="flex gap-4 overflow-x-auto pb-4"
-          style={{
-            scrollSnapType: "x mandatory",
-            scrollbarWidth: "none",
-            msOverflowStyle: "none",
-          }}
+          className="grid w-full max-w-6xl auto-rows-fr grid-cols-3 items-stretch gap-4 sm:gap-6 lg:gap-8"
+          style={{ perspective: "1200px" }}
         >
           {projects.map((project, index) => (
-            <ProjectCard key={project.id} project={project} index={index} />
+            <ScrollAnimatedCard key={project.id} delay={(index % 3) * 0.07 + Math.floor(index / 3) * 0.05}>
+              <ProjectCard project={project as Project} index={index} />
+            </ScrollAnimatedCard>
           ))}
         </div>
-
-        {/* Scroll hint */}
-        <p className="font-mono text-[0.52rem] tracking-widest uppercase text-white/20 mt-3">
-          scroll to explore →
-        </p>
       </div>
     </section>
   );
