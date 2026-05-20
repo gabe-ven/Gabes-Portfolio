@@ -115,7 +115,7 @@ export default function GlobeSection() {
               className="text-sm text-white/45 max-w-xs text-center md:text-left leading-relaxed"
               style={{ fontFamily: "var(--font-space-grotesk)" }}
             >
-              Every pin is a place I've been. Tap one to see it through my lens.
+              Every pin is a place I&apos;ve been. Tap one to see it through my lens.
             </p>
           </motion.div>
 
