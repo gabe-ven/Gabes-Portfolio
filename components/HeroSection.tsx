@@ -112,8 +112,8 @@ export default function HeroSection() {
   return (
     <section
       id="hero"
-      className="snap-start overflow-hidden relative flex flex-col items-center justify-center px-4 sm:px-6 pt-16 pb-4"
-      style={{ height: "100vh", scrollSnapStop: "always" }}
+      className="overflow-hidden relative flex flex-col items-center justify-center px-4 sm:px-6 pt-16 pb-4"
+      style={{ height: "100svh" }}
     >
       <motion.div
         className="relative z-10 w-full max-w-3xl"

@@ -256,16 +256,26 @@
   html {
     @apply scroll-smooth;
     scroll-snap-type: y mandatory;
-  }
-
-  /* Full-page sections snap to the viewport (hero, about, experience, …) */
-  section[id] {
-    scroll-snap-align: start;
-    scroll-snap-stop: always;
+    scroll-padding-top: 3.5rem;
   }
 
   html {
     background: #000000; /* fallback behind fixed PageBackground */
+  }
+
+  #hero,
+  #about,
+  #experience,
+  #projects,
+  #contact {
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-snap-type: none;
+    }
   }
 
   body {

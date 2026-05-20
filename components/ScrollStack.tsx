@@ -30,6 +30,8 @@ interface ScrollStackProps {
   blurAmount?: number;
   useWindowScroll?: boolean;
   onStackComplete?: () => void;
+  /** Fired when the user has scrolled through the full pin range (ready to leave the section). */
+  onStackEndReached?: (reached: boolean) => void;
   onLenisReady?: (lenis: InstanceType<typeof Lenis>) => void;
 }
 
@@ -47,10 +49,12 @@ const ScrollStack = ({
   blurAmount = 0,
   useWindowScroll = false,
   onStackComplete,
+  onStackEndReached,
   onLenisReady,
 }: ScrollStackProps) => {
   const scrollerRef = useRef<HTMLDivElement>(null);
   const stackCompletedRef = useRef(false);
+  const stackEndReachedRef = useRef(false);
   const animationFrameRef = useRef<number | null>(null);
   const lenisRef = useRef<InstanceType<typeof Lenis> | null>(null);
   const cardsRef = useRef<Element[]>([]);
@@ -103,6 +107,8 @@ const ScrollStack = ({
           return el ? (el as HTMLElement).offsetTop : 0;
         })();
 
+    const pinEnd = endElementTop - containerHeight / 2;
+
     cardsRef.current.forEach((card, i) => {
       if (!card) return;
 
@@ -113,7 +119,6 @@ const ScrollStack = ({
       const triggerStart = cardTop - stackPositionPx - itemStackDistance * i;
       const triggerEnd = cardTop - scaleEndPositionPx;
       const pinStart = triggerStart;
-      const pinEnd = endElementTop - containerHeight / 2;
 
       const scaleProgress = calculateProgress(scrollTop, triggerStart, triggerEnd);
       const targetScale = baseScale + i * itemScale;
@@ -173,8 +178,18 @@ const ScrollStack = ({
       }
     });
 
+    if (pinEnd > 0) {
+      if (!stackEndReachedRef.current && scrollTop >= pinEnd - 16) {
+        stackEndReachedRef.current = true;
+        onStackEndReached?.(true);
+      } else if (stackEndReachedRef.current && scrollTop < pinEnd - 80) {
+        stackEndReachedRef.current = false;
+        onStackEndReached?.(false);
+      }
+    }
+
     isUpdatingRef.current = false;
-  }, [itemScale, itemStackDistance, stackPosition, scaleEndPosition, baseScale, rotationAmount, blurAmount, useWindowScroll, onStackComplete, calculateProgress, parsePercentage, getScrollData]);
+  }, [itemScale, itemStackDistance, stackPosition, scaleEndPosition, baseScale, rotationAmount, blurAmount, useWindowScroll, onStackComplete, onStackEndReached, calculateProgress, parsePercentage, getScrollData]);
 
   const handleScroll = useCallback(() => {
     updateCardTransforms();
@@ -210,19 +225,21 @@ const ScrollStack = ({
     if (!scroller) return;
 
     const inner = scroller.querySelector('.scroll-stack-inner') as HTMLElement;
+    const isExperience = className.includes('experience-scroll-stack');
     const lenis = new Lenis({
       wrapper: scroller,
       content: inner,
-      duration: 1.2,
+      duration: isExperience ? 0.85 : 1.2,
       easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
+      overscroll: true,
       touchMultiplier: 2,
       infinite: false,
       gestureOrientation: 'vertical',
       normalizeWheel: true,
-      wheelMultiplier: 1,
+      wheelMultiplier: isExperience ? 1.25 : 1,
       touchInertiaMultiplier: 35,
-      lerp: 0.1,
+      lerp: isExperience ? 0.16 : 0.1,
       syncTouch: true,
       syncTouchLerp: 0.075,
       touchInertia: 0.6,
@@ -239,7 +256,7 @@ const ScrollStack = ({
     lenisRef.current = lenis;
     onLenisReady?.(lenis);
     return lenis;
-  }, [handleScroll, useWindowScroll, onLenisReady]);
+  }, [handleScroll, useWindowScroll, onLenisReady, className]);
 
   useLayoutEffect(() => {
     const scroller = scrollerRef.current;
@@ -289,6 +306,7 @@ const ScrollStack = ({
         lenisRef.current = null;
       }
       stackCompletedRef.current = false;
+      stackEndReachedRef.current = false;
       cardsRef.current = [];
       cardInitOffsetsRef.current = [];
       transformsCache.clear();
@@ -306,6 +324,7 @@ const ScrollStack = ({
     blurAmount,
     useWindowScroll,
     onStackComplete,
+    onStackEndReached,
     setupLenis,
     updateCardTransforms,
   ]);

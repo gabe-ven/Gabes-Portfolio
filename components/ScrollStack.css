@@ -39,7 +39,7 @@
   height: 1px;
 }
 
-/* Experience — full viewport stack, extra headroom so cards aren't clipped on scroll up */
+/* Experience — full viewport stack */
 .experience-stack-wrap {
   pointer-events: none;
   overflow: visible;
@@ -50,7 +50,6 @@
   left: 0;
   right: 0;
   bottom: 0;
-  /* Extend above section so pinned cards can move up without a hard clip */
   top: -14vh;
   height: calc(100% + 14vh);
   padding-top: 14vh;
@@ -60,6 +59,8 @@
   overscroll-behavior-y: auto;
   overflow-x: visible;
   overflow-y: auto;
+  scroll-behavior: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .experience-scroll-stack .scroll-stack-inner {
@@ -72,7 +73,6 @@
     padding: 20vh 2rem 4rem;
   }
 }
-
 
 .experience-scroll-stack .scroll-stack-card {
   width: 100%;

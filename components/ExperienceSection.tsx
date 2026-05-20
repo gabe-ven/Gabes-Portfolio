@@ -44,7 +44,8 @@ const experiences = [
   },
 ];
 
-const SCROLL_EDGE = 8;
+const SCROLL_EDGE = 32;
+const HANDOFF_COOLDOWN = 900; // ms — ignore repeat wheel events after a handoff
 
 /** Space between cards so only the active one is visible until you scroll */
 function useCardGap() {
@@ -64,95 +65,72 @@ function useCardGap() {
 }
 
 export default function ExperienceSection() {
-  const sectionRef = useRef<HTMLElement>(null);
   const lenisRef = useRef<Lenis | null>(null);
-  const sectionActiveRef = useRef(false);
-  const transitioningRef = useRef(false);
+  const stackEndReachedRef = useRef(false);
+  const handingOffRef = useRef(false);
   const itemDistance = useCardGap();
   const [titleDone, setTitleDone] = useState(false);
+  const [stackReady, setStackReady] = useState(false);
 
   const handleLenisReady = useCallback((lenis: Lenis) => {
     lenisRef.current = lenis;
+    setStackReady(true);
   }, []);
 
   useEffect(() => {
-    const section = sectionRef.current;
-    if (!section) return;
+    if (!stackReady || !titleDone) return;
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        sectionActiveRef.current = entry.isIntersecting && entry.intersectionRatio > 0.45;
-        if (!entry.isIntersecting) transitioningRef.current = false;
-      },
-      { threshold: [0, 0.45, 0.75, 1] },
+    const scroller = document.querySelector(
+      "#experience .experience-scroll-stack",
     );
-    observer.observe(section);
+    if (!(scroller instanceof HTMLElement)) return;
 
-    const onWheel = (e: WheelEvent) => {
-      if (!sectionActiveRef.current) return;
-      // Always consume the event while Experience is active — prevents the page's
-      // mandatory snap from firing when the pointer is over a fixed overlay.
-      e.preventDefault();
-      if (transitioningRef.current) return;
-
+    const onWheel = (event: WheelEvent) => {
       const lenis = lenisRef.current;
-      const scroller = section.querySelector(
-        ".scroll-stack-scroller",
-      ) as HTMLElement | null;
-      if (!lenis || !scroller) return;
+      if (!lenis) return;
 
-      const maxScroll = Math.max(0, scroller.scrollHeight - scroller.clientHeight);
-      if (maxScroll < 16) return;
-
-      const scrollTop = scroller.scrollTop;
+      const goingUp = event.deltaY < 0;
+      const goingDown = event.deltaY > 0;
+      const scrollY = lenis.scroll;
       const limit = lenis.limit;
-      const goingUp = e.deltaY < 0;
-      const goingDown = e.deltaY > 0;
+      if (limit < SCROLL_EDGE) return;
 
-      const atTop =
-        scrollTop <= SCROLL_EDGE || lenis.scroll <= SCROLL_EDGE;
+      const atTop = scrollY <= SCROLL_EDGE;
       const atBottom =
-        scrollTop >= maxScroll - SCROLL_EDGE ||
-        lenis.scroll >= limit - SCROLL_EDGE ||
-        lenis.progress >= 0.97;
+        stackEndReachedRef.current || scrollY >= limit - SCROLL_EDGE;
 
-      // Hand off to page snap (About ↑ / Projects ↓)
-      if (goingUp && atTop) {
-        transitioningRef.current = true;
-        document.getElementById("about")?.scrollIntoView({ behavior: "smooth", block: "start" });
-        setTimeout(() => { transitioningRef.current = false; }, 1200);
-        return;
-      }
-      if (goingDown && atBottom) {
-        transitioningRef.current = true;
-        document.getElementById("projects")?.scrollIntoView({ behavior: "smooth", block: "start" });
-        setTimeout(() => { transitioningRef.current = false; }, 1200);
-        return;
-      }
+      const shouldHandoff = (goingUp && atTop) || (goingDown && atBottom);
+      if (!shouldHandoff) return;
 
-      e.preventDefault();
-      lenis.scrollTo(lenis.scroll + e.deltaY, { immediate: false });
+      event.preventDefault();
+      event.stopPropagation();
+
+      if (handingOffRef.current) return;
+      handingOffRef.current = true;
+      setTimeout(() => { handingOffRef.current = false; }, HANDOFF_COOLDOWN);
+
+      // Scroll directly to the adjacent section so the snap fires immediately
+      const sections = Array.from(document.querySelectorAll("section[id]"));
+      const expSection = document.getElementById("experience");
+      const idx = sections.indexOf(expSection!);
+      const target = goingDown ? sections[idx + 1] : sections[idx - 1];
+      target?.scrollIntoView({ behavior: "smooth" });
     };
 
-    window.addEventListener("wheel", onWheel, { passive: false, capture: true });
-    return () => {
-      observer.disconnect();
-      window.removeEventListener("wheel", onWheel, { capture: true });
-    };
-  }, []);
+    scroller.addEventListener("wheel", onWheel, { passive: false, capture: true });
+    return () => scroller.removeEventListener("wheel", onWheel, { capture: true });
+  }, [stackReady, titleDone]);
 
   return (
     <section
-      ref={sectionRef}
       id="experience"
-      className="snap-start snap-always relative"
+      className="relative"
       style={{
         height: "100svh",
-        scrollSnapStop: "always",
         overflow: "visible",
       }}
     >
-      <div
+      <motion.div
         className="absolute left-0 right-0 pointer-events-none"
         style={{ top: "11vh", zIndex: 5, textAlign: "center" }}
       >
@@ -175,19 +153,20 @@ export default function ExperienceSection() {
             fontWeight: 600,
             letterSpacing: "0.22em",
             textTransform: "uppercase",
-            color: "rgba(255,255,255,0.45)",
+            color: "rgba(255, 255, 255, 0.45)",
             margin: 0,
             fontFamily: "var(--font-space-grotesk)",
           }}
         />
-      </div>
+      </motion.div>
 
       <div
         className="absolute inset-0 z-10 experience-stack-wrap"
         style={{
           opacity: titleDone ? 1 : 0,
           transform: titleDone ? "translateY(0)" : "translateY(32px)",
-          transition: "opacity 0.6s cubic-bezier(0.16,1,0.3,1), transform 0.6s cubic-bezier(0.16,1,0.3,1)",
+          transition:
+            "opacity 0.6s cubic-bezier(0.16,1,0.3,1), transform 0.6s cubic-bezier(0.16,1,0.3,1)",
           pointerEvents: titleDone ? undefined : "none",
         }}
       >
@@ -196,11 +175,19 @@ export default function ExperienceSection() {
           itemDistance={itemDistance}
           stackPosition="30%"
           onLenisReady={handleLenisReady}
+          onStackEndReached={(reached) => {
+            stackEndReachedRef.current = reached;
+          }}
         >
           {experiences.map((exp, index) => (
             <ScrollStackItem
               key={`${exp.company}-${exp.period}`}
-              style={{ padding: 0, background: "transparent", boxShadow: "none", border: "none" }}
+              style={{
+                padding: 0,
+                background: "transparent",
+                boxShadow: "none",
+                border: "none",
+              }}
             >
               <motion.div
                 initial={{ rotateX: 20, scale: 0.97, opacity: 0 }}

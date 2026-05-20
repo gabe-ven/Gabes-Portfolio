@@ -18,7 +18,11 @@ export default function ProjectsSection() {
   }));
 
   return (
-    <section id="projects" className="snap-start relative h-screen flex flex-col">
+    <section
+      id="projects"
+      className="relative flex flex-col overflow-hidden"
+      style={{ height: "100svh" }}
+    >
       <div className="flex-1 flex flex-col items-center justify-center gap-8 px-4 overflow-hidden">
         <h2
           className="text-4xl md:text-5xl font-semibold tracking-[0.18em] uppercase shrink-0 text-center"

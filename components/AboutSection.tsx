@@ -274,11 +274,8 @@ export default function AboutSection() {
     <section
       ref={aboutRef}
       id="about"
-      className="snap-start overflow-hidden relative flex items-center py-24 px-4 sm:px-8"
-      style={{
-        height: "100vh",
-        scrollSnapStop: "always",
-      }}
+      className="overflow-hidden relative flex items-center py-24 px-4 sm:px-8"
+      style={{ height: "100svh" }}
     >
       <div className="relative z-10 max-w-6xl mx-auto w-full">
 

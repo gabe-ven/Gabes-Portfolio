@@ -14,8 +14,8 @@ export default function ContactSection() {
     <section
       ref={sectionRef}
       id="contact"
-      className="snap-start overflow-hidden relative flex flex-col justify-center px-6"
-      style={{ height: "100vh", scrollSnapStop: "always" }}
+      className="overflow-hidden relative flex flex-col justify-center px-6"
+      style={{ height: "100svh" }}
     >
       <SectionTransitionOverlays
         sectionRef={sectionRef}
