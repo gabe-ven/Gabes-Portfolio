@@ -14,6 +14,7 @@ import Antigravity from "./Antigravity";
 import BounceCards from "./BounceCards";
 import Noise from "./Noise";
 import TiltedCard from "./TiltedCard";
+import StarBorder from "./StarBorder";
 
 const ABOUT_PHOTO_SRC = encodeURI(
   "/Screenshot 2026-05-19 at 11.19.35\u202fAM.png",
@@ -442,65 +443,80 @@ export default function AboutSection() {
             }}
           >
 
-            <div
-              className="about-photo-card"
+            <StarBorder
+              as="div"
+              color="rgba(255,255,255,0.85)"
+              speed="5s"
+              thickness={2}
+              innerClassName="inner-content--photo"
               style={{
-                position: "relative",
-                zIndex: 1,
-                overflow: "visible",
+                display: "block",
                 width: "clamp(280px, 42vw, 480px)",
-                aspectRatio: "1254 / 1096",
                 margin: "0 auto",
-                borderRadius: "15px",
-                filter:
-                  "drop-shadow(0 28px 80px rgba(0,0,0,0.55)) drop-shadow(0 6px 24px rgba(0,0,0,0.4))",
+                borderRadius: "17px",
               }}
             >
-              <TiltedCard
-                imageSrc={ABOUT_PHOTO_SRC}
-                altText="Gabriel Venezia"
-                containerWidth="100%"
-                containerHeight="100%"
-                imageWidth="100%"
-                imageHeight="100%"
-                imageFit="contain"
-                rotateAmplitude={12}
-                scaleOnHover={1.08}
-                showMobileWarning={false}
-                showTooltip={false}
-                displayOverlayContent={false}
-              />
-              <Noise
-                patternSize={250}
-                patternRefreshInterval={2}
-                patternAlpha={18}
-              />
               <div
+                className="about-photo-card"
                 style={{
-                  position: "absolute",
-                  bottom: "-1.15rem",
-                  right: "-1.35rem",
-                  zIndex: 20,
-                  transform: "rotate(-8deg)",
-                  transformOrigin: "100% 100%",
+                  position: "relative",
+                  zIndex: 1,
+                  overflow: "visible",
+                  width: "100%",
+                  aspectRatio: "1254 / 1096",
+                  borderRadius: "15px",
+                  filter:
+                    "drop-shadow(0 28px 80px rgba(0,0,0,0.55)) drop-shadow(0 6px 24px rgba(0,0,0,0.4))",
                 }}
-                onPointerDown={(e) => e.stopPropagation()}
               >
-                <BounceCards
-                  className="about-photo-bounce"
-                  images={BOUNCE_CARD_PHOTOS}
-                  containerWidth={228}
-                  containerHeight={118}
-                  animationDelay={0.12}
-                  animationStagger={0.09}
-                  easeType="elastic.out(1, 0.55)"
-                  entranceDuration={1}
-                  transformStyles={BOUNCE_CARD_TRANSFORMS}
-                  animateOnView
-                  enableHover
-                  hoverPushOffset={48}
+                <TiltedCard
+                  imageSrc={ABOUT_PHOTO_SRC}
+                  altText="Gabriel Venezia"
+                  containerWidth="100%"
+                  containerHeight="100%"
+                  imageWidth="100%"
+                  imageHeight="100%"
+                  imageFit="contain"
+                  rotateAmplitude={12}
+                  scaleOnHover={1.08}
+                  showMobileWarning={false}
+                  showTooltip={false}
+                  displayOverlayContent={false}
+                />
+                <Noise
+                  patternSize={250}
+                  patternRefreshInterval={2}
+                  patternAlpha={18}
                 />
               </div>
+            </StarBorder>
+
+            {/* BounceCards sit on the outer motion.div so StarBorder's overflow:hidden doesn't clip them */}
+            <div
+              style={{
+                position: "absolute",
+                bottom: "-1.15rem",
+                right: "-1.35rem",
+                zIndex: 20,
+                transform: "rotate(-8deg)",
+                transformOrigin: "100% 100%",
+              }}
+              onPointerDown={(e) => e.stopPropagation()}
+            >
+              <BounceCards
+                className="about-photo-bounce"
+                images={BOUNCE_CARD_PHOTOS}
+                containerWidth={228}
+                containerHeight={118}
+                animationDelay={0.12}
+                animationStagger={0.09}
+                easeType="elastic.out(1, 0.55)"
+                entranceDuration={1}
+                transformStyles={BOUNCE_CARD_TRANSFORMS}
+                animateOnView
+                enableHover
+                hoverPushOffset={48}
+              />
             </div>
           </motion.div>
 

@@ -67,6 +67,7 @@ export default function ExperienceSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const lenisRef = useRef<Lenis | null>(null);
   const sectionActiveRef = useRef(false);
+  const transitioningRef = useRef(false);
   const itemDistance = useCardGap();
   const [titleDone, setTitleDone] = useState(false);
 
@@ -81,6 +82,7 @@ export default function ExperienceSection() {
     const observer = new IntersectionObserver(
       ([entry]) => {
         sectionActiveRef.current = entry.isIntersecting && entry.intersectionRatio > 0.45;
+        if (!entry.isIntersecting) transitioningRef.current = false;
       },
       { threshold: [0, 0.45, 0.75, 1] },
     );
@@ -88,7 +90,10 @@ export default function ExperienceSection() {
 
     const onWheel = (e: WheelEvent) => {
       if (!sectionActiveRef.current) return;
-      if (!section.contains(e.target as Node)) return;
+      // Always consume the event while Experience is active — prevents the page's
+      // mandatory snap from firing when the pointer is over a fixed overlay.
+      e.preventDefault();
+      if (transitioningRef.current) return;
 
       const lenis = lenisRef.current;
       const scroller = section.querySelector(
@@ -113,15 +118,15 @@ export default function ExperienceSection() {
 
       // Hand off to page snap (About ↑ / Projects ↓)
       if (goingUp && atTop) {
-        e.preventDefault();
-        e.stopImmediatePropagation();
+        transitioningRef.current = true;
         document.getElementById("about")?.scrollIntoView({ behavior: "smooth", block: "start" });
+        setTimeout(() => { transitioningRef.current = false; }, 1200);
         return;
       }
       if (goingDown && atBottom) {
-        e.preventDefault();
-        e.stopImmediatePropagation();
+        transitioningRef.current = true;
         document.getElementById("projects")?.scrollIntoView({ behavior: "smooth", block: "start" });
+        setTimeout(() => { transitioningRef.current = false; }, 1200);
         return;
       }
 

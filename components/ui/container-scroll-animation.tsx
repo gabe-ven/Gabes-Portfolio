@@ -168,7 +168,7 @@ export function ScrollAnimatedCard({
   delay?: number;
 }) {
   return (
-    <div className={cn("w-full shrink-0", className)} style={{ perspective: "1000px" }}>
+    <div className={cn("w-full shrink-0", className)}>
       <motion.div
         className="w-full"
         initial={{ opacity: 0, scale: 0.96 }}

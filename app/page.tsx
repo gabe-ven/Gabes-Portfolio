@@ -46,7 +46,7 @@ export default function Home() {
     <>
       <PageBackground />
       <div className="text-white" style={{ position: "relative", zIndex: 1 }}>
-        <TargetCursor spinDuration={2} hideDefaultCursor={true} parallaxOn={false} hoverDuration={0.1} />
+        <TargetCursor spinDuration={2} hideDefaultCursor parallaxOn hoverDuration={0.2} />
         <Header />
         {/* Particles sit below DarkVeil in DOM → DarkVeil paints on top */}
         <GlobalParticles />

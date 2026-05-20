@@ -63,13 +63,13 @@
 }
 
 .experience-scroll-stack .scroll-stack-inner {
-  padding: 20vh 1.5rem 50rem;
+  padding: 20vh 1.5rem 4rem;
   min-height: 100%;
 }
 
 @media (min-width: 768px) {
   .experience-scroll-stack .scroll-stack-inner {
-    padding: 20vh 2rem 50rem;
+    padding: 20vh 2rem 4rem;
   }
 }
 
