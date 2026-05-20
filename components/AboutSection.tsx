@@ -4,9 +4,6 @@ import { useState, useEffect, useLayoutEffect, useRef, useCallback } from "react
 import {
   motion,
   useAnimationControls,
-  useScroll,
-  useSpring,
-  useTransform,
 } from "framer-motion";
 import ScrambledText from "./ScrambledText";
 import { useHeroAboutBlend } from "./HeroAboutBlend";
@@ -231,31 +228,29 @@ const W = {
 };
 
 // ─── Main section ─────────────────────────────────────────────────────────────
+const CARD_ENTER = {
+  hidden: { opacity: 0, x: -48, scale: 0.94 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    scale: 1,
+    transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] as const },
+  },
+};
+const PHOTO_ENTER = {
+  hidden: { opacity: 0, x: 48, scale: 0.94 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    scale: 1,
+    transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] as const },
+  },
+};
+
 export default function AboutSection() {
   const { aboutRef } = useHeroAboutBlend();
   const cardRef = useRef<HTMLDivElement>(null);
   const [cardWidth, setCardWidth] = useState(0);
-
-  const { scrollYProgress } = useScroll({
-    target: aboutRef,
-    offset: ["start end", "end start"],
-  });
-
-  const smoothScroll = useSpring(scrollYProgress, {
-    stiffness: 65,
-    damping: 24,
-    mass: 0.85,
-    restDelta: 0.0008,
-  });
-
-  const cardX = useTransform(smoothScroll, [0, 0.24, 0.76, 1], [-96, 0, 0, -56]);
-  const cardY = useTransform(smoothScroll, [0, 0.24, 0.76, 1], [36, 0, 0, -24]);
-  const cardScale = useTransform(smoothScroll, [0, 0.24, 0.76, 1], [0.88, 1, 1, 0.92]);
-  const cardOpacity = useTransform(smoothScroll, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
-  const photoX = useTransform(smoothScroll, [0, 0.24, 0.76, 1], [96, 0, 0, 56]);
-  const photoY = useTransform(smoothScroll, [0, 0.24, 0.76, 1], [36, 0, 0, -24]);
-  const photoScale = useTransform(smoothScroll, [0, 0.24, 0.76, 1], [0.88, 1, 1, 0.92]);
-  const photoOpacity = useTransform(smoothScroll, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
 
   useLayoutEffect(() => {
     const el = cardRef.current;
@@ -284,12 +279,10 @@ export default function AboutSection() {
           {/* ── Left: README card ─────────────────────────────────────────── */}
           <motion.div
             className="flex-1 min-w-0 w-full"
-            style={{
-              x: cardX,
-              y: cardY,
-              scale: cardScale,
-              opacity: cardOpacity,
-            }}
+            variants={CARD_ENTER}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: false, amount: 0.3 }}
           >
             <div
               ref={cardRef}
@@ -432,12 +425,10 @@ export default function AboutSection() {
           {/* ── Right: photo panel ────────────────────────────────────────── */}
           <motion.div
             className="shrink-0 w-full md:w-auto relative"
-            style={{
-              x: photoX,
-              y: photoY,
-              scale: photoScale,
-              opacity: photoOpacity,
-            }}
+            variants={PHOTO_ENTER}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: false, amount: 0.3 }}
           >
 
             <StarBorder
@@ -483,7 +474,7 @@ export default function AboutSection() {
                 <Noise
                   patternSize={250}
                   patternRefreshInterval={2}
-                  patternAlpha={18}
+                  patternAlpha={38}
                 />
               </div>
             </StarBorder>

@@ -1,6 +1,13 @@
 "use client";
 import { IconArrowNarrowRight } from "@tabler/icons-react";
 import { useState, useRef, useId, useEffect } from "react";
+import {
+  motion,
+  useMotionValue,
+  useSpring,
+  useTransform,
+  useMotionTemplate,
+} from "motion/react";
 import ProjectFlipCard, { type FlipProject } from "@/components/ProjectFlipCard";
 
 export type SlideData = Omit<FlipProject, "image"> & {
@@ -14,40 +21,49 @@ interface SlideProps {
   handleSlideClick: (index: number) => void;
 }
 
+const ROTATE_DEPTH = 17.5;
+
 const Slide = ({ slide, index, current, handleSlideClick }: SlideProps) => {
   const slideRef = useRef<HTMLLIElement>(null);
-  const xRef = useRef(0);
-  const yRef = useRef(0);
-  const frameRef = useRef<number>(undefined);
   const [isFlipped, setIsFlipped] = useState(false);
+  const isActive = current === index;
 
+  // Reset flip when this card becomes inactive
   useEffect(() => {
-    const animate = () => {
-      if (!slideRef.current) return;
-      slideRef.current.style.setProperty("--x", `${xRef.current}px`);
-      slideRef.current.style.setProperty("--y", `${yRef.current}px`);
-      frameRef.current = requestAnimationFrame(animate);
-    };
-    frameRef.current = requestAnimationFrame(animate);
-    return () => {
-      if (frameRef.current) cancelAnimationFrame(frameRef.current);
-    };
-  }, []);
+    if (!isActive) setIsFlipped(false);
+  }, [isActive]);
 
-  const handleMouseMove = (event: React.MouseEvent) => {
-    const el = slideRef.current;
-    if (!el) return;
-    const r = el.getBoundingClientRect();
-    xRef.current = event.clientX - (r.left + Math.floor(r.width / 2));
-    yRef.current = event.clientY - (r.top + Math.floor(r.height / 2));
+  // CometCard-style spring tilt
+  const mx = useMotionValue(0);
+  const my = useMotionValue(0);
+  const mxSpring = useSpring(mx);
+  const mySpring = useSpring(my);
+  const rotateX = useTransform(mySpring, [-0.5, 0.5], [`-${ROTATE_DEPTH}deg`, `${ROTATE_DEPTH}deg`]);
+  const rotateY = useTransform(mxSpring, [-0.5, 0.5], [`${ROTATE_DEPTH}deg`, `-${ROTATE_DEPTH}deg`]);
+  const glareX = useTransform(mxSpring, [-0.5, 0.5], [0, 100]);
+  const glareY = useTransform(mySpring, [-0.5, 0.5], [0, 100]);
+  const glareBackground = useMotionTemplate`radial-gradient(circle at ${glareX}% ${glareY}%, rgba(255,255,255,0.9) 10%, rgba(255,255,255,0.75) 20%, rgba(255,255,255,0) 80%)`;
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!slideRef.current || !isActive || isFlipped) return;
+    const r = slideRef.current.getBoundingClientRect();
+    mx.set((e.clientX - r.left) / r.width - 0.5);
+    my.set((e.clientY - r.top) / r.height - 0.5);
   };
 
   const handleMouseLeave = () => {
-    xRef.current = 0;
-    yRef.current = 0;
+    mx.set(0);
+    my.set(0);
   };
 
-  const isActive = current === index;
+  const handleClick = () => {
+    if (!isActive) {
+      handleSlideClick(index);
+    } else {
+      setIsFlipped((f) => !f);
+    }
+  };
+
   const project: FlipProject = {
     title: slide.title,
     description: slide.description,
@@ -58,39 +74,40 @@ const Slide = ({ slide, index, current, handleSlideClick }: SlideProps) => {
     demo: slide.demo,
   };
 
+  const card = (
+    <motion.li
+      ref={slideRef}
+      className="relative w-[min(70vmin,50vh)] h-[min(70vmin,50vh)] rounded-[1%] overflow-hidden cursor-pointer"
+      onClick={handleClick}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      animate={{ scale: isActive ? 1 : 0.98 }}
+      style={{
+        rotateX: isActive ? rotateX : "8deg",
+        rotateY: isActive ? rotateY : "0deg",
+        transformOrigin: "bottom",
+      }}
+      transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+    >
+      <ProjectFlipCard
+        project={project}
+        isActive={isActive}
+        flipped={isFlipped}
+        onFlip={() => setIsFlipped((f) => !f)}
+        className="h-full w-full"
+      />
+      {isActive && !isFlipped && (
+        <motion.div
+          className="pointer-events-none absolute inset-0 z-50 rounded-[1%] mix-blend-overlay"
+          style={{ background: glareBackground, opacity: 0.6 }}
+        />
+      )}
+    </motion.li>
+  );
+
   return (
     <div className="[perspective:1200px] [transform-style:preserve-3d] flex-shrink-0">
-      <li
-        ref={slideRef}
-        className="relative w-[min(70vmin,50vh)] h-[min(70vmin,50vh)] mx-[4vmin] rounded-[1%] overflow-hidden cursor-pointer"
-        onClick={() => {
-          if (!isActive) handleSlideClick(index);
-        }}
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
-        style={{
-          transform: isActive ? "scale(1) rotateX(0deg)" : "scale(0.98) rotateX(8deg)",
-          transition: "transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)",
-          transformOrigin: "bottom",
-        }}
-      >
-        <div
-          className="absolute inset-0 transition-all duration-150 ease-out"
-          style={{
-            transform:
-              isActive && !isFlipped
-                ? "translate3d(calc(var(--x) / 30), calc(var(--y) / 30), 0)"
-                : "none",
-          }}
-        >
-          <ProjectFlipCard
-            project={project}
-            isActive={isActive}
-            onFlipChange={setIsFlipped}
-            className="h-full w-full"
-          />
-        </div>
-      </li>
+      <div className="mx-[4vmin]">{card}</div>
     </div>
   );
 };

@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import * as Fa from "react-icons/fa";
 import { cn } from "@/lib/utils";
@@ -18,37 +17,25 @@ export type FlipProject = {
 type ProjectFlipCardProps = {
   project: FlipProject;
   isActive: boolean;
+  flipped: boolean;
+  onFlip?: () => void;
   className?: string;
-  onFlipChange?: (flipped: boolean) => void;
 };
 
 export default function ProjectFlipCard({
   project,
   isActive,
+  flipped,
+  onFlip,
   className,
-  onFlipChange,
 }: ProjectFlipCardProps) {
-  const [flipped, setFlipped] = useState(false);
   const imageBg = project.imageBg;
-
-  useEffect(() => {
-    if (!isActive) {
-      setFlipped(false);
-      onFlipChange?.(false);
-    }
-  }, [isActive, onFlipChange]);
-
-  const toggleFlip = () => {
-    if (!isActive) return;
-    const next = !flipped;
-    setFlipped(next);
-    onFlipChange?.(next);
-  };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
-      toggleFlip();
+      e.stopPropagation();
+      onFlip?.();
     }
   };
 
@@ -56,7 +43,6 @@ export default function ProjectFlipCard({
     <div
       role="button"
       tabIndex={isActive ? 0 : -1}
-      onClick={toggleFlip}
       onKeyDown={handleKeyDown}
       aria-pressed={flipped}
       aria-label={
@@ -65,10 +51,16 @@ export default function ProjectFlipCard({
           : `Flip ${project.title} for details`
       }
       className={cn(
-        "group relative h-full w-full cursor-pointer text-left [perspective:1200px] focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[#1D1F2F] rounded-[1%]",
+        "group relative h-full w-full cursor-pointer text-left [perspective:1200px] focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[#1D1F2F] rounded-[1%] bg-[#09090f]",
         !isActive && "pointer-events-none",
         className,
       )}
+      onClick={(e) => {
+        if (isActive) {
+          e.stopPropagation();
+          onFlip?.();
+        }
+      }}
     >
       <motion.div
         className="relative h-full w-full [transform-style:preserve-3d]"
@@ -162,7 +154,6 @@ export default function ProjectFlipCard({
               <span className="h-9" aria-hidden />
             )}
           </div>
-
         </div>
       </motion.div>
     </div>

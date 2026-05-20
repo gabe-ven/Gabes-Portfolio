@@ -20,7 +20,7 @@ export default function ProjectsSection() {
   return (
     <section
       id="projects"
-      className="relative flex flex-col overflow-hidden"
+      className="snap-start relative flex flex-col overflow-hidden"
       style={{ height: "100svh" }}
     >
       <div className="flex-1 flex flex-col items-center justify-center gap-8 px-4 overflow-hidden">

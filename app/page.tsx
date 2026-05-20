@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import TargetCursor from "@/components/TargetCursor";
 import PageBackground from "@/components/PageBackground";
@@ -8,7 +9,7 @@ import HeroSection from "@/components/HeroSection";
 import AboutSection from "@/components/AboutSection";
 import ExperienceSection from "@/components/ExperienceSection";
 import ProjectsSection from "@/components/ProjectsSection";
-import ContactSection from "@/components/ContactSection";
+import GlobeSection from "@/components/GlobeSection";
 import ScrollDrivenDarkVeil from "@/components/ScrollDrivenDarkVeil";
 import Particles from "@/components/Particles";
 
@@ -16,6 +17,14 @@ import Particles from "@/components/Particles";
 // leave the hero, revealing the particles underneath. No scroll-driven opacity
 // on the particles means zero pop-in or seam between sections.
 function GlobalParticles() {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    const t = setTimeout(() => setMounted(true), 400);
+    return () => clearTimeout(t);
+  }, []);
+
+  if (!mounted) return null;
+
   return (
     <div
       aria-hidden
@@ -27,7 +36,7 @@ function GlobalParticles() {
       }}
     >
       <Particles
-        particleCount={250}
+        particleCount={120}
         particleSpread={10}
         speed={0.1}
         particleColors={["#ffffff"]}
@@ -58,7 +67,7 @@ export default function Home() {
         </HeroAboutBlendProvider>
         <ExperienceSection />
         <ProjectsSection />
-        <ContactSection />
+        <GlobeSection />
       </div>
     </>
   );

@@ -27,6 +27,7 @@ interface ScrollStackProps {
   baseScale?: number;
   scaleDuration?: number;
   rotationAmount?: number;
+  rotateXAmount?: number;
   blurAmount?: number;
   useWindowScroll?: boolean;
   onStackComplete?: () => void;
@@ -46,6 +47,7 @@ const ScrollStack = ({
   baseScale = 0.85,
   scaleDuration = 0.5,
   rotationAmount = 0,
+  rotateXAmount = 0,
   blurAmount = 0,
   useWindowScroll = false,
   onStackComplete,
@@ -62,7 +64,7 @@ const ScrollStack = ({
   // by the CSS transforms we apply to the cards themselves.
   const cardInitOffsetsRef = useRef<number[]>([]);
   const endInitOffsetRef = useRef<number>(0);
-  const lastTransformsRef = useRef(new Map<number, { translateY: number; scale: number; rotation: number; blur: number }>());
+  const lastTransformsRef = useRef(new Map<number, { translateY: number; scale: number; rotation: number; blur: number; rotateX: number }>());
   const isUpdatingRef = useRef(false);
 
   const calculateProgress = useCallback((scrollTop: number, start: number, end: number) => {
@@ -146,11 +148,17 @@ const ScrollStack = ({
         translateY = pinEnd - cardTop + stackPositionPx + itemStackDistance * i;
       }
 
+      // rotateX: tilt card from rotateXAmount → 0 as it slides into position
+      const rotateX = rotateXAmount > 0
+        ? Math.round(rotateXAmount * Math.max(0, 1 - scaleProgress / 0.6) * 100) / 100
+        : 0;
+
       const newTransform = {
         translateY: Math.round(translateY * 100) / 100,
         scale: Math.round(scale * 1000) / 1000,
         rotation: Math.round(rotation * 100) / 100,
         blur: Math.round(blur * 100) / 100,
+        rotateX,
       };
 
       const last = lastTransformsRef.current.get(i);
@@ -159,10 +167,12 @@ const ScrollStack = ({
         Math.abs(last.translateY - newTransform.translateY) > 0.1 ||
         Math.abs(last.scale - newTransform.scale) > 0.001 ||
         Math.abs(last.rotation - newTransform.rotation) > 0.1 ||
-        Math.abs(last.blur - newTransform.blur) > 0.1;
+        Math.abs(last.blur - newTransform.blur) > 0.1 ||
+        Math.abs(last.rotateX - newTransform.rotateX) > 0.1;
 
       if (changed) {
-        (card as HTMLElement).style.transform = `translate3d(0, ${newTransform.translateY}px, 0) scale(${newTransform.scale}) rotate(${newTransform.rotation}deg)`;
+        const perspectivePrefix = rotateXAmount > 0 ? 'perspective(1200px) ' : '';
+        (card as HTMLElement).style.transform = `${perspectivePrefix}translate3d(0, ${newTransform.translateY}px, 0) scale(${newTransform.scale}) rotateX(${newTransform.rotateX}deg) rotate(${newTransform.rotation}deg)`;
         (card as HTMLElement).style.filter = newTransform.blur > 0 ? `blur(${newTransform.blur}px)` : '';
         lastTransformsRef.current.set(i, newTransform);
       }
@@ -189,7 +199,7 @@ const ScrollStack = ({
     }
 
     isUpdatingRef.current = false;
-  }, [itemScale, itemStackDistance, stackPosition, scaleEndPosition, baseScale, rotationAmount, blurAmount, useWindowScroll, onStackComplete, onStackEndReached, calculateProgress, parsePercentage, getScrollData]);
+  }, [itemScale, itemStackDistance, stackPosition, scaleEndPosition, baseScale, rotationAmount, rotateXAmount, blurAmount, useWindowScroll, onStackComplete, onStackEndReached, calculateProgress, parsePercentage, getScrollData]);
 
   const handleScroll = useCallback(() => {
     updateCardTransforms();
@@ -229,7 +239,7 @@ const ScrollStack = ({
     const lenis = new Lenis({
       wrapper: scroller,
       content: inner,
-      duration: isExperience ? 0.85 : 1.2,
+      duration: isExperience ? 1.1 : 1.2,
       easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
       overscroll: true,
@@ -237,9 +247,9 @@ const ScrollStack = ({
       infinite: false,
       gestureOrientation: 'vertical',
       normalizeWheel: true,
-      wheelMultiplier: isExperience ? 1.25 : 1,
+      wheelMultiplier: isExperience ? 1.4 : 1,
       touchInertiaMultiplier: 35,
-      lerp: isExperience ? 0.16 : 0.1,
+      lerp: isExperience ? 0.12 : 0.1,
       syncTouch: true,
       syncTouchLerp: 0.075,
       touchInertia: 0.6,
@@ -341,6 +351,7 @@ const ScrollStack = ({
     >
       <div className="scroll-stack-inner">
         {children}
+        <div style={{ height: "50vh" }} />
         <div className="scroll-stack-end" />
       </div>
     </div>

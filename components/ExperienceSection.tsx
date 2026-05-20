@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import type Lenis from "lenis";
 import ScrollStack, { ScrollStackItem } from "./ScrollStack";
-import SplitText from "./SplitText";
+import DecryptedText from "./DecryptedText";
 
 const experiences = [
   {
@@ -70,7 +70,73 @@ export default function ExperienceSection() {
   const handingOffRef = useRef(false);
   const itemDistance = useCardGap();
   const [titleDone, setTitleDone] = useState(false);
+  const [animateIn, setAnimateIn] = useState(false);
+  const [stackInteractive, setStackInteractive] = useState(false);
   const [stackReady, setStackReady] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
+  const blockScrollRef = useRef(false);
+
+  // Window-level wheel blocker. Registered once; the ref gates it.
+  // This fires before Lenis's own listeners because we add it here first,
+  // but we also call lenis.stop() directly as a second line of defence.
+  useEffect(() => {
+    const block = (e: WheelEvent) => {
+      if (blockScrollRef.current) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    };
+    window.addEventListener("wheel", block, { passive: false, capture: true });
+    return () => window.removeEventListener("wheel", block, { capture: true });
+  }, []);
+
+  // Pop animation only plays when entering from above (About → Experience).
+  // Everything — window wheel, lenis, pointer-events — is locked from the
+  // instant the section enters view, not after the delay.
+  useEffect(() => {
+    let entryTimer: ReturnType<typeof setTimeout>;
+    let interactTimer: ReturnType<typeof setTimeout>;
+    const CARD_ANIM_MS = 900;
+
+    const resetStack = () => {
+      lenisRef.current?.scrollTo(0, { immediate: true });
+    };
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          const fromBelow = entry.boundingClientRect.top > 0;
+          if (fromBelow) {
+            resetStack();
+            blockScrollRef.current = true;
+            setAnimateIn(true);
+            entryTimer = setTimeout(() => {
+              setTitleDone(true);
+              interactTimer = setTimeout(() => {
+                blockScrollRef.current = false;
+                setStackInteractive(true);
+              }, CARD_ANIM_MS);
+            }, 900);
+          } else {
+            blockScrollRef.current = false;
+            setAnimateIn(false);
+            setTitleDone(true);
+            setStackInteractive(true);
+          }
+        } else {
+          clearTimeout(entryTimer);
+          clearTimeout(interactTimer);
+          blockScrollRef.current = false;
+          setAnimateIn(false);
+          setTitleDone(false);
+          setStackInteractive(false);
+        }
+      },
+      { threshold: 0.5 },
+    );
+    if (sectionRef.current) observer.observe(sectionRef.current);
+    return () => { observer.disconnect(); clearTimeout(entryTimer); clearTimeout(interactTimer); };
+  }, []);
 
   const handleLenisReady = useCallback((lenis: Lenis) => {
     lenisRef.current = lenis;
@@ -96,12 +162,13 @@ export default function ExperienceSection() {
       if (limit < SCROLL_EDGE) return;
 
       const atTop = scrollY <= SCROLL_EDGE;
-      const atBottom =
-        stackEndReachedRef.current || scrollY >= limit - SCROLL_EDGE;
+      const atBottom = stackEndReachedRef.current || scrollY >= limit - 10;
 
       const shouldHandoff = (goingUp && atTop) || (goingDown && atBottom);
       if (!shouldHandoff) return;
 
+      // Always block the event during cooldown — returning early without
+      // preventing lets fast scroll events overshoot the target section.
       event.preventDefault();
       event.stopPropagation();
 
@@ -109,12 +176,24 @@ export default function ExperienceSection() {
       handingOffRef.current = true;
       setTimeout(() => { handingOffRef.current = false; }, HANDOFF_COOLDOWN);
 
-      // Scroll directly to the adjacent section so the snap fires immediately
       const sections = Array.from(document.querySelectorAll("section[id]"));
       const expSection = document.getElementById("experience");
       const idx = sections.indexOf(expSection!);
-      const target = goingDown ? sections[idx + 1] : sections[idx - 1];
-      target?.scrollIntoView({ behavior: "smooth" });
+      const target = goingUp ? sections[idx - 1] : sections[idx + 1];
+      if (!target) return;
+
+      // Pause mandatory snap so it doesn't fight the smooth scroll mid-animation.
+      const html = document.documentElement;
+      html.style.scrollSnapType = "none";
+
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
+
+      // After smooth scroll completes: pin exactly to the target before re-enabling
+      // snap, so mandatory snap can't choose the wrong section.
+      setTimeout(() => {
+        target.scrollIntoView({ behavior: "instant", block: "start" });
+        html.style.scrollSnapType = "";
+      }, 800);
     };
 
     scroller.addEventListener("wheel", onWheel, { passive: false, capture: true });
@@ -123,6 +202,7 @@ export default function ExperienceSection() {
 
   return (
     <section
+      ref={sectionRef}
       id="experience"
       className="relative"
       style={{
@@ -134,46 +214,32 @@ export default function ExperienceSection() {
         className="absolute left-0 right-0 pointer-events-none"
         style={{ top: "11vh", zIndex: 5, textAlign: "center" }}
       >
-        <SplitText
-          text="Experience"
-          tag="p"
-          splitType="chars"
-          delay={60}
-          duration={0.7}
-          ease="power3.out"
-          from={{ opacity: 0, y: 20 }}
-          to={{ opacity: 1, y: 0 }}
-          threshold={0.1}
-          rootMargin="-50px"
-          textAlign="center"
-          onLetterAnimationComplete={() => setTitleDone(true)}
-          className="experience-section-label"
-          style={{
-            fontSize: "clamp(0.85rem, 1.4vw, 1.05rem)",
-            fontWeight: 600,
-            letterSpacing: "0.22em",
-            textTransform: "uppercase",
-            color: "rgba(255, 255, 255, 0.45)",
-            margin: 0,
-            fontFamily: "var(--font-space-grotesk)",
-          }}
-        />
+        <h2
+          className="text-4xl md:text-5xl font-semibold tracking-[0.18em] uppercase text-center"
+          style={{ fontFamily: "var(--font-space-grotesk)" }}
+        >
+          <DecryptedText
+            text="EXPERIENCE"
+            animateOn="view"
+            sequential={true}
+            revealDirection="center"
+            speed={80}
+            characters="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+            className="text-white/90"
+            encryptedClassName="text-white/25"
+          />
+        </h2>
       </motion.div>
 
       <div
         className="absolute inset-0 z-10 experience-stack-wrap"
-        style={{
-          opacity: titleDone ? 1 : 0,
-          transform: titleDone ? "translateY(0)" : "translateY(32px)",
-          transition:
-            "opacity 0.6s cubic-bezier(0.16,1,0.3,1), transform 0.6s cubic-bezier(0.16,1,0.3,1)",
-          pointerEvents: titleDone ? undefined : "none",
-        }}
+        style={{ pointerEvents: stackInteractive ? undefined : "none" }}
       >
         <ScrollStack
           className="experience-scroll-stack h-full w-full"
           itemDistance={itemDistance}
           stackPosition="30%"
+          rotateXAmount={20}
           onLenisReady={handleLenisReady}
           onStackEndReached={(reached) => {
             stackEndReachedRef.current = reached;
@@ -190,15 +256,10 @@ export default function ExperienceSection() {
               }}
             >
               <motion.div
-                initial={{ rotateX: 20, scale: 0.97, opacity: 0 }}
-                animate={
-                  titleDone
-                    ? { rotateX: 0, scale: 1, opacity: 1 }
-                    : { rotateX: 20, scale: 0.97, opacity: 0 }
-                }
+                initial={{ opacity: index === 0 ? 0 : 1, y: index === 0 ? 80 : 0 }}
+                animate={index === 0 ? { opacity: titleDone ? 1 : 0, y: titleDone ? 0 : 80 } : { opacity: 1, y: 0 }}
                 transition={{
-                  duration: 1.25,
-                  delay: index * 0.1,
+                  duration: index === 0 && animateIn ? 0.9 : 0,
                   ease: [0.16, 1, 0.3, 1],
                 }}
                 style={{

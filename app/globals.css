@@ -1,251 +1,8 @@
 @import "tailwindcss";
 
-/* Better Animated Starfield Background */
-@keyframes twinkle {
-  0%,
-  100% {
-    opacity: 0.2;
-  }
-  50% {
-    opacity: 1;
-  }
-}
-
-@keyframes twinkleFast {
-  0%,
-  100% {
-    opacity: 0.3;
-  }
-  50% {
-    opacity: 1;
-  }
-}
-
-@keyframes randomFloat1 {
-  0% {
-    transform: translate(0, 0);
-  }
-  100% {
-    transform: translate(200px, 500px);
-  }
-}
-
-@keyframes randomFloat2 {
-  0% {
-    transform: translate(0, 0);
-  }
-  100% {
-    transform: translate(-250px, -450px);
-  }
-}
-
-@keyframes randomFloat3 {
-  0% {
-    transform: translate(0, 0);
-  }
-  100% {
-    transform: translate(350px, 480px);
-  }
-}
-
-@keyframes randomFloat4 {
-  0% {
-    transform: translate(0, 0);
-  }
-  100% {
-    transform: translate(-180px, 520px);
-  }
-}
-
-@keyframes randomFloat5 {
-  0% {
-    transform: translate(0, 0);
-  }
-  100% {
-    transform: translate(280px, -490px);
-  }
-}
-
-@keyframes pulse {
-  0%,
-  100% {
-    opacity: 0.5;
-  }
-  50% {
-    opacity: 1;
-  }
-}
-
-@keyframes grain {
-  0%,
-  100% {
-    transform: translate(0, 0);
-  }
-  10% {
-    transform: translate(-5%, -10%);
-  }
-  20% {
-    transform: translate(-15%, 5%);
-  }
-  30% {
-    transform: translate(7%, -25%);
-  }
-  40% {
-    transform: translate(-5%, 25%);
-  }
-  50% {
-    transform: translate(-15%, 10%);
-  }
-  60% {
-    transform: translate(15%, 0%);
-  }
-  70% {
-    transform: translate(0%, 15%);
-  }
-  80% {
-    transform: translate(3%, 35%);
-  }
-  90% {
-    transform: translate(-10%, 10%);
-  }
-}
-
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
 @keyframes blink {
   0%, 49.99% { opacity: 1; }
   50%, 100%  { opacity: 0; }
-}
-
-.stars {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  background: white;
-  box-shadow: 100px 200px white, 250px 400px white, 500px 100px white,
-    750px 300px white, 1000px 500px white, 1200px 150px white,
-    1400px 350px white, 1600px 250px white, 200px 600px white, 400px 800px white,
-    600px 700px white, 800px 900px white, 1100px 650px white, 1300px 850px white,
-    1500px 750px white, 50px 450px white, 350px 650px white, 550px 850px white,
-    850px 550px white, 1050px 350px white, 1250px 550px white,
-    1450px 650px white, 1650px 450px white, 150px 250px white, 450px 450px white,
-    650px 550px white, 950px 750px white, 1150px 450px white, 1350px 250px white,
-    1550px 350px white, 1750px 550px white, 300px 100px white, 700px 200px white,
-    900px 400px white, 1400px 100px white, 1700px 300px white, 120px 320px white,
-    340px 540px white, 760px 180px white, 980px 620px white, 1220px 420px white,
-    1540px 220px white, 280px 480px white, 620px 820px white, 940px 240px white,
-    1360px 680px white, 1680px 380px white, 380px 720px white, 820px 120px white,
-    1260px 520px white, 1580px 920px white, 220px 580px white, 560px 380px white,
-    880px 680px white, 1320px 180px white, 1640px 780px white,
-    100px 1200px white, 250px 1400px white, 500px 1100px white,
-    750px 1300px white, 1000px 1500px white, 1200px 1150px white,
-    1400px 1350px white, 1600px 1250px white, 200px 1600px white,
-    400px 1800px white, 600px 1700px white, 800px 1900px white,
-    1100px 1650px white, 1300px 1850px white, 75px 125px white,
-    425px 225px white, 875px 325px white, 1425px 525px white, 1875px 725px white,
-    325px 925px white, 775px 1025px white, 1225px 1125px white,
-    1675px 1225px white, 125px 1425px white;
-  animation: randomFloat1 80s linear infinite alternate,
-    twinkle 3s ease-in-out infinite;
-  opacity: 0.7;
-}
-
-.stars2 {
-  position: absolute;
-  width: 2px;
-  height: 2px;
-  background: white;
-  box-shadow: 180px 300px white, 380px 500px white, 680px 200px white,
-    980px 400px white, 1280px 600px white, 1480px 250px white,
-    1680px 450px white, 280px 700px white, 580px 900px white, 880px 800px white,
-    1180px 750px white, 1580px 850px white, 480px 550px white, 780px 650px white,
-    1080px 450px white, 1380px 550px white, 130px 350px white, 530px 750px white,
-    930px 550px white, 1330px 350px white, 1730px 650px white, 90px 270px white,
-    410px 490px white, 730px 170px white, 1050px 590px white, 1370px 390px white,
-    1690px 190px white, 310px 670px white, 630px 870px white, 950px 270px white,
-    1270px 670px white, 1590px 470px white, 430px 330px white, 750px 530px white,
-    1070px 730px white, 1390px 130px white, 1710px 830px white,
-    190px 430px white, 510px 630px white, 830px 230px white, 1150px 830px white,
-    180px 1300px white, 380px 1500px white, 680px 1200px white,
-    980px 1400px white, 1280px 1600px white, 1480px 1250px white,
-    1680px 1450px white, 280px 1700px white, 580px 1900px white,
-    880px 1800px white, 55px 155px white, 455px 255px white, 905px 355px white,
-    1455px 555px white, 1905px 755px white, 355px 955px white,
-    805px 1055px white, 1255px 1155px white, 1705px 1255px white;
-  animation: randomFloat2 70s linear infinite alternate,
-    twinkle 4s ease-in-out infinite;
-  animation-delay: 1s;
-  opacity: 0.6;
-}
-
-.stars3 {
-  position: absolute;
-  width: 3px;
-  height: 3px;
-  background: white;
-  border-radius: 50%;
-  box-shadow: 220px 250px white, 520px 450px white, 820px 150px white,
-    1120px 350px white, 1420px 550px white, 1620px 200px white,
-    320px 650px white, 720px 850px white, 1020px 700px white, 1520px 800px white,
-    420px 500px white, 920px 600px white, 1320px 400px white, 1720px 500px white,
-    170px 310px white, 470px 510px white, 770px 110px white, 1070px 710px white,
-    1370px 310px white, 1670px 910px white, 270px 610px white, 570px 810px white,
-    870px 410px white, 1170px 210px white, 1470px 610px white,
-    1770px 410px white, 70px 470px white, 370px 670px white, 670px 270px white,
-    970px 870px white, 220px 1250px white, 520px 1450px white,
-    820px 1150px white, 1120px 1350px white, 1420px 1550px white,
-    1620px 1200px white, 320px 1650px white, 720px 1850px white,
-    1020px 1700px white, 1520px 1800px white, 95px 95px white, 495px 295px white,
-    945px 395px white, 1495px 595px white;
-  animation: randomFloat3 90s linear infinite alternate,
-    pulse 5s ease-in-out infinite;
-  animation-delay: 2s;
-  opacity: 0.5;
-}
-
-.stars4 {
-  position: absolute;
-  width: 1.5px;
-  height: 1.5px;
-  background: rgba(255, 255, 255, 0.8);
-  border-radius: 50%;
-  box-shadow: 140px 280px rgba(255, 255, 255, 0.8),
-    440px 480px rgba(255, 255, 255, 0.8), 740px 180px rgba(255, 255, 255, 0.8),
-    1040px 380px rgba(255, 255, 255, 0.8), 1340px 580px rgba(255, 255, 255, 0.8),
-    1540px 230px rgba(255, 255, 255, 0.8), 240px 680px rgba(255, 255, 255, 0.8),
-    540px 880px rgba(255, 255, 255, 0.8), 840px 780px rgba(255, 255, 255, 0.8),
-    1140px 580px rgba(255, 255, 255, 0.8), 1440px 480px rgba(255, 255, 255, 0.8),
-    1740px 680px rgba(255, 255, 255, 0.8), 340px 1280px rgba(255, 255, 255, 0.8),
-    640px 1480px rgba(255, 255, 255, 0.8), 940px 1180px rgba(255, 255, 255, 0.8),
-    1240px 1380px rgba(255, 255, 255, 0.8);
-  animation: randomFloat4 60s linear infinite alternate,
-    twinkleFast 2s ease-in-out infinite;
-  animation-delay: 0.5s;
-  opacity: 0.6;
-}
-
-.twinkle-stars {
-  position: absolute;
-  width: 2px;
-  height: 2px;
-  background: white;
-  border-radius: 50%;
-  box-shadow: 300px 150px white, 600px 350px white, 900px 550px white,
-    1200px 250px white, 1500px 450px white, 1800px 650px white,
-    400px 750px white, 700px 950px white, 1000px 850px white,
-    1300px 1050px white, 1600px 1250px white, 500px 1350px white,
-    800px 1550px white, 1100px 1450px white, 1400px 1650px white,
-    1700px 1750px white;
-  animation: randomFloat5 75s linear infinite alternate,
-    twinkleFast 1.5s ease-in-out infinite;
-  opacity: 0.7;
 }
 
 @layer base {
@@ -257,18 +14,18 @@
     @apply scroll-smooth;
     scroll-snap-type: y mandatory;
     scroll-padding-top: 3.5rem;
-  }
-
-  html {
-    background: #000000; /* fallback behind fixed PageBackground */
+    background: #000000;
   }
 
   #hero,
   #about,
   #experience,
   #projects,
-  #contact {
+  #photos {
     scroll-snap-align: start;
+  }
+
+  #experience {
     scroll-snap-stop: always;
   }
 
@@ -282,22 +39,7 @@
     @apply text-white antialiased font-mono;
     background: transparent;
     position: relative;
-
-    /* Respect prefers-reduced-motion */
-    @media (prefers-reduced-motion: reduce) {
-      * {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-      }
-
-      .stars,
-      .stars2,
-      .stars3 {
-        animation: none !important;
-        opacity: 0.2 !important;
-      }
-    }
+    -ms-overflow-style: none;
   }
 
   /* Film grain texture overlay */
@@ -328,7 +70,6 @@
     );
   }
 
-  /* Clean Typography with Monospace Font */
   h1,
   h2,
   h3,
@@ -365,27 +106,27 @@
   }
 }
 
-/* Spinning animation for decorative elements */
-.spin-slow {
-  animation: spin 20s linear infinite;
+/* Hide scrollbar */
+::-webkit-scrollbar {
+  display: none;
 }
 
-.spin-slow:hover {
-  animation: spin 3s linear infinite;
+* {
+  scrollbar-width: none;
 }
 
-/* Ensure all SVG icons have no background */
+@media (pointer: fine) {
+  * {
+    cursor: none !important;
+  }
+}
+
 svg {
   background: transparent !important;
   background-color: transparent !important;
 }
 
-/* Smooth scroll behavior */
-* {
-  scroll-behavior: smooth;
-}
-
-/* Enhanced smooth transitions for all motion elements */
+/* Framer Motion performance */
 [data-projection-id] {
   will-change: transform, opacity;
   backface-visibility: hidden;
@@ -396,7 +137,6 @@ svg {
   -webkit-transform: translateZ(0);
 }
 
-/* Prevent outline artifacts on images */
 img {
   outline: none !important;
   border: none !important;
@@ -406,225 +146,9 @@ img {
   -webkit-transform: translate3d(0, 0, 0);
 }
 
-/* Better rendering for rounded containers */
 .isolate {
   isolation: isolate;
   contain: paint;
-}
-
-.blob {
-  position: absolute;
-  inset: 0;
-  border-radius: 9999px;
-  filter: blur(60px);
-  opacity: 0.5;
-  mix-blend-mode: screen;
-  transform: translate3d(0, 0, 0);
-  animation: blob-float 14s ease-in-out infinite alternate;
-}
-
-.blob-emerald {
-  background: radial-gradient(circle, rgba(34, 197, 94, 0.4), transparent 45%);
-  animation-duration: 16s;
-  animation-delay: -4s;
-}
-
-.blob-cyan {
-  background: radial-gradient(
-    circle,
-    rgba(74, 222, 128, 0.32),
-    transparent 45%
-  );
-  animation-duration: 18s;
-  animation-delay: -2s;
-}
-
-.blob-purple {
-  background: radial-gradient(
-    circle,
-    rgba(190, 242, 100, 0.28),
-    transparent 45%
-  );
-  animation-duration: 20s;
-  animation-delay: -6s;
-}
-
-@keyframes blob-float {
-  0% {
-    transform: translate3d(-8%, -6%, 0) scale(0.95);
-  }
-  50% {
-    transform: translate3d(6%, 4%, 0) scale(1.05);
-  }
-  100% {
-    transform: translate3d(-4%, 8%, 0) scale(1);
-  }
-}
-
-.custom-cursor {
-  position: fixed;
-  top: 0;
-  left: 0;
-  border-radius: 9999px;
-  background: white;
-  mix-blend-mode: difference;
-  pointer-events: none;
-  z-index: 999;
-  transition: transform 50ms ease-out, opacity 120ms ease;
-  opacity: 0.9;
-}
-
-@media (max-width: 768px) {
-  .custom-cursor {
-    display: none;
-  }
-}
-
-.halo-ring {
-  position: absolute;
-  width: 92%;
-  height: 92%;
-  border-radius: 9999px;
-  background: conic-gradient(
-    from 0deg,
-    rgba(34, 197, 94, 0.45),
-    rgba(74, 222, 128, 0.4),
-    rgba(190, 242, 100, 0.42),
-    rgba(34, 197, 94, 0.45)
-  );
-  opacity: 0.7;
-  filter: blur(18px);
-  animation: halo-pulse 6s ease-in-out infinite alternate;
-}
-
-@keyframes halo-pulse {
-  0% {
-    transform: scale(0.96) rotate(0deg);
-    opacity: 0.55;
-  }
-  50% {
-    transform: scale(1.02) rotate(8deg);
-    opacity: 0.78;
-  }
-  100% {
-    transform: scale(0.98) rotate(-6deg);
-    opacity: 0.65;
-  }
-}
-
-.halo-ring {
-  position: absolute;
-  inset: -2%;
-  border-radius: inherit;
-  background: conic-gradient(
-    from 45deg,
-    rgba(34, 197, 94, 0.75),
-    rgba(74, 222, 128, 0.68),
-    rgba(190, 242, 100, 0.7),
-    rgba(34, 197, 94, 0.75)
-  );
-  opacity: 0.95;
-  filter: blur(8px);
-  box-shadow: 0 0 25px rgba(34, 197, 94, 0.48),
-    0 0 35px rgba(74, 222, 128, 0.38);
-  animation: halo-pulse 6.5s ease-in-out infinite alternate;
-}
-
-.halo-ring-outline {
-  position: absolute;
-  inset: -1%;
-  border-radius: inherit;
-  border: 3px solid rgba(255, 255, 255, 0.5);
-  box-shadow: 0 0 30px rgba(34, 197, 94, 0.45),
-    0 0 40px rgba(74, 222, 128, 0.35);
-  animation: halo-pulse 7s ease-in-out infinite alternate-reverse;
-}
-
-@keyframes halo-pulse {
-  0% {
-    transform: scale(0.97) rotate(0deg);
-    opacity: 0.6;
-  }
-  50% {
-    transform: scale(1.02) rotate(6deg);
-    opacity: 0.82;
-  }
-  100% {
-    transform: scale(0.99) rotate(-4deg);
-    opacity: 0.7;
-  }
-}
-
-.liquid-outline {
-  position: absolute;
-  inset: -5%;
-  border-radius: inherit;
-  background: transparent;
-  border: 2px solid rgba(34, 197, 94, 0.55);
-  box-shadow: 0 0 20px rgba(34, 197, 94, 0.5), 0 0 30px rgba(16, 185, 129, 0.45),
-    0 0 42px rgba(74, 222, 128, 0.35);
-  mix-blend-mode: screen;
-  opacity: 0.85;
-  animation: liquid-drip 7s ease-in-out infinite;
-  pointer-events: none;
-  z-index: 15;
-}
-
-@keyframes liquid-drip {
-  0% {
-    border-radius: 30% 70% 68% 32% / 32% 28% 72% 68%;
-    transform: translate3d(0, 0, 0) scale(1);
-  }
-  25% {
-    border-radius: 32% 68% 70% 30% / 34% 30% 70% 66%;
-    transform: translate3d(0.6%, -0.6%, 0) scale(1.01);
-  }
-  50% {
-    border-radius: 33% 67% 66% 34% / 36% 28% 68% 64%;
-    transform: translate3d(-0.6%, 0.6%, 0) scale(0.995);
-  }
-  75% {
-    border-radius: 31% 69% 72% 28% / 34% 32% 66% 70%;
-    transform: translate3d(0.3%, 0.3%, 0) scale(1.008);
-  }
-  100% {
-    border-radius: 30% 70% 68% 32% / 32% 28% 72% 68%;
-    transform: translate3d(0, 0, 0) scale(1);
-  }
-}
-
-.headshot-vignette {
-  position: absolute;
-  inset: 0;
-  z-index: 7;
-  pointer-events: none;
-  background: radial-gradient(
-    circle at 50% 50%,
-    transparent 60%,
-    rgba(0, 0, 0, 0.6) 88%
-  );
-  mix-blend-mode: normal;
-}
-
-/* Hide scrollbar but keep functionality */
-::-webkit-scrollbar {
-  display: none;
-}
-
-/* For Firefox */
-* {
-  scrollbar-width: none;
-}
-
-/* For IE and Edge */
-body {
-  -ms-overflow-style: none;
-}
-
-@media (pointer: fine) {
-  * {
-    cursor: none !important;
-  }
 }
 
 /* Aceternity CometCard */
