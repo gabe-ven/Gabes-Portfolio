@@ -18,12 +18,15 @@ import Particles from "@/components/Particles";
 // on the particles means zero pop-in or seam between sections.
 function GlobalParticles() {
   const [mounted, setMounted] = useState(false);
+  const [isMobile, setIsMobile] = useState(true);
+
   useEffect(() => {
+    setIsMobile(window.innerWidth < 768);
     const t = setTimeout(() => setMounted(true), 400);
     return () => clearTimeout(t);
   }, []);
 
-  if (!mounted) return null;
+  if (!mounted || isMobile) return null;
 
   return (
     <div
@@ -36,7 +39,7 @@ function GlobalParticles() {
       }}
     >
       <Particles
-        particleCount={120}
+        particleCount={80}
         particleSpread={10}
         speed={0.1}
         particleColors={["#ffffff"]}
@@ -51,11 +54,14 @@ function GlobalParticles() {
 }
 
 export default function Home() {
+  const [isMobile, setIsMobile] = useState(true);
+  useEffect(() => { setIsMobile(window.innerWidth < 768); }, []);
+
   return (
     <>
       <PageBackground />
       <div className="text-white" style={{ position: "relative", zIndex: 1 }}>
-        <TargetCursor spinDuration={2} hideDefaultCursor parallaxOn hoverDuration={0.2} />
+        {!isMobile && <TargetCursor spinDuration={2} hideDefaultCursor parallaxOn hoverDuration={0.2} />}
         <Header />
         {/* Particles sit below DarkVeil in DOM → DarkVeil paints on top */}
         <GlobalParticles />

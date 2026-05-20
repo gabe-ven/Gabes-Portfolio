@@ -101,7 +101,7 @@ export default function GlobeSection() {
             >
               <DecryptedText
                 key={entryKey}
-                text="WHERE I SHOOT"
+                text="MY PHOTO GALLERY"
                 animateOn="view"
                 sequential
                 revealDirection="center"
@@ -115,7 +115,7 @@ export default function GlobeSection() {
               className="text-sm text-white/45 max-w-xs text-center md:text-left leading-relaxed"
               style={{ fontFamily: "var(--font-space-grotesk)" }}
             >
-              Click a place on the map to see photos.
+              Every pin is a place I've been. Tap one to see it through my lens.
             </p>
           </motion.div>
 

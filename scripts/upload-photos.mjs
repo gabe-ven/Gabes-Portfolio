@@ -22,8 +22,14 @@
 
 import fs from "fs";
 import path from "path";
+import { createRequire } from "module";
 import { put } from "@vercel/blob";
 import sizeOf from "image-size";
+
+const require = createRequire(import.meta.url);
+const sharp = require("sharp");
+
+const MAX_WIDTH = 1400; // resize to this width before uploading
 
 const SUPPORTED = new Set([".jpg", ".jpeg", ".png", ".webp", ".avif"]);
 
@@ -89,26 +95,33 @@ async function main() {
     }
 
     const filePath = path.join(folder, file);
-    const buffer = fs.readFileSync(filePath);
-    const dims = sizeOf(buffer);
+    const rawBuffer = fs.readFileSync(filePath);
+    const dims = sizeOf(rawBuffer);
 
     if (!dims.width || !dims.height) {
       console.warn(`  warn  ${file} — could not read dimensions, skipping`);
       continue;
     }
 
-    const blobPath = `photos/${locationId}/${file}`;
-    process.stdout.write(`  upload  ${file} (${dims.width}×${dims.height}) → `);
-
-    const { url } = await put(blobPath, buffer, {
-      access: "public",
-      contentType: `image/${path.extname(file).slice(1).replace("jpg", "jpeg")}`,
-    });
-
     // EXIF orientations 5-8 mean the camera was rotated 90°/270° — swap w/h
     const rotated = dims.orientation >= 5 && dims.orientation <= 8;
     const naturalWidth  = rotated ? dims.height : dims.width;
     const naturalHeight = rotated ? dims.width  : dims.height;
+
+    // Resize and convert to progressive JPEG for fast web delivery
+    const buffer = await sharp(rawBuffer)
+      .rotate() // auto-apply EXIF orientation
+      .resize({ width: MAX_WIDTH, withoutEnlargement: true })
+      .jpeg({ quality: 82, progressive: true })
+      .toBuffer();
+
+    const blobPath = `photos/${locationId}/${path.basename(file, path.extname(file))}.jpg`;
+    process.stdout.write(`  upload  ${file} (→ ${Math.min(naturalWidth, MAX_WIDTH)}px) → `);
+
+    const { url } = await put(blobPath, buffer, {
+      access: "public",
+      contentType: "image/jpeg",
+    });
 
     galleries[locationId].items.push({
       id: itemId,

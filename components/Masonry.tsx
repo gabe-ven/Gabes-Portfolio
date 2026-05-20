@@ -159,9 +159,13 @@ export default function Masonry({
           onMouseEnter={(e) => handleMouseEnter(e, item)}
           onMouseLeave={(e) => handleMouseLeave(e, item)}
         >
-          <div
-            className="masonry-item-img"
-            style={{ backgroundImage: `url(${item.img})` }}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={item.img}
+            alt=""
+            loading="lazy"
+            decoding="async"
+            style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "10px", display: "block" }}
           />
         </div>
       ))}

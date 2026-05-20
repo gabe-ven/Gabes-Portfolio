@@ -126,15 +126,12 @@ svg {
   background-color: transparent !important;
 }
 
-/* Framer Motion performance */
+/* Framer Motion — only font-smoothing globally; will-change is set per-element by FM itself */
 [data-projection-id] {
-  will-change: transform, opacity;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  transform: translateZ(0);
-  -webkit-transform: translateZ(0);
 }
 
 img {
@@ -142,8 +139,6 @@ img {
   border: none !important;
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
-  transform: translate3d(0, 0, 0);
-  -webkit-transform: translate3d(0, 0, 0);
 }
 
 .isolate {

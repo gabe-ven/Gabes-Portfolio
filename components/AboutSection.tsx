@@ -7,7 +7,6 @@ import {
 } from "framer-motion";
 import ScrambledText from "./ScrambledText";
 import { useHeroAboutBlend } from "./HeroAboutBlend";
-import Antigravity from "./Antigravity";
 import BounceCards from "./BounceCards";
 import Noise from "./Noise";
 import TiltedCard from "./TiltedCard";
@@ -269,12 +268,12 @@ export default function AboutSection() {
     <section
       ref={aboutRef}
       id="about"
-      className="overflow-hidden relative flex items-center py-24 px-4 sm:px-8"
-      style={{ height: "100svh" }}
+      className="overflow-y-auto md:overflow-hidden relative flex items-start md:items-center pt-20 pb-8 md:py-24 px-4 sm:px-8"
+      style={{ minHeight: "100svh" }}
     >
       <div className="relative z-10 max-w-6xl mx-auto w-full">
 
-        <div className="flex flex-col md:flex-row gap-12 items-center">
+        <div className="flex flex-col md:flex-row gap-5 md:gap-12 items-center">
 
           {/* ── Left: README card ─────────────────────────────────────────── */}
           <motion.div
@@ -439,7 +438,7 @@ export default function AboutSection() {
               innerClassName="inner-content--photo"
               style={{
                 display: "block",
-                width: "clamp(280px, 42vw, 480px)",
+                width: "clamp(200px, 65vw, 480px)",
                 margin: "0 auto",
                 borderRadius: "17px",
               }}
@@ -479,8 +478,32 @@ export default function AboutSection() {
               </div>
             </StarBorder>
 
-            {/* BounceCards sit on the outer motion.div so StarBorder's overflow:hidden doesn't clip them */}
+            {/* Mobile photo strip — same photos as BounceCards but in a scrollable row */}
+            <div className="md:hidden mt-4 flex justify-center gap-2.5 overflow-x-auto pb-1 px-1" style={{ scrollbarWidth: "none" }}>
+              {BOUNCE_CARD_PHOTOS.map((src, i) => (
+                <div
+                  key={i}
+                  className="shrink-0 rounded-xl overflow-hidden"
+                  style={{
+                    width: 80,
+                    height: 80,
+                    background: "rgba(255,255,255,0.04)",
+                    border: "1px solid rgba(255,255,255,0.08)",
+                  }}
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={src}
+                    alt=""
+                    style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                  />
+                </div>
+              ))}
+            </div>
+
+            {/* BounceCards — desktop only (they overflow on mobile) */}
             <div
+              className="hidden md:block"
               style={{
                 position: "absolute",
                 bottom: "-1.15rem",

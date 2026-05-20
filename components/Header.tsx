@@ -8,6 +8,7 @@ const TABS = [
   { label: "about",      id: "about"      },
   { label: "experience", id: "experience" },
   { label: "projects",   id: "projects"   },
+  { label: "photos",     id: "photos"     },
 ] as const;
 
 export default function Header() {
@@ -15,19 +16,18 @@ export default function Header() {
   const navRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
-    const onScroll = () => {
-      const mid = window.scrollY + window.innerHeight * 0.4;
-      let found = "hero";
-      TABS.forEach(({ id }) => {
-        const el = document.getElementById(id);
-        if (!el) return;
-        if (el.getBoundingClientRect().top + window.scrollY <= mid) found = id;
-      });
-      setActiveId(found);
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    onScroll();
-    return () => window.removeEventListener("scroll", onScroll);
+    const observers: IntersectionObserver[] = [];
+    TABS.forEach(({ id }) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const obs = new IntersectionObserver(
+        ([entry]) => { if (entry.isIntersecting) setActiveId(id); },
+        { threshold: 0.5 }
+      );
+      obs.observe(el);
+      observers.push(obs);
+    });
+    return () => observers.forEach((obs) => obs.disconnect());
   }, []);
 
   const scrollTo = (id: string) =>
