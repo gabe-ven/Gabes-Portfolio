@@ -1,4 +1,4 @@
-import type { ElementType, ReactNode, CSSProperties } from "react";
+import type { ElementType, ReactNode, CSSProperties, ComponentType } from "react";
 import "./StarBorder.css";
 
 type StarBorderProps<T extends ElementType = "button"> = {
@@ -23,7 +23,12 @@ export default function StarBorder<T extends ElementType = "button">({
   style,
   ...rest
 }: StarBorderProps<T>) {
-  const Component = (as ?? "button") as ElementType;
+  const Component = (as ?? "button") as ComponentType<{
+    className?: string;
+    style?: CSSProperties;
+    children?: ReactNode;
+    [key: string]: unknown;
+  }>;
   return (
     <Component
       className={`star-border-container ${className}`}
