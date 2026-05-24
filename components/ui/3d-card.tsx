@@ -85,20 +85,21 @@ export const CardItem = ({
 }) => {
   const [isMouseEntered] = useContext(MouseEnterContext);
   const { style: externalStyle, ...otherRest } = rest;
-  return (
-    <Tag
-      className={className}
-      style={{
+
+  return React.createElement(
+    Tag,
+    {
+      className,
+      style: {
         ...(externalStyle as React.CSSProperties),
         transform: isMouseEntered
           ? `translateX(${translateX}px) translateY(${translateY}px) translateZ(${translateZ}px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) rotateZ(${rotateZ}deg)`
           : "translateZ(0px)",
         transition: "transform 0.2s ease",
         transformStyle: "preserve-3d",
-      }}
-      {...otherRest}
-    >
-      {children}
-    </Tag>
+      },
+      ...otherRest,
+    },
+    children,
   );
 };

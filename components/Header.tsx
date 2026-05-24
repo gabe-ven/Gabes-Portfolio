@@ -18,7 +18,7 @@ export default function Header() {
   useEffect(() => {
     const update = () => {
       const y = window.scrollY + window.innerHeight * 0.5;
-      let current = TABS[0].id;
+      let current: (typeof TABS)[number]["id"] = TABS[0].id;
       for (const { id } of TABS) {
         const el = document.getElementById(id);
         if (el && el.offsetTop <= y) current = id;
