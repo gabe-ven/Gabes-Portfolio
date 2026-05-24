@@ -4,7 +4,7 @@ import { useState, useEffect, useLayoutEffect, useRef, useCallback } from "react
 import {
   motion,
   useAnimationControls,
-} from "framer-motion";
+} from "motion/react";
 import ScrambledText from "./ScrambledText";
 import { useHeroAboutBlend } from "./HeroAboutBlend";
 import BounceCards from "./BounceCards";

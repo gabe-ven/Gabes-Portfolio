@@ -5,17 +5,20 @@ import "./globals.css";
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
   variable: "--font-jetbrains-mono",
+  display: "swap",
 });
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
   variable: "--font-space-grotesk",
+  display: "swap",
 });
 
 const pressStart2P = Press_Start_2P({
   subsets: ["latin"],
   weight: "400",
   variable: "--font-press-start",
+  display: "optional",
 });
 
 export const metadata: Metadata = {

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import Dock from "./Dock";
 import type { DockItemData } from "./Dock";
 import Shuffle from "./Shuffle";
@@ -117,9 +117,10 @@ export default function HeroSection() {
     >
       <motion.div
         className="relative z-10 w-full max-w-3xl"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5, delay: 0.1 }}
+        initial={{ opacity: 0, y: 32, scale: 0.97 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.8, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
+        style={{ willChange: "transform" }}
       >
         {/* ══════════════════════════════════════════════
             Terminal Window (wrapped in ContainerScroll for 3D entrance)
@@ -129,8 +130,8 @@ export default function HeroSection() {
           className="rounded-xl overflow-hidden"
           style={{
             background: "rgba(9, 9, 14, 0.87)",
-            backdropFilter: "blur(28px) saturate(1.5)",
-            WebkitBackdropFilter: "blur(28px) saturate(1.5)",
+            backdropFilter: "blur(14px) saturate(1.4)",
+            WebkitBackdropFilter: "blur(14px) saturate(1.4)",
             border: "1px solid rgba(255,255,255,0.09)",
             boxShadow:
               "0 0 0 1px rgba(255,255,255,0.03) inset," +
@@ -371,9 +372,9 @@ export default function HeroSection() {
         <motion.div
           className="mt-3 w-full"
           style={{ height: 90 }}
-          initial={{ opacity: 0, y: 16 }}
+          initial={{ opacity: 0, y: 28 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.9, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 0.7, delay: 0.45, ease: [0.16, 1, 0.3, 1] }}
         >
           <Dock
             items={DOCK_ITEMS}
@@ -391,9 +392,9 @@ export default function HeroSection() {
         <motion.div
           className="mt-5 mx-auto w-full max-w-3xl"
           style={{ height: 64 }}
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 1.1, ease: [0.16, 1, 0.3, 1] }}
+          initial={{ opacity: 0, x: -30 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.7, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
         >
           <LogoLoop
             logos={SKILL_LOGOS}
@@ -416,7 +417,7 @@ export default function HeroSection() {
           className="mt-2 flex justify-center pointer-events-none select-none"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.6, delay: 1.8 }}
+          transition={{ duration: 0.6, delay: 0.9 }}
         >
           <motion.div
             animate={{ y: [0, 7, 0], opacity: [0.2, 0.5, 0.2] }}

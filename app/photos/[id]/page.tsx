@@ -3,7 +3,7 @@
 import { use } from "react";
 import { useRouter } from "next/navigation";
 import { notFound } from "next/navigation";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { IconArrowLeft } from "@tabler/icons-react";
 import Masonry from "@/components/Masonry";
 

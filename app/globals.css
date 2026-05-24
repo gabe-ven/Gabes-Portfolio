@@ -18,6 +18,12 @@
     background: #09090e;
   }
 
+  /* Skip rendering off-screen sections — browser only paints them when near viewport */
+  section[id]:not(#hero) {
+    content-visibility: auto;
+    contain-intrinsic-size: 0 100svh;
+  }
+
   body {
     @apply text-white antialiased font-mono;
     background: transparent;

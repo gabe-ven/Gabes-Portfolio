@@ -6,7 +6,7 @@ import {
   useScroll,
   useSpring,
   useTransform,
-} from "framer-motion";
+} from "motion/react";
 
 // Breakpoints: Hero=0, About=0.25, Experience=0.5, Projects=0.75, Contact=1.0
 const BP = [0, 0.25, 0.5, 0.75, 1.0];

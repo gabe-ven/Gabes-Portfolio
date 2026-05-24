@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import DarkVeil from "./DarkVeil";
 import { useHeroAboutBlend } from "./HeroAboutBlend";
 

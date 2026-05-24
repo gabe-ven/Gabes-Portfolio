@@ -12,7 +12,7 @@ import {
   useSpring,
   useTransform,
   type MotionValue,
-} from "framer-motion";
+} from "motion/react";
 import "./HeroAboutBlend.css";
 
 type HeroAboutBlendContextValue = {

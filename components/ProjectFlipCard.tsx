@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import * as Fa from "react-icons/fa";
 import { cn } from "@/lib/utils";
 

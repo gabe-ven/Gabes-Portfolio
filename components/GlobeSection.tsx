@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import dynamic from "next/dynamic";
-import { motion, AnimatePresence, useInView } from "framer-motion";
+import { motion, AnimatePresence, useInView } from "motion/react";
 import { IconArrowLeft } from "@tabler/icons-react";
 import DecryptedText from "./DecryptedText";
 import Masonry from "./Masonry";

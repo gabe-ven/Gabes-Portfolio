@@ -1,6 +1,5 @@
 "use client";
 import {
-  useMotionValueEvent,
   useScroll,
   useTransform,
   motion,
@@ -43,7 +42,6 @@ export const Timeline = ({
   });
 
   const heightTransform = useTransform(scrollYProgress, [0, 1], [0, height]);
-  const opacityTransform = useTransform(scrollYProgress, [0, 0.1], [0, 1]);
 
   return (
     <div className="w-full font-sans md:px-10" ref={containerRef}>
@@ -83,7 +81,7 @@ export const Timeline = ({
 
         <div className="absolute left-8 top-0 bottom-0 w-[2px] bg-white/20 overflow-hidden">
           <motion.div
-            style={{ height: heightTransform }}
+            style={{ height: heightTransform, opacity: 1 }}
             className="absolute inset-x-0 top-0 w-[2px] bg-white rounded-full"
           />
         </div>
