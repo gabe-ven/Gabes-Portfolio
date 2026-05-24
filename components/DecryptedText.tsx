@@ -288,6 +288,8 @@ export default function DecryptedText({
           if (entry.isIntersecting && !hasAnimated) {
             triggerDecrypt();
             setHasAnimated(true);
+          } else if (!entry.isIntersecting) {
+            setHasAnimated(false);
           }
         });
       },
