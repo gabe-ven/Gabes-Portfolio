@@ -1,17 +1,19 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import dynamic from "next/dynamic";
 import Header from "@/components/Header";
-import TargetCursor from "@/components/TargetCursor";
 import PageBackground from "@/components/PageBackground";
 import { HeroAboutBlendProvider } from "@/components/HeroAboutBlend";
 import HeroSection from "@/components/HeroSection";
 import AboutSection from "@/components/AboutSection";
-import ExperienceSection from "@/components/ExperienceSection";
-import ProjectsSection from "@/components/ProjectsSection";
-import GlobeSection from "@/components/GlobeSection";
 import ScrollDrivenDarkVeil from "@/components/ScrollDrivenDarkVeil";
-import Particles from "@/components/Particles";
+
+const TargetCursor = dynamic(() => import("@/components/TargetCursor"), { ssr: false });
+const ExperienceSection = dynamic(() => import("@/components/ExperienceSection"), { ssr: false });
+const ProjectsSection = dynamic(() => import("@/components/ProjectsSection"), { ssr: false });
+const GlobeSection = dynamic(() => import("@/components/GlobeSection"), { ssr: false });
+const Particles = dynamic(() => import("@/components/Particles"), { ssr: false });
 
 // Particles are always fully visible — the DarkVeil on top fades out as you
 // leave the hero, revealing the particles underneath. No scroll-driven opacity
@@ -22,7 +24,7 @@ function GlobalParticles() {
 
   useEffect(() => {
     setIsMobile(window.innerWidth < 768);
-    const t = setTimeout(() => setMounted(true), 400);
+    const t = setTimeout(() => setMounted(true), 1800);
     return () => clearTimeout(t);
   }, []);
 
