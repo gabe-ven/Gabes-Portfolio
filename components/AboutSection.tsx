@@ -269,7 +269,7 @@ export default function AboutSection() {
       ref={aboutRef}
       id="about"
       className="overflow-y-auto md:overflow-hidden relative flex items-start md:items-center pt-20 pb-8 md:py-24 px-4 sm:px-8"
-      style={{ minHeight: "100svh" }}
+      style={{ minHeight: "100svh", scrollSnapAlign: "start", scrollSnapStop: "always" }}
     >
       <div className="relative z-10 max-w-6xl mx-auto w-full">
 

@@ -1,288 +1,192 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
-import { motion } from "framer-motion";
-import type Lenis from "lenis";
-import ScrollStack, { ScrollStackItem } from "./ScrollStack";
+import Image from "next/image";
+import { useRef, useEffect, useCallback } from "react";
+import { Timeline } from "@/components/ui/timeline";
+import { CardContainer, CardBody, CardItem } from "@/components/ui/3d-card";
 import DecryptedText from "./DecryptedText";
 
 const experiences = [
   {
-    title: "Software Engineer Intern",
+    dateLabel: "Jun '26",
     company: "BS Code",
+    title: "Software Engineer Intern",
     period: "Jun 2026 – Aug 2026",
     location: "Tokyo, Japan",
-    bg: "#0055ff",
+    logo: "bscode-logo.png",
+    description: "Upcoming internship building software products in Tokyo.",
+    skills: ["TypeScript", "React", "Software Engineering"],
   },
   {
-    title: "Software Engineer Associate",
+    dateLabel: "Jan '26",
+    company: "GenServe.AI",
+    title: "AI Platform Testing Intern",
+    period: "Jan 2026 – Apr 2026",
+    location: "Remote",
+    logo: "genserve.jpeg",
+    description: "Tested and validated AI platform features for GenServe.AI.",
+    skills: ["AI", "Testing", "QA"],
+  },
+  {
+    dateLabel: "Oct '25",
     company: "AI Collective",
+    title: "Software Engineer Associate",
     period: "Oct 2025 – Present",
     location: "Davis, CA",
-    bg: "#e82020",
+    logo: "aicollective.png",
+    description:
+      "Building and shipping AI-powered applications and developer tools for the UC Davis community.",
+    skills: ["AI", "LLMs", "Python", "Next.js"],
   },
   {
-    title: "Frontend Developer",
+    dateLabel: "Oct '25",
     company: "#include at Davis",
+    title: "Frontend Developer",
     period: "Oct 2025 – Present",
     location: "Davis, CA",
-    bg: "#f5a800",
+    logo: "include.jpeg",
+    circular: true,
+    description:
+      "Developing the frontend for UC Davis's largest CS club — building tools and interfaces members actually use.",
+    skills: ["React", "TypeScript", "Tailwind"],
   },
   {
+    dateLabel: "Feb '25",
+    company: "NASA JPL",
     title: "Software Engineer Intern",
-    company: "NASA Jet Propulsion Laboratory",
     period: "Feb 2025 – Sep 2026",
     location: "Pasadena, CA",
-    bg: "#00a85a",
+    logo: "nasa_jpl.jpg",
+    whiteBg: true,
+    description:
+      "Engineering software at the Jet Propulsion Laboratory supporting space mission operations.",
+    skills: ["Python", "C++", "Systems"],
   },
   {
-    title: "Math Instructor",
+    dateLabel: "Aug '22",
     company: "Mathnasium",
+    title: "Math Instructor",
     period: "Aug 2022 – Aug 2024",
     location: "La Cañada, CA",
-    bg: "#ff5c00",
+    logo: "mathnasium.jpg",
+    whiteBg: true,
+    description:
+      "Taught math from arithmetic to calculus to K–12 students, building structured lesson plans tailored to each student.",
+    skills: ["Teaching", "Curriculum Design"],
   },
 ];
 
-const SCROLL_EDGE = 32;
-const HANDOFF_COOLDOWN = 900; // ms — ignore repeat wheel events after a handoff
+const HANDOFF_COOLDOWN = 700;
 
-/** Space between cards so only the active one is visible until you scroll */
-function useCardGap() {
-  const [gap, setGap] = useState(480);
-
-  useEffect(() => {
-    const update = () => {
-      const vh = window.innerHeight;
-      setGap(Math.round(vh * 0.48));
-    };
-    update();
-    window.addEventListener("resize", update);
-    return () => window.removeEventListener("resize", update);
-  }, []);
-
-  return gap;
+function ExperienceCard({ exp }: { exp: typeof experiences[0] }) {
+  return (
+    <CardContainer containerClassName="w-fit mx-auto" className="inter-var">
+      <CardBody className="relative group/card dark:hover:shadow-2xl dark:hover:shadow-white/[0.1] bg-black border-white/[0.2] w-[min(90vw,32rem)] h-auto rounded-xl p-6 border">
+        <CardItem
+          translateZ={80}
+          className="text-xl font-bold text-white"
+          style={{ fontFamily: "var(--font-space-grotesk)" }}
+        >
+          {exp.company}
+        </CardItem>
+        <CardItem
+          as="p"
+          translateZ={60}
+          className="text-neutral-400 text-sm mt-2"
+        >
+          {exp.title}
+        </CardItem>
+        <CardItem translateZ={100} className="w-full mt-4">
+          <div className="h-72 w-full rounded-xl overflow-hidden flex items-center justify-center bg-white p-4">
+            <Image
+              src={`/logos/${exp.logo}`}
+              alt={exp.company}
+              width={1200}
+              height={1200}
+              quality={100}
+              sizes="(max-width: 768px) 90vw, 32rem"
+              className={exp.circular ? "rounded-full w-52 h-52 object-cover scale-110" : "mix-blend-multiply w-full h-full object-contain"}
+            />
+          </div>
+        </CardItem>
+        <div className="flex justify-between items-center mt-6">
+          <CardItem translateZ={50} className="text-xs font-mono text-neutral-500">
+            {exp.period}
+          </CardItem>
+          <CardItem translateZ={50} className="text-xs text-neutral-500">
+            {exp.location}
+          </CardItem>
+        </div>
+      </CardBody>
+    </CardContainer>
+  );
 }
 
 export default function ExperienceSection() {
-  const lenisRef = useRef<Lenis | null>(null);
-  const stackEndReachedRef = useRef(false);
-  const handingOffRef = useRef(false);
-  const itemDistance = useCardGap();
-  const [titleDone, setTitleDone] = useState(false);
-  const [animateIn, setAnimateIn] = useState(false);
-  const [stackInteractive, setStackInteractive] = useState(false);
-  const [stackReady, setStackReady] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
-  const blockScrollRef = useRef(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const handingOffRef = useRef(false);
 
-  // Window-level wheel blocker. Registered once; the ref gates it.
-  // This fires before Lenis's own listeners because we add it here first,
-  // but we also call lenis.stop() directly as a second line of defence.
-  useEffect(() => {
-    const block = (e: WheelEvent) => {
-      if (blockScrollRef.current) {
-        e.preventDefault();
-        e.stopPropagation();
-      }
-    };
-    window.addEventListener("wheel", block, { passive: false, capture: true });
-    return () => window.removeEventListener("wheel", block, { capture: true });
-  }, []);
-
-  // Pop animation only plays when entering from above (About → Experience).
-  // Everything — window wheel, lenis, pointer-events — is locked from the
-  // instant the section enters view, not after the delay.
-  useEffect(() => {
-    let entryTimer: ReturnType<typeof setTimeout>;
-    let interactTimer: ReturnType<typeof setTimeout>;
-    const CARD_ANIM_MS = 900;
-
-    const resetStack = () => {
-      lenisRef.current?.scrollTo(0, { immediate: true });
-    };
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          const fromBelow = entry.boundingClientRect.top > 0;
-          if (fromBelow) {
-            resetStack();
-            blockScrollRef.current = true;
-            setAnimateIn(true);
-            entryTimer = setTimeout(() => {
-              setTitleDone(true);
-              interactTimer = setTimeout(() => {
-                blockScrollRef.current = false;
-                setStackInteractive(true);
-              }, CARD_ANIM_MS);
-            }, 900);
-          } else {
-            blockScrollRef.current = false;
-            setAnimateIn(false);
-            setTitleDone(true);
-            setStackInteractive(true);
-          }
-        } else {
-          clearTimeout(entryTimer);
-          clearTimeout(interactTimer);
-          blockScrollRef.current = false;
-          setAnimateIn(false);
-          setTitleDone(false);
-          setStackInteractive(false);
-        }
-      },
-      { threshold: 0.5 },
-    );
-    if (sectionRef.current) observer.observe(sectionRef.current);
-    return () => { observer.disconnect(); clearTimeout(entryTimer); clearTimeout(interactTimer); };
-  }, []);
-
-  const handleLenisReady = useCallback((lenis: Lenis) => {
-    lenisRef.current = lenis;
-    setStackReady(true);
+  const handoff = useCallback((direction: "up" | "down") => {
+    if (handingOffRef.current) return;
+    handingOffRef.current = true;
+    setTimeout(() => { handingOffRef.current = false; }, HANDOFF_COOLDOWN);
+    const sections = Array.from(document.querySelectorAll("section[id]"));
+    const idx = sections.indexOf(sectionRef.current!);
+    const target = direction === "up" ? sections[idx - 1] : sections[idx + 1];
+    if (!target) return;
+    target.scrollIntoView({ behavior: "smooth", block: "start" });
   }, []);
 
   useEffect(() => {
-    if (!stackReady || !titleDone) return;
-
-    const scroller = document.querySelector(
-      "#experience .experience-scroll-stack",
-    );
-    if (!(scroller instanceof HTMLElement)) return;
-
-    const onWheel = (event: WheelEvent) => {
-      const lenis = lenisRef.current;
-      if (!lenis) return;
-
-      const goingUp = event.deltaY < 0;
-      const goingDown = event.deltaY > 0;
-      const scrollY = lenis.scroll;
-      const limit = lenis.limit;
-      if (limit < SCROLL_EDGE) return;
-
-      const atTop = scrollY <= SCROLL_EDGE;
-      const atBottom = stackEndReachedRef.current || scrollY >= limit - 10;
-
-      const shouldHandoff = (goingUp && atTop) || (goingDown && atBottom);
-      if (!shouldHandoff) return;
-
-      // Always block the event during cooldown — returning early without
-      // preventing lets fast scroll events overshoot the target section.
-      event.preventDefault();
-      event.stopPropagation();
-
-      if (handingOffRef.current) return;
-      handingOffRef.current = true;
-      setTimeout(() => { handingOffRef.current = false; }, HANDOFF_COOLDOWN);
-
-      const sections = Array.from(document.querySelectorAll("section[id]"));
-      const expSection = document.getElementById("experience");
-      const idx = sections.indexOf(expSection!);
-      const target = goingUp ? sections[idx - 1] : sections[idx + 1];
-      if (!target) return;
-
-      // Pause mandatory snap so it doesn't fight the smooth scroll mid-animation.
-      const html = document.documentElement;
-      html.style.scrollSnapType = "none";
-
-      target.scrollIntoView({ behavior: "smooth", block: "start" });
-
-      // After smooth scroll completes: pin exactly to the target before re-enabling
-      // snap, so mandatory snap can't choose the wrong section.
-      setTimeout(() => {
-        target.scrollIntoView({ behavior: "instant", block: "start" });
-        html.style.scrollSnapType = "";
-      }, 800);
+    const el = scrollRef.current;
+    if (!el) return;
+    const onWheel = (e: WheelEvent) => {
+      const atTop    = el.scrollTop <= 2;
+      const atBottom = el.scrollTop >= el.scrollHeight - el.clientHeight - 2;
+      if (e.deltaY < 0 && atTop)    { e.preventDefault(); handoff("up");   return; }
+      if (e.deltaY > 0 && atBottom) { e.preventDefault(); handoff("down"); return; }
     };
+    el.addEventListener("wheel", onWheel, { passive: false });
+    return () => el.removeEventListener("wheel", onWheel);
+  }, [handoff]);
 
-    scroller.addEventListener("wheel", onWheel, { passive: false, capture: true });
-    return () => scroller.removeEventListener("wheel", onWheel, { capture: true });
-  }, [stackReady, titleDone]);
+  const data = experiences.map((exp) => ({
+    title: exp.dateLabel,
+    content: <ExperienceCard exp={exp} />,
+  }));
 
   return (
     <section
       ref={sectionRef}
       id="experience"
-      className="relative"
-      style={{
-        height: "100svh",
-        overflow: "visible",
-      }}
+      style={{ height: "100svh", overflow: "hidden", scrollSnapAlign: "start", scrollSnapStop: "always" }}
     >
-      <motion.div
-        className="absolute left-0 right-0 pointer-events-none"
-        style={{ top: "11vh", zIndex: 5, textAlign: "center" }}
-      >
-        <h2
-          className="text-4xl md:text-5xl font-semibold tracking-[0.18em] uppercase text-center"
-          style={{ fontFamily: "var(--font-space-grotesk)" }}
-        >
-          <DecryptedText
-            text="EXPERIENCE"
-            animateOn="view"
-            sequential={true}
-            revealDirection="center"
-            speed={80}
-            characters="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-            className="text-white/90"
-            encryptedClassName="text-white/25"
-          />
-        </h2>
-      </motion.div>
-
       <div
-        className="absolute inset-0 z-10 experience-stack-wrap"
-        style={{ pointerEvents: stackInteractive ? undefined : "none" }}
+        ref={scrollRef}
+        style={{ height: "100%", overflowY: "scroll", scrollbarWidth: "none" }}
       >
-        <ScrollStack
-          className="experience-scroll-stack h-full w-full"
-          itemDistance={itemDistance}
-          stackPosition="30%"
-          rotateXAmount={20}
-          onLenisReady={handleLenisReady}
-          onStackEndReached={(reached) => {
-            stackEndReachedRef.current = reached;
-          }}
-        >
-          {experiences.map((exp, index) => (
-            <ScrollStackItem
-              key={`${exp.company}-${exp.period}`}
-              style={{
-                padding: 0,
-                background: "transparent",
-                boxShadow: "none",
-                border: "none",
-              }}
+        <Timeline
+          data={data}
+          scrollContainer={scrollRef}
+          heading={
+            <h2
+              className="text-4xl md:text-5xl font-semibold tracking-[0.18em] uppercase"
+              style={{ fontFamily: "var(--font-space-grotesk)" }}
             >
-              <motion.div
-                initial={{ opacity: index === 0 ? 0 : 1, y: index === 0 ? 80 : 0 }}
-                animate={index === 0 ? { opacity: titleDone ? 1 : 0, y: titleDone ? 0 : 80 } : { opacity: 1, y: 0 }}
-                transition={{
-                  duration: index === 0 && animateIn ? 0.9 : 0,
-                  ease: [0.16, 1, 0.3, 1],
-                }}
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  borderRadius: "40px",
-                  background: exp.bg,
-                  padding: "3rem",
-                  boxShadow: `0 0 35px 8px ${exp.bg}66, 0 12px 40px rgba(0,0,0,0.4)`,
-                  color: "#ffffff",
-                  transformOrigin: "50% 0%",
-                  willChange: "transform",
-                }}
-              >
-                <h2>{exp.company}</h2>
-                <p style={{ color: "rgba(255, 255, 255, 0.85)" }}>
-                  {exp.title} · {exp.period}
-                </p>
-                <p style={{ color: "rgba(255, 255, 255, 0.85)" }}>{exp.location}</p>
-              </motion.div>
-            </ScrollStackItem>
-          ))}
-        </ScrollStack>
+              <DecryptedText
+                text="EXPERIENCE"
+                animateOn="view"
+                sequential
+                revealDirection="center"
+                speed={80}
+                characters="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+                className="text-white/90"
+                encryptedClassName="text-white/25"
+              />
+            </h2>
+          }
+        />
       </div>
     </section>
   );

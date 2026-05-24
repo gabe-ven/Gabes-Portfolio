@@ -70,8 +70,8 @@ export default function GlobeSection() {
       <section
         ref={sectionRef}
         id="photos"
-        className="snap-start relative overflow-hidden"
-        style={{ height: "100svh" }}
+        className="relative overflow-hidden"
+        style={{ height: "100svh", scrollSnapAlign: "start", scrollSnapStop: "always" }}
       >
         {/* Ambient glow */}
         <motion.div

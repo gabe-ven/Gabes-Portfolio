@@ -5,6 +5,7 @@
   50%, 100%  { opacity: 0; }
 }
 
+
 @layer base {
   * {
     @apply border-white/10;
@@ -13,26 +14,8 @@
   html {
     @apply scroll-smooth;
     scroll-snap-type: y mandatory;
-    scroll-padding-top: 3.5rem;
-    background: #000000;
-  }
-
-  #hero,
-  #about,
-  #experience,
-  #projects,
-  #photos {
-    scroll-snap-align: start;
-  }
-
-  #experience {
-    scroll-snap-stop: always;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    html {
-      scroll-snap-type: none;
-    }
+    scroll-padding-top: 0;
+    background: #09090e;
   }
 
   body {

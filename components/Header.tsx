@@ -16,18 +16,18 @@ export default function Header() {
   const navRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
-    const observers: IntersectionObserver[] = [];
-    TABS.forEach(({ id }) => {
-      const el = document.getElementById(id);
-      if (!el) return;
-      const obs = new IntersectionObserver(
-        ([entry]) => { if (entry.isIntersecting) setActiveId(id); },
-        { threshold: 0.5 }
-      );
-      obs.observe(el);
-      observers.push(obs);
-    });
-    return () => observers.forEach((obs) => obs.disconnect());
+    const update = () => {
+      const y = window.scrollY + window.innerHeight * 0.5;
+      let current = TABS[0].id;
+      for (const { id } of TABS) {
+        const el = document.getElementById(id);
+        if (el && el.offsetTop <= y) current = id;
+      }
+      setActiveId(current);
+    };
+    window.addEventListener("scroll", update, { passive: true });
+    update();
+    return () => window.removeEventListener("scroll", update);
   }, []);
 
   const scrollTo = (id: string) =>
