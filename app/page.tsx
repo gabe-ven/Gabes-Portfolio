@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, type ComponentType } from "react";
 import dynamic from "next/dynamic";
 import Header from "@/components/Header";
 import PageBackground from "@/components/PageBackground";
@@ -9,26 +9,31 @@ import HeroSection from "@/components/HeroSection";
 import AboutSection from "@/components/AboutSection";
 import ScrollDrivenDarkVeil from "@/components/ScrollDrivenDarkVeil";
 
+// Lightweight dynamic imports — small chunks, safe to include in initial manifest
 const TargetCursor = dynamic(() => import("@/components/TargetCursor"), { ssr: false });
 const ExperienceSection = dynamic(() => import("@/components/ExperienceSection"), { ssr: false });
 const ProjectsSection = dynamic(() => import("@/components/ProjectsSection"), { ssr: false });
-const GlobeSection = dynamic(() => import("@/components/GlobeSection"), { ssr: false });
-const Particles = dynamic(() => import("@/components/Particles"), { ssr: false });
 
-// Particles are always fully visible — the DarkVeil on top fades out as you
-// leave the hero, revealing the particles underneath. No scroll-driven opacity
-// on the particles means zero pop-in or seam between sections.
+// Particles — ogl is ~6MB of vendor code. Load only after the page is interactive
+// via a raw import() in useEffect so Next.js never adds the ogl chunk to the
+// initial HTML manifest.
 function GlobalParticles() {
-  const [mounted, setMounted] = useState(false);
+  const [ParticlesComp, setParticlesComp] = useState<ComponentType<Record<string, unknown>> | null>(null);
   const [isMobile, setIsMobile] = useState(true);
 
   useEffect(() => {
-    setIsMobile(window.innerWidth < 768);
-    const t = setTimeout(() => setMounted(true), 1800);
+    const mobile = window.innerWidth < 768;
+    setIsMobile(mobile);
+    if (mobile) return;
+    const t = setTimeout(() => {
+      import("@/components/Particles").then((m) => {
+        setParticlesComp(() => m.default as ComponentType<Record<string, unknown>>);
+      });
+    }, 1800);
     return () => clearTimeout(t);
   }, []);
 
-  if (!mounted || isMobile) return null;
+  if (!ParticlesComp || isMobile) return null;
 
   return (
     <div
@@ -40,7 +45,7 @@ function GlobalParticles() {
         pointerEvents: "none",
       }}
     >
-      <Particles
+      <ParticlesComp
         particleCount={80}
         particleSpread={10}
         speed={0.1}
@@ -55,6 +60,34 @@ function GlobalParticles() {
   );
 }
 
+// GlobeSection — Three.js + ThreeGlobe is ~16MB uncompressed. Load only when
+// the user has scrolled near the section via IntersectionObserver.
+function LazyGlobeSection() {
+  const [GlobeSectionComp, setGlobeSectionComp] = useState<ComponentType | null>(null);
+  const placeholderRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = placeholderRef.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          obs.disconnect();
+          import("@/components/GlobeSection").then((m) => {
+            setGlobeSectionComp(() => m.default as ComponentType);
+          });
+        }
+      },
+      { rootMargin: "400px" }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
+  if (GlobeSectionComp) return <GlobeSectionComp />;
+  return <div ref={placeholderRef} style={{ minHeight: "100svh" }} />;
+}
+
 export default function Home() {
   const [isMobile, setIsMobile] = useState(true);
   useEffect(() => { setIsMobile(window.innerWidth < 768); }, []);
@@ -65,17 +98,15 @@ export default function Home() {
       <div className="text-white" style={{ position: "relative", zIndex: 1 }}>
         {!isMobile && <TargetCursor spinDuration={2} hideDefaultCursor parallaxOn hoverDuration={0.2} />}
         <Header />
-        {/* Particles sit below DarkVeil in DOM → DarkVeil paints on top */}
         <GlobalParticles />
         <HeroAboutBlendProvider>
-          {/* DarkVeil fades from 1 → 0 as user leaves hero, fully uncovering particles */}
           <ScrollDrivenDarkVeil />
           <HeroSection />
           <AboutSection />
         </HeroAboutBlendProvider>
         <ExperienceSection />
         <ProjectsSection />
-        <GlobeSection />
+        <LazyGlobeSection />
       </div>
     </>
   );

@@ -76,7 +76,7 @@ void main(){
 }
 `;
 
-interface DarkVeilProps {
+export interface DarkVeilProps {
   hueShift?: number;
   noiseIntensity?: number;
   scanlineIntensity?: number;

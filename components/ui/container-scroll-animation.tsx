@@ -49,7 +49,6 @@ export const ContainerScroll = ({
   const scrollScale = useTransform(scrollYProgress, [0, 0.6], [1, 0.93]);
 
   if (mode === "inline") {
-
     return (
       <div
         ref={containerRef}
@@ -154,7 +153,6 @@ export const Card = ({
   );
 };
 
-/** Per-item entrance animation — fades + tilts in when the card enters the viewport. */
 export function ScrollAnimatedCard({
   children,
   className,

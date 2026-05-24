@@ -46,7 +46,8 @@ function ProductCard({
   return (
     <motion.div
       style={{ x: translate }}
-      animate={{ y: flipped ? 0 : 0 }}
+      whileHover={{ y: -10, scale: 1.02 }}
+      transition={{ duration: 0.25, ease: "easeOut" }}
       className="h-72 w-[26rem] relative shrink-0"
     >
       <ProjectFlipCard
