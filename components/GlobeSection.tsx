@@ -84,10 +84,10 @@ export default function GlobeSection() {
           }}
         />
 
-        <div className="h-full flex flex-col md:flex-row items-center justify-center gap-6 md:gap-10 px-6 md:px-16 overflow-hidden relative z-10">
+        <div className="h-full flex flex-col md:flex-row items-center justify-center gap-4 md:gap-10 px-6 md:px-16 pt-16 md:pt-0 overflow-hidden relative z-10">
           {/* Left: text */}
           <motion.div
-            className="flex flex-col gap-4 md:w-2/5 shrink-0 z-10"
+            className="flex flex-col gap-3 md:gap-4 items-center md:items-start md:w-2/5 shrink-0 z-10"
             animate={{
               opacity: isInView ? 1 : 0,
               x: isInView ? 0 : -48,
@@ -96,7 +96,7 @@ export default function GlobeSection() {
             transition={{ duration: 0.85, delay: isInView ? 0.18 : 0, ease: [0.16, 1, 0.3, 1] }}
           >
             <h2
-              className="text-4xl md:text-5xl font-semibold tracking-[0.18em] uppercase text-center md:text-left"
+              className="text-3xl md:text-5xl font-semibold tracking-[0.12em] md:tracking-[0.18em] uppercase text-center md:text-left"
               style={{ fontFamily: "var(--font-space-grotesk)" }}
             >
               <DecryptedText
@@ -112,7 +112,7 @@ export default function GlobeSection() {
               />
             </h2>
             <p
-              className="text-sm text-white/45 max-w-xs text-center md:text-left leading-relaxed"
+              className="text-sm text-white/45 max-w-xs mx-auto md:mx-0 text-center md:text-left leading-relaxed"
               style={{ fontFamily: "var(--font-space-grotesk)" }}
             >
               Every pin is a place I&apos;ve been. Tap one to see it through my lens.
@@ -121,7 +121,7 @@ export default function GlobeSection() {
 
           {/* Right: Globe */}
           <motion.div
-            className="relative w-full md:w-3/5 max-w-[min(90vw,85vh)]"
+            className="relative w-full md:w-3/5 max-w-[min(82vw,42vh)] md:max-w-[min(90vw,85vh)]"
             style={{ aspectRatio: "1/1" }}
             animate={{
               opacity: isInView ? 1 : 0,

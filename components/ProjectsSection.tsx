@@ -45,10 +45,10 @@ function ProductCard({
 
   return (
     <motion.div
-      style={{ x: translate, willChange: "transform" }}
+      style={{ x: translate }}
       whileHover={{ y: -10, scale: 1.02 }}
       transition={{ duration: 0.25, ease: "easeOut" }}
-      className="h-72 w-[26rem] relative shrink-0"
+      className="h-[52vw] w-[80vw] sm:h-72 sm:w-[26rem] relative shrink-0"
     >
       <ProjectFlipCard
         project={project}
@@ -64,18 +64,19 @@ export default function ProjectsSection() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const handingOffRef = useRef(false);
   const sectionRef = useRef<HTMLElement>(null);
-
   // Drive all parallax from the inner container's scroll
   const { scrollYProgress } = useScroll({ container: scrollRef });
 
   const springConfig = { stiffness: 180, damping: 40 };
+  // Stable on mount — mobile gets less travel so cards stay discoverable
+  const travelPx = useRef(typeof window !== "undefined" && window.innerWidth < 640 ? 400 : 1000).current;
 
   const translateX = useSpring(
-    useTransform(scrollYProgress, [0, 1], [0, 1000]),
+    useTransform(scrollYProgress, [0, 1], [0, travelPx]),
     springConfig,
   );
   const translateXReverse = useSpring(
-    useTransform(scrollYProgress, [0, 1], [0, -1000]),
+    useTransform(scrollYProgress, [0, 1], [0, -travelPx]),
     springConfig,
   );
   const rotateX = useSpring(
@@ -132,14 +133,14 @@ export default function ProjectsSection() {
       className="relative overflow-hidden"
       style={{ height: "100svh", zIndex: 1, scrollSnapAlign: "start", scrollSnapStop: "always" }}
     >
-      {/* Inner scroll container — perspective lives here so 3D applies to children */}
+      {/* Inner scroll container — perspective here, preserve-3d scoped to content only */}
       <div
         ref={scrollRef}
-        className="h-full w-full overflow-y-scroll [perspective:1000px] [transform-style:preserve-3d]"
+        className="h-full w-full overflow-y-scroll [perspective:1000px]"
         style={{ scrollbarWidth: "none" }}
       >
-        {/* 300vh of content so the parallax has room to animate */}
-        <div className="h-[300vh] antialiased relative flex flex-col" style={{ paddingTop: "11vh", paddingBottom: "4rem" }}>
+        {/* 300vh of content — preserve-3d scoped here so only cards see the 3D context */}
+        <div className="h-[300vh] antialiased relative flex flex-col [transform-style:preserve-3d]" style={{ paddingTop: "11vh", paddingBottom: "4rem" }}>
 
           {/* Header */}
           <div className="max-w-7xl relative mx-auto py-10 md:py-20 px-4 w-full">

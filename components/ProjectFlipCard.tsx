@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect, useCallback, memo } from "react";
 import Image from "next/image";
-import { motion, useSpring } from "motion/react";
+import { motion } from "motion/react";
 import * as Fa from "react-icons/fa";
 import { cn } from "@/lib/utils";
 
@@ -24,7 +24,7 @@ type ProjectFlipCardProps = {
   className?: string;
 };
 
-export default function ProjectFlipCard({
+function ProjectFlipCard({
   project,
   isActive,
   flipped,
@@ -33,19 +33,16 @@ export default function ProjectFlipCard({
 }: ProjectFlipCardProps) {
   const imageBg = project.imageBg;
   const cardRef = useRef<HTMLDivElement>(null);
-  const [mousePos, setMousePos] = useState({ x: 0.5, y: 0.5 });
+  const tiltLayerRef = useRef<HTMLDivElement>(null);
+  const specularRef = useRef<HTMLDivElement>(null);
   const [isHovered, setIsHovered] = useState(false);
 
-  const tiltX = useSpring(0, { stiffness: 180, damping: 28 });
-  const tiltY = useSpring(0, { stiffness: 180, damping: 28 });
-
   useEffect(() => {
-    if (flipped) {
-      tiltX.set(0);
-      tiltY.set(0);
+    if (flipped && tiltLayerRef.current) {
+      tiltLayerRef.current.style.transform = "";
       setIsHovered(false);
     }
-  }, [flipped, tiltX, tiltY]);
+  }, [flipped]);
 
   const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     if (flipped || !isActive) return;
@@ -54,20 +51,22 @@ export default function ProjectFlipCard({
     const rect = card.getBoundingClientRect();
     const x = (e.clientX - rect.left) / rect.width;
     const y = (e.clientY - rect.top) / rect.height;
-    tiltX.set((0.5 - y) * 12);
-    tiltY.set((x - 0.5) * 12);
-    setMousePos({ x, y });
-  }, [flipped, isActive, tiltX, tiltY]);
+    if (tiltLayerRef.current) {
+      tiltLayerRef.current.style.transform = `rotateX(${(0.5 - y) * 12}deg) rotateY(${(x - 0.5) * 12}deg)`;
+    }
+    if (specularRef.current) {
+      specularRef.current.style.background = `radial-gradient(circle at ${x * 100}% ${y * 100}%, rgba(255,255,255,0.10) 0%, transparent 55%)`;
+    }
+  }, [flipped, isActive]);
 
   const handleMouseEnter = useCallback(() => {
     if (!flipped && isActive) setIsHovered(true);
   }, [flipped, isActive]);
 
   const handleMouseLeave = useCallback(() => {
-    tiltX.set(0);
-    tiltY.set(0);
+    if (tiltLayerRef.current) tiltLayerRef.current.style.transform = "";
     setIsHovered(false);
-  }, [tiltX, tiltY]);
+  }, []);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" || e.key === " ") {
@@ -104,9 +103,10 @@ export default function ProjectFlipCard({
         }
       }}
     >
-      {/* Tilt layer — driven by mouse position springs */}
-      <motion.div
-        style={{ rotateX: tiltX, rotateY: tiltY }}
+      {/* Tilt layer — driven by CSS transform directly, no springs */}
+      <div
+        ref={tiltLayerRef}
+        style={{ transition: "transform 0.15s ease-out" }}
         className="relative h-full w-full [transform-style:preserve-3d]"
       >
         {/* Flip layer */}
@@ -117,8 +117,8 @@ export default function ProjectFlipCard({
         >
           {/* Front face */}
           <div
-            className="absolute inset-0 overflow-hidden rounded-[1%] bg-[#1D1F2F] [backface-visibility:hidden]"
-            style={{ transform: "translateZ(1px)" }}
+            className="absolute inset-0 overflow-hidden rounded-[1%] [backface-visibility:hidden]"
+            style={{ transform: "translateZ(1px)", backgroundColor: imageBg ?? "#1D1F2F" }}
           >
             <Image
               width={832}
@@ -136,13 +136,11 @@ export default function ProjectFlipCard({
               priority={false}
             />
 
-            {/* Specular highlight that follows cursor */}
+            {/* Specular highlight that follows cursor — updated via ref, no re-render */}
             <div
+              ref={specularRef}
               className="pointer-events-none absolute inset-0 z-10 rounded-[1%] transition-opacity duration-300"
-              style={{
-                background: `radial-gradient(circle at ${mousePos.x * 100}% ${mousePos.y * 100}%, rgba(255,255,255,0.10) 0%, transparent 55%)`,
-                opacity: isHovered ? 1 : 0,
-              }}
+              style={{ opacity: isHovered ? 1 : 0 }}
             />
 
             {/* Title overlay */}
@@ -229,7 +227,9 @@ export default function ProjectFlipCard({
             </div>
           </div>
         </motion.div>
-      </motion.div>
+      </div>
     </div>
   );
 }
+
+export default memo(ProjectFlipCard);

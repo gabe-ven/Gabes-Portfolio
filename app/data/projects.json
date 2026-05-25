@@ -119,8 +119,8 @@
     },
     {
       "id": 10,
-      "title": "Yesterday Davis",
-      "description": "Built the product info page and shopping cart for Yesterday Davis, a vintage clothing store run by #include at Davis.",
+      "title": "Yesterday Vintage",
+      "description": "Built the product info page and shopping cart for Yesterday Vintage, a vintage clothing store run by #include at Davis.",
       "image": "/logos/568685580_17944584729071475_672046258409409050_n.jpg",
       "imageBg": "#0a0a0a",
       "tags": ["React", "Next.js", "TypeScript", "Tailwind CSS"],
