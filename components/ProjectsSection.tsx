@@ -14,9 +14,7 @@ import projectsData from "@/app/data/projects.json";
 
 const { projects } = projectsData;
 
-// Pad to 15 items (5 per row × 3 rows)
-const products: FlipProject[] = Array.from({ length: 15 }, (_, i) => {
-  const p = projects[i % projects.length];
+function toFlip(p: typeof projects[0]): FlipProject {
   return {
     title: p.title,
     image: p.image,
@@ -26,11 +24,14 @@ const products: FlipProject[] = Array.from({ length: 15 }, (_, i) => {
     github: p.github,
     demo: (p as { demo?: string }).demo,
   };
-});
+}
 
-const firstRow  = products.slice(0, 5);
-const secondRow = products.slice(5, 10);
-const thirdRow  = products.slice(10, 15);
+// Rows 1 & 2: all 11 unique projects (first 5, next 5, then Yesterday Davis)
+// Row 3: Yesterday Davis pinned at index 2 (the center slot) — always on-screen
+//         regardless of translateX; the 4 surrounding slots are low-priority dupes.
+const firstRow  = projects.slice(0, 5).map(toFlip);
+const secondRow = projects.slice(5, 10).map(toFlip);
+const thirdRow  = [projects[0], projects[1], projects[10], projects[2], projects[3]].map(toFlip);
 
 const HANDOFF_COOLDOWN = 700;
 
@@ -71,11 +72,11 @@ export default function ProjectsSection() {
   const springConfig = { stiffness: 300, damping: 30, bounce: 100 };
 
   const translateX = useSpring(
-    useTransform(scrollYProgress, [0, 1], [0, 1000]),
+    useTransform(scrollYProgress, [0, 1], [-350, 350]),
     springConfig,
   );
   const translateXReverse = useSpring(
-    useTransform(scrollYProgress, [0, 1], [0, -1000]),
+    useTransform(scrollYProgress, [0, 1], [350, -350]),
     springConfig,
   );
   const rotateX = useSpring(
@@ -91,7 +92,7 @@ export default function ProjectsSection() {
     springConfig,
   );
   const translateY = useSpring(
-    useTransform(scrollYProgress, [0, 0.2], [-700, 500]),
+    useTransform(scrollYProgress, [0, 0.2], [-700, 350]),
     springConfig,
   );
 
@@ -138,8 +139,8 @@ export default function ProjectsSection() {
         className="h-full w-full overflow-y-scroll [perspective:1000px] [transform-style:preserve-3d]"
         style={{ scrollbarWidth: "none" }}
       >
-        {/* 300vh of content so the parallax has room to animate */}
-        <div className="h-[300vh] antialiased relative flex flex-col" style={{ paddingTop: "11vh", paddingBottom: "4rem" }}>
+        {/* 200vh of content — cards stay visible throughout the full scroll range */}
+        <div className="h-[200vh] antialiased relative flex flex-col" style={{ paddingTop: "11vh", paddingBottom: "4rem" }}>
 
           {/* Header */}
           <div className="max-w-7xl relative mx-auto py-10 md:py-20 px-4 w-full">
@@ -170,18 +171,19 @@ export default function ProjectsSection() {
           {/* Parallax card rows */}
           <motion.div
             style={{ rotateX, rotateZ, translateY, opacity }}
+            className="overflow-x-visible"
           >
-            <motion.div className="flex flex-row-reverse space-x-reverse space-x-8 mb-8">
+            <motion.div className="flex justify-center flex-row-reverse space-x-reverse space-x-8 mb-8">
               {firstRow.map((p, i) => (
                 <ProductCard key={`${p.title}-${i}`} project={p} translate={translateX} />
               ))}
             </motion.div>
-            <motion.div className="flex flex-row mb-8 space-x-8">
+            <motion.div className="flex justify-center flex-row mb-8 space-x-8">
               {secondRow.map((p, i) => (
                 <ProductCard key={`${p.title}-${i}`} project={p} translate={translateXReverse} />
               ))}
             </motion.div>
-            <motion.div className="flex flex-row-reverse space-x-reverse space-x-8">
+            <motion.div className="flex justify-center flex-row-reverse space-x-reverse space-x-8">
               {thirdRow.map((p, i) => (
                 <ProductCard key={`${p.title}-${i}`} project={p} translate={translateX} />
               ))}
