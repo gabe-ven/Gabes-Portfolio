@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { createContext, useContext, useRef, useEffect, useCallback } from "react";
-import { motion, useMotionValue, useSpring, useTransform } from "motion/react";
+import { motion, useMotionValue, useSpring } from "motion/react";
 import { Timeline } from "@/components/ui/timeline";
 import { CardContainer, CardBody, CardItem } from "@/components/ui/3d-card";
 import DecryptedText from "./DecryptedText";
