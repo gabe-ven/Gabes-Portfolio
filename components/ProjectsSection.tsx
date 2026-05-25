@@ -26,12 +26,11 @@ function toFlip(p: typeof projects[0]): FlipProject {
   };
 }
 
-// Rows 1 & 2: all 11 unique projects (first 5, next 5, then Yesterday Davis)
-// Row 3: Yesterday Davis pinned at index 2 (the center slot) — always on-screen
-//         regardless of translateX; the 4 surrounding slots are low-priority dupes.
 const firstRow  = projects.slice(0, 5).map(toFlip);
-const secondRow = projects.slice(5, 10).map(toFlip);
-const thirdRow  = [projects[0], projects[1], projects[10], projects[2], projects[3]].map(toFlip);
+// Reordered so Gabe's Arcade (pos 1) and Yesterday Davis (pos 3) stay visible mid-scroll
+const secondRow = [projects[6], projects[5], projects[7], projects[10], projects[9], projects[8]].map(toFlip);
+// Decorative row using row-1 projects only — no twiice duplication
+const thirdRow  = [projects[4], projects[1], projects[3], projects[0], projects[2]].map(toFlip);
 
 const HANDOFF_COOLDOWN = 700;
 
@@ -46,11 +45,10 @@ function ProductCard({
 
   return (
     <motion.div
-      style={{ x: translate }}
+      style={{ x: translate, willChange: "transform" }}
       whileHover={{ y: -10, scale: 1.02 }}
       transition={{ duration: 0.25, ease: "easeOut" }}
       className="h-72 w-[26rem] relative shrink-0"
-      style={{ willChange: "transform" }}
     >
       <ProjectFlipCard
         project={project}
