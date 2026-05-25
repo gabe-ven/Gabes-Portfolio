@@ -128,7 +128,7 @@ function ExperienceCard({ exp }: { exp: typeof experiences[0] }) {
                   alt={exp.company}
                   width={1200}
                   height={1200}
-                  quality={100}
+                  quality={85}
                   sizes="(max-width: 768px) 90vw, 32rem"
                   className={
                     exp.circular
@@ -138,7 +138,7 @@ function ExperienceCard({ exp }: { exp: typeof experiences[0] }) {
                 />
               </div>
             </CardItem>
-            <div className="flex justify-between items-center mt-6">
+            <div className="flex justify-between items-center mt-6" style={{ transformStyle: "preserve-3d" }}>
               <CardItem translateZ={50} className="text-xs font-mono text-neutral-500">
                 {exp.period}
               </CardItem>

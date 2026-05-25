@@ -50,6 +50,7 @@ function ProductCard({
       whileHover={{ y: -10, scale: 1.02 }}
       transition={{ duration: 0.25, ease: "easeOut" }}
       className="h-72 w-[26rem] relative shrink-0"
+      style={{ willChange: "transform" }}
     >
       <ProjectFlipCard
         project={project}
@@ -69,14 +70,14 @@ export default function ProjectsSection() {
   // Drive all parallax from the inner container's scroll
   const { scrollYProgress } = useScroll({ container: scrollRef });
 
-  const springConfig = { stiffness: 300, damping: 30, bounce: 100 };
+  const springConfig = { stiffness: 180, damping: 40 };
 
   const translateX = useSpring(
-    useTransform(scrollYProgress, [0, 1], [-350, 350]),
+    useTransform(scrollYProgress, [0, 1], [0, 1000]),
     springConfig,
   );
   const translateXReverse = useSpring(
-    useTransform(scrollYProgress, [0, 1], [350, -350]),
+    useTransform(scrollYProgress, [0, 1], [0, -1000]),
     springConfig,
   );
   const rotateX = useSpring(
@@ -92,7 +93,7 @@ export default function ProjectsSection() {
     springConfig,
   );
   const translateY = useSpring(
-    useTransform(scrollYProgress, [0, 0.2], [-700, 350]),
+    useTransform(scrollYProgress, [0, 0.2], [-700, 500]),
     springConfig,
   );
 
@@ -139,8 +140,8 @@ export default function ProjectsSection() {
         className="h-full w-full overflow-y-scroll [perspective:1000px] [transform-style:preserve-3d]"
         style={{ scrollbarWidth: "none" }}
       >
-        {/* 200vh of content — cards stay visible throughout the full scroll range */}
-        <div className="h-[200vh] antialiased relative flex flex-col" style={{ paddingTop: "11vh", paddingBottom: "4rem" }}>
+        {/* 300vh of content so the parallax has room to animate */}
+        <div className="h-[300vh] antialiased relative flex flex-col" style={{ paddingTop: "11vh", paddingBottom: "4rem" }}>
 
           {/* Header */}
           <div className="max-w-7xl relative mx-auto py-10 md:py-20 px-4 w-full">
@@ -173,17 +174,17 @@ export default function ProjectsSection() {
             style={{ rotateX, rotateZ, translateY, opacity }}
             className="overflow-x-visible"
           >
-            <motion.div className="flex justify-center flex-row-reverse space-x-reverse space-x-8 mb-8">
+            <motion.div className="flex flex-row-reverse space-x-reverse space-x-8 mb-8">
               {firstRow.map((p, i) => (
                 <ProductCard key={`${p.title}-${i}`} project={p} translate={translateX} />
               ))}
             </motion.div>
-            <motion.div className="flex justify-center flex-row mb-8 space-x-8">
+            <motion.div className="flex flex-row mb-8 space-x-8">
               {secondRow.map((p, i) => (
                 <ProductCard key={`${p.title}-${i}`} project={p} translate={translateXReverse} />
               ))}
             </motion.div>
-            <motion.div className="flex justify-center flex-row-reverse space-x-reverse space-x-8">
+            <motion.div className="flex flex-row-reverse space-x-reverse space-x-8">
               {thirdRow.map((p, i) => (
                 <ProductCard key={`${p.title}-${i}`} project={p} translate={translateX} />
               ))}

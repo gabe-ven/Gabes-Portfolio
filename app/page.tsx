@@ -46,7 +46,7 @@ function GlobalParticles() {
       }}
     >
       <ParticlesComp
-        particleCount={80}
+        particleCount={40}
         particleSpread={10}
         speed={0.1}
         particleColors={["#ffffff"]}

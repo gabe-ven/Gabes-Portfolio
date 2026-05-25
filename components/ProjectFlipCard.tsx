@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
+import Image from "next/image";
 import { motion, useSpring } from "motion/react";
 import * as Fa from "react-icons/fa";
 import { cn } from "@/lib/utils";
@@ -35,8 +36,8 @@ export default function ProjectFlipCard({
   const [mousePos, setMousePos] = useState({ x: 0.5, y: 0.5 });
   const [isHovered, setIsHovered] = useState(false);
 
-  const tiltX = useSpring(0, { stiffness: 300, damping: 25 });
-  const tiltY = useSpring(0, { stiffness: 300, damping: 25 });
+  const tiltX = useSpring(0, { stiffness: 180, damping: 28 });
+  const tiltY = useSpring(0, { stiffness: 180, damping: 28 });
 
   useEffect(() => {
     if (flipped) {
@@ -119,7 +120,9 @@ export default function ProjectFlipCard({
             className="absolute inset-0 overflow-hidden rounded-[1%] bg-[#1D1F2F] [backface-visibility:hidden]"
             style={{ transform: "translateZ(1px)" }}
           >
-            <img
+            <Image
+              width={832}
+              height={576}
               className={cn(
                 "absolute inset-0 h-full w-full transition-all duration-500",
                 imageBg ? "object-contain p-4" : "object-cover",
@@ -129,8 +132,8 @@ export default function ProjectFlipCard({
               style={{ backgroundColor: imageBg ?? "#1D1F2F" }}
               alt={project.title}
               src={project.image}
-              loading="eager"
-              decoding="sync"
+              sizes="26rem"
+              priority={false}
             />
 
             {/* Specular highlight that follows cursor */}
