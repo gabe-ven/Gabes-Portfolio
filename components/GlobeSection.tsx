@@ -1,64 +1,240 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import dynamic from "next/dynamic";
-import { motion, AnimatePresence, useInView } from "motion/react";
+import { motion, AnimatePresence, useInView, useMotionValue, useSpring } from "motion/react";
 import { IconArrowLeft } from "@tabler/icons-react";
+import createGlobe, { type COBEOptions } from "cobe";
+import { useRouter } from "next/navigation";
+import { cn } from "@/lib/utils";
 import DecryptedText from "./DecryptedText";
-import Masonry from "./Masonry";
-import galleriesData from "@/data/galleries.json";
 
-const World = dynamic(
-  () => import("@/components/ui/globe").then((m) => m.World),
-  { ssr: false }
-);
+const LOCATIONS = [
+  { id: "sf",    lat: 37.7749, lng: -122.4194 },
+  { id: "japan", lat: 35.6762, lng:  139.6503 },
+];
 
 // ─── Globe config ─────────────────────────────────────────────────────────────
 
-const globeConfig = {
-  pointSize: 4,
-  globeColor: "#062056",
-  showAtmosphere: true,
-  atmosphereColor: "#FFFFFF",
-  atmosphereAltitude: 0.1,
-  emissive: "#062056",
-  emissiveIntensity: 0.1,
-  shininess: 0.9,
-  polygonColor: "rgba(255,255,255,0.7)",
-  ambientLight: "#38bdf8",
-  directionalLeftLight: "#ffffff",
-  directionalTopLight: "#ffffff",
-  pointLight: "#ffffff",
-  arcTime: 1000,
-  arcLength: 0.9,
-  rings: 1,
-  maxRings: 3,
-  initialPosition: { lat: 37.7749, lng: -122.4194 },
-  autoRotate: true,
-  autoRotateSpeed: 0.5,
+const BASE: Partial<COBEOptions> = {
+  devicePixelRatio: 2,
+  phi: 3.0,
+  theta: 0.25,
+  diffuse: 1.4,
+  mapSamples: 16000,
+  mapBrightness: 6,
+  markerColor: [251 / 255, 100 / 255, 21 / 255],
+  markers: [
+    { location: [37.7749, -122.4194], size: 0.07 },
+    { location: [35.6762,  139.6503], size: 0.07 },
+  ],
+  onRender: () => {},
 };
 
-// ─── Data ─────────────────────────────────────────────────────────────────────
+const LIGHT_CONFIG: COBEOptions = {
+  ...(BASE as COBEOptions),
+  dark: 0,
+  baseColor:  [1, 1, 1],
+  glowColor:  [0.9, 0.9, 0.9],
+  width: 800, height: 800,
+};
 
-const MARKERS = [
-  { id: "sf",    lat: 37.7749, lng: -122.4194, color: "#06b6d4" },
-  { id: "japan", lat: 35.6762, lng:  139.6503, color: "#a855f7" },
-];
+const DARK_CONFIG: COBEOptions = {
+  ...(BASE as COBEOptions),
+  dark: 1,
+  baseColor:  [0.08, 0.08, 0.12],
+  glowColor:  [0.15, 0.15, 0.25],
+  width: 800, height: 800,
+};
 
-type GalleryItem = { id: string; img: string; height?: number; naturalWidth?: number; naturalHeight?: number };
-type Gallery = { label: string; comingSoon?: boolean; items: GalleryItem[] };
-const GALLERIES = galleriesData as Record<string, Gallery>;
+// ─── Globe with marker-click support ─────────────────────────────────────────
+
+interface MarkerDef { id: string; lat: number; lng: number }
+
+function GlobeClickable({
+  className,
+  config,
+  markers,
+  onMarkerClick,
+}: {
+  className?: string;
+  config: COBEOptions;
+  markers: MarkerDef[];
+  onMarkerClick: (id: string) => void;
+}) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const canvasRef    = useRef<HTMLCanvasElement>(null);
+  const phiRef       = useRef(config.phi ?? 0);
+  const widthRef     = useRef(0);
+  const pointerDown  = useRef<number | null>(null);
+  const dragTotal    = useRef(0);
+
+  const r  = useMotionValue(0);
+  const rs = useSpring(r, { mass: 1, damping: 30, stiffness: 100 });
+
+  const projectMarker = (marker: MarkerDef, phi: number, W: number) => {
+    const theta = config.theta ?? 0.3;
+    const latR  = marker.lat * Math.PI / 180;
+    const lngR  = marker.lng * Math.PI / 180;
+    // Cobe projects lat/lng to 3D via:
+    const x  =  Math.cos(latR) * Math.cos(lngR);
+    const y  =  Math.sin(latR);
+    const z  = -Math.cos(latR) * Math.sin(lngR);
+
+    // Rotate by phi around Y
+    const x1 =  x * Math.cos(phi) + z * Math.sin(phi);
+    const z1 = -x * Math.sin(phi) + z * Math.cos(phi);
+
+    // Rotate by theta around X
+    const y2 =  y * Math.cos(theta) - z1 * Math.sin(theta);
+    const z2 =  y * Math.sin(theta) + z1 * Math.cos(theta);
+
+    if (z2 <= 0) return null; // Behind the globe
+
+    // Cobe renders the globe at 80% of the canvas size
+    const ax = x1 * 0.8;
+    const ay = y2 * 0.8;
+
+    return { sx: (ax + 1) / 2 * W, sy: (1 - ay) / 2 * W };
+  };
+
+  const getCursor = (clientX: number, clientY: number, dragging: boolean) => {
+    if (dragging) return "grabbing";
+    const container = containerRef.current;
+    if (!container) return "grab";
+    const rect = container.getBoundingClientRect();
+    const W    = widthRef.current;
+    if (W <= 0) return "grab";
+    const cx   = clientX - rect.left;
+    const cy   = clientY - rect.top;
+    const phi  = phiRef.current + rs.get();
+    for (const marker of markers) {
+      const proj = projectMarker(marker, phi, W);
+      if (!proj) continue;
+      if (Math.hypot(cx - proj.sx, cy - proj.sy) < 40) return "pointer";
+    }
+    return "grab";
+  };
+
+  const handleClick = (e: React.MouseEvent) => {
+    if (dragTotal.current > 5) return;
+    const container = containerRef.current;
+    if (!container) return;
+    const rect = container.getBoundingClientRect();
+    const W    = widthRef.current;
+    if (W <= 0) return;
+    const cx   = e.clientX - rect.left;
+    const cy   = e.clientY - rect.top;
+    const phi  = phiRef.current + rs.get();
+    for (const marker of markers) {
+      const proj = projectMarker(marker, phi, W);
+      if (!proj) continue;
+      if (Math.hypot(cx - proj.sx, cy - proj.sy) < 40) {
+        onMarkerClick(marker.id);
+        return;
+      }
+    }
+  };
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const onResize = () => { widthRef.current = canvas.offsetWidth; };
+    window.addEventListener("resize", onResize);
+    onResize();
+    const onContextLost = (e: Event) => e.preventDefault();
+    canvas.addEventListener("webglcontextlost", onContextLost);
+    let globe: ReturnType<typeof createGlobe> | null = null;
+    try {
+      globe = createGlobe(canvas, {
+        ...config,
+        width:  widthRef.current * 2,
+        height: widthRef.current * 2,
+        onRender: (state) => {
+          if (!pointerDown.current) phiRef.current += 0.004;
+          state.phi    = phiRef.current + rs.get();
+          state.width  = widthRef.current * 2;
+          state.height = widthRef.current * 2;
+        },
+      });
+    } catch {}
+    setTimeout(() => { canvas.style.opacity = "1"; }, 0);
+    return () => {
+      globe?.destroy();
+      canvas.removeEventListener("webglcontextlost", onContextLost);
+      window.removeEventListener("resize", onResize);
+    };
+  }, [config, rs]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  return (
+    <div
+      ref={containerRef}
+      className={cn("absolute inset-0 mx-auto aspect-square w-full", className)}
+      style={{ cursor: "grab" }}
+      onClick={handleClick}
+      onPointerDown={(e) => {
+        pointerDown.current = e.clientX;
+        dragTotal.current = 0;
+        if (containerRef.current) containerRef.current.style.cursor = "grabbing";
+      }}
+      onPointerUp={(e) => {
+        pointerDown.current = null;
+        if (containerRef.current) containerRef.current.style.cursor = getCursor(e.clientX, e.clientY, false);
+      }}
+      onPointerOut={() => {
+        pointerDown.current = null;
+        if (containerRef.current) containerRef.current.style.cursor = "grab";
+      }}
+      onMouseMove={(e) => {
+        if (pointerDown.current !== null) {
+          const delta = e.clientX - pointerDown.current;
+          dragTotal.current += Math.abs(delta);
+          r.set(r.get() + delta / 400);
+          pointerDown.current = e.clientX;
+        } else {
+          if (containerRef.current) containerRef.current.style.cursor = getCursor(e.clientX, e.clientY, false);
+        }
+      }}
+      onTouchMove={(e) => {
+        if (e.touches[0] && pointerDown.current !== null) {
+          const delta = e.touches[0].clientX - pointerDown.current;
+          dragTotal.current += Math.abs(delta);
+          r.set(r.get() + delta / 400);
+          pointerDown.current = e.touches[0].clientX;
+        }
+      }}
+    >
+      <canvas
+        ref={canvasRef}
+        className="size-full opacity-0 transition-opacity duration-500"
+        style={{ pointerEvents: "none" }}
+      />
+    </div>
+  );
+}
 
 // ─── Section ─────────────────────────────────────────────────────────────────
 
 export default function GlobeSection() {
-  const [selectedId, setSelectedId] = useState<string | null>(null);
-  const gallery = selectedId ? GALLERIES[selectedId] : null;
+  const router = useRouter();
+
+  const openGallery  = (id: string) => {
+    sessionStorage.setItem("justReturnedFromPhotos", "true");
+    router.push(`/photos/${id}`);
+  };
 
   const sectionRef = useRef<HTMLElement>(null);
-  const isInView = useInView(sectionRef, { once: false, margin: "-15%" });
+  const isInView   = useInView(sectionRef, { once: false, margin: "-15%" });
   const [entryKey, setEntryKey] = useState(0);
   const prevInView = useRef(false);
+
+  const [isDark, setIsDark] = useState(false);
+  useEffect(() => {
+    const update = () => setIsDark(document.documentElement.classList.contains("dark"));
+    update();
+    const mo = new MutationObserver(update);
+    mo.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+    return () => mo.disconnect();
+  }, []);
 
   useEffect(() => {
     if (isInView && !prevInView.current) setEntryKey((k) => k + 1);
@@ -70,144 +246,63 @@ export default function GlobeSection() {
       <section
         ref={sectionRef}
         id="photos"
-        className="relative overflow-hidden"
-        style={{ height: "100svh", scrollSnapAlign: "start", scrollSnapStop: "always" }}
+        className="relative overflow-hidden bg-white dark:bg-black"
+        style={{ minHeight: "100svh" }}
       >
-        {/* Ambient glow */}
-        <motion.div
-          className="pointer-events-none absolute inset-0 z-0"
-          animate={{ opacity: isInView ? 1 : 0 }}
-          transition={{ duration: 1.4 }}
-          style={{
-            background:
-              "radial-gradient(ellipse 55% 70% at 68% 52%, rgba(6,32,86,0.55) 0%, transparent 72%)",
-          }}
-        />
 
-        <div className="h-full flex flex-col md:flex-row items-center justify-center gap-4 md:gap-10 px-6 md:px-16 pt-16 md:pt-0 overflow-hidden relative z-10">
-          {/* Left: text */}
+        <div className="h-[100svh] flex flex-col items-center px-6 md:px-16 pt-14 pb-0 overflow-hidden relative z-10">
+
+          {/* Heading + description + location chips */}
           <motion.div
-            className="flex flex-col gap-3 md:gap-4 items-center md:items-start md:w-2/5 shrink-0 z-10"
+            className="flex flex-col gap-3 items-center text-center z-10 shrink-0"
             animate={{
               opacity: isInView ? 1 : 0,
-              x: isInView ? 0 : -48,
+              y: isInView ? 0 : -20,
               filter: isInView ? "blur(0px)" : "blur(6px)",
             }}
-            transition={{ duration: 0.85, delay: isInView ? 0.18 : 0, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.75, delay: isInView ? 0.15 : 0, ease: [0.16, 1, 0.3, 1] }}
           >
-            <h2
-              className="text-3xl md:text-5xl font-semibold tracking-[0.12em] md:tracking-[0.18em] uppercase text-center md:text-left"
-              style={{ fontFamily: "var(--font-space-grotesk)" }}
-            >
+            <h2 className="font-bold leading-none tracking-tighter" style={{ fontSize: "clamp(4rem, 11vw, 8rem)" }}>
               <DecryptedText
                 key={entryKey}
-                text="MY PHOTO GALLERY"
+                text="Photos."
                 animateOn="view"
                 sequential
-                revealDirection="center"
-                speed={80}
+                revealDirection="start"
+                speed={60}
                 characters="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-                className="text-white/90"
-                encryptedClassName="text-white/25"
+                className="text-neutral-900 dark:text-white/90"
+                encryptedClassName="text-neutral-900/20 dark:text-white/20"
               />
             </h2>
-            <p
-              className="text-sm text-white/45 max-w-xs mx-auto md:mx-0 text-center md:text-left leading-relaxed"
-              style={{ fontFamily: "var(--font-space-grotesk)" }}
-            >
-              Every pin is a place I&apos;ve been. Tap one to see it through my lens.
+            <p className="text-base md:text-lg text-neutral-500 dark:text-white/40 max-w-sm leading-relaxed">
+              <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#D97D5B] mr-2 mb-0.5 align-middle" />
+              Every pin is a place I&apos;ve been. Tap the dot to see it through my lens.
             </p>
+
           </motion.div>
 
-          {/* Right: Globe */}
+          {/* Globe — oversized, crops at bottom for horizon effect */}
           <motion.div
-            className="relative w-full md:w-3/5 max-w-[min(82vw,42vh)] md:max-w-[min(90vw,85vh)]"
-            style={{ aspectRatio: "1/1" }}
-            animate={{
-              opacity: isInView ? 1 : 0,
-              scale: isInView ? 1 : 0.18,
-              y: isInView ? 0 : 90,
-              rotate: isInView ? 0 : -8,
-            }}
-            transition={{
-              type: "spring",
-              stiffness: 105,
-              damping: 13,
-              opacity: { duration: 0.6, ease: "easeOut" },
-              rotate: { duration: 0.9, ease: [0.16, 1, 0.3, 1] },
-            }}
+            className="relative flex-1 w-full overflow-hidden"
+            animate={{ opacity: isInView ? 1 : 0, scale: isInView ? 1 : 0.85 }}
+            transition={{ duration: 0.8, delay: isInView ? 0.2 : 0, ease: [0.16, 1, 0.3, 1] }}
           >
-            <motion.div
-              className="pointer-events-none absolute inset-[-8%] rounded-full z-0"
-              animate={{ opacity: isInView ? 1 : 0, scale: isInView ? 1 : 0.6 }}
-              transition={{ delay: isInView ? 0.4 : 0, duration: 1.0, ease: [0.16, 1, 0.3, 1] }}
-              style={{
-                background:
-                  "radial-gradient(circle, transparent 42%, rgba(56,189,248,0.07) 58%, transparent 72%)",
-                boxShadow: "0 0 80px 20px rgba(56,189,248,0.06)",
-              }}
-            />
-            <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-1/3 bg-gradient-to-b from-transparent to-black" />
-            <World
-              data={[]}
-              globeConfig={globeConfig}
-              markers={MARKERS}
-              onMarkerClick={(id) => setSelectedId(id)}
-            />
+            {/* The inner div is larger than the clip container so the globe bleeds off the bottom */}
+            <div
+              className="absolute left-1/2 -translate-x-1/2"
+              style={{ width: "min(120vw, 120vh)", height: "min(120vw, 120vh)", top: "-5%" }}
+            >
+              <GlobeClickable
+                config={isDark ? DARK_CONFIG : LIGHT_CONFIG}
+                markers={LOCATIONS}
+                onMarkerClick={openGallery}
+              />
+            </div>
           </motion.div>
+
         </div>
       </section>
-
-      {/* Full-screen photo overlay — fixed so it sits above the page without unmounting anything */}
-      <AnimatePresence>
-        {gallery && selectedId && (
-          <motion.div
-            key={selectedId}
-            className="fixed inset-0 z-[100] overflow-y-auto bg-[#09090f]"
-            style={{ fontFamily: "var(--font-space-grotesk)" }}
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 40 }}
-            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-          >
-            {/* Header */}
-            <div className="sticky top-0 z-10 flex items-center px-6 md:px-12 py-5 bg-[#09090f]/80 backdrop-blur-md border-b border-white/[0.06]">
-              <button
-                onClick={() => setSelectedId(null)}
-                className="flex items-center gap-1.5 text-white/50 hover:text-white transition-colors text-sm"
-              >
-                <IconArrowLeft className="w-4 h-4" />
-                Back
-              </button>
-            </div>
-
-            {/* Title */}
-            <div className="px-6 md:px-12 pt-12 pb-8">
-              <h1 className="text-5xl md:text-7xl font-semibold tracking-tight text-white/90">
-                {gallery.label}
-              </h1>
-            </div>
-
-            {/* Content */}
-            <div className="px-4 md:px-8 pb-16">
-              {gallery.comingSoon ? (
-                <p className="text-white/35 text-sm tracking-widest uppercase">
-                  Coming soon
-                </p>
-              ) : (
-                <Masonry
-                  items={gallery.items}
-                  animateFrom="bottom"
-                  stagger={0.04}
-                  blurToFocus
-                  scaleOnHover
-                  hoverScale={0.97}
-                />
-              )}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </>
   );
 }

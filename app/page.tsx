@@ -1,113 +1,117 @@
 "use client";
 
-import { useState, useEffect, useRef, type ComponentType } from "react";
-import dynamic from "next/dynamic";
-import Header from "@/components/Header";
-import PageBackground from "@/components/PageBackground";
-import { HeroAboutBlendProvider } from "@/components/HeroAboutBlend";
-import HeroSection from "@/components/HeroSection";
-import AboutSection from "@/components/AboutSection";
-import ScrollDrivenDarkVeil from "@/components/ScrollDrivenDarkVeil";
+import { useState, useEffect, useLayoutEffect, useRef } from "react";
+import { motion, AnimatePresence } from "motion/react";
+import Nav           from "@/components/Nav";
+import EditorialHero from "@/components/EditorialHero";
+import About         from "@/components/About";
+import Experience    from "@/components/Experience";
+import Projects      from "@/components/Projects";
+import GlobeSection  from "@/components/GlobeSection";
+import Contact       from "@/components/Contact";
 
-// Lightweight dynamic imports — small chunks, safe to include in initial manifest
-const TargetCursor = dynamic(() => import("@/components/TargetCursor"), { ssr: false });
-const ExperienceSection = dynamic(() => import("@/components/ExperienceSection"), { ssr: false });
-const ProjectsSection = dynamic(() => import("@/components/ProjectsSection"), { ssr: false });
+const useIsomorphicLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
-// Particles — ogl is ~6MB of vendor code. Load only after the page is interactive
-// via a raw import() in useEffect so Next.js never adds the ogl chunk to the
-// initial HTML manifest.
-function GlobalParticles() {
-  const [ParticlesComp, setParticlesComp] = useState<ComponentType<Record<string, unknown>> | null>(null);
-  const [isMobile, setIsMobile] = useState(true);
-
-  useEffect(() => {
-    const mobile = window.innerWidth < 768;
-    setIsMobile(mobile);
-    if (mobile) return;
-    const t = setTimeout(() => {
-      import("@/components/Particles").then((m) => {
-        setParticlesComp(() => m.default as ComponentType<Record<string, unknown>>);
-      });
-    }, 1800);
-    return () => clearTimeout(t);
-  }, []);
-
-  if (!ParticlesComp || isMobile) return null;
-
-  return (
-    <div
-      aria-hidden
-      style={{
-        position: "fixed",
-        inset: 0,
-        zIndex: 0,
-        pointerEvents: "none",
-      }}
-    >
-      <ParticlesComp
-        particleCount={40}
-        particleSpread={10}
-        speed={0.1}
-        particleColors={["#ffffff"]}
-        alphaParticles
-        particleBaseSize={90}
-        sizeRandomness={1.4}
-        disableRotation={false}
-        cameraDistance={18}
-      />
-    </div>
-  );
-}
-
-// GlobeSection — Three.js + ThreeGlobe is ~16MB uncompressed. Load only when
-// the user has scrolled near the section via IntersectionObserver.
-function LazyGlobeSection() {
-  const [GlobeSectionComp, setGlobeSectionComp] = useState<ComponentType | null>(null);
-  const placeholderRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const el = placeholderRef.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          obs.disconnect();
-          import("@/components/GlobeSection").then((m) => {
-            setGlobeSectionComp(() => m.default as ComponentType);
-          });
-        }
-      },
-      { rootMargin: "400px" }
-    );
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, []);
-
-  if (GlobeSectionComp) return <GlobeSectionComp />;
-  return <div ref={placeholderRef} style={{ minHeight: "100svh" }} />;
+function snapToPhotos(onDone: () => void) {
+  const attempt = () => {
+    const el = document.getElementById("photos");
+    if (!el) { requestAnimationFrame(attempt); return; }
+    const html = document.documentElement;
+    const saved = html.style.scrollBehavior;
+    html.style.scrollBehavior = "auto";
+    window.scrollTo(0, el.getBoundingClientRect().top + window.pageYOffset);
+    requestAnimationFrame(() => {
+      html.style.scrollBehavior = saved;
+      onDone();
+    });
+  };
+  requestAnimationFrame(attempt);
 }
 
 export default function Home() {
-  const [isMobile, setIsMobile] = useState(true);
-  useEffect(() => { setIsMobile(window.innerWidth < 768); }, []);
+  const [phase, setPhase]       = useState<"typing" | "transition">("typing");
+  const [showGlobe, setShowGlobe] = useState(false);
+  const [showCover, setShowCover] = useState(false);
+  const skipSpring = useRef(false);
+  const needScroll = useRef(false);
+
+  // Stop the browser from restoring scroll position on every navigation
+  useEffect(() => {
+    window.history.scrollRestoration = "manual";
+  }, []);
+
+  // Detect return from photos — runs synchronously before first paint
+  useIsomorphicLayoutEffect(() => {
+    if (!sessionStorage.getItem("justReturnedFromPhotos")) return;
+    sessionStorage.removeItem("justReturnedFromPhotos");
+    skipSpring.current = true;
+    needScroll.current = true;
+    setShowCover(true);
+    setPhase("transition");
+    setShowGlobe(true);
+  }, []);
+
+  // Once the globe section is mounted, snap scroll to #photos and lift the cover
+  useEffect(() => {
+    if (!needScroll.current) return;
+    needScroll.current = false;
+    window.dispatchEvent(new Event("layout-settled"));
+    snapToPhotos(() => setShowCover(false));
+  }, [showGlobe]);
 
   return (
-    <>
-      <PageBackground />
-      <div className="text-white" style={{ position: "relative", zIndex: 1 }}>
-        {!isMobile && <TargetCursor spinDuration={2} hideDefaultCursor parallaxOn hoverDuration={0.2} />}
-        <Header />
-        <GlobalParticles />
-        <HeroAboutBlendProvider>
-          <ScrollDrivenDarkVeil />
-          <HeroSection />
-          <AboutSection />
-        </HeroAboutBlendProvider>
-        <ExperienceSection />
-        <ProjectsSection />
-        <LazyGlobeSection />
-      </div>
-    </>
+    <div className="bg-[#D97D5B]">
+      {/* Black cover hides the layout jump while we reposition */}
+      {showCover && (
+        <div className="fixed inset-0 bg-[#09090f] z-[9999] pointer-events-none" />
+      )}
+
+      {phase !== "typing" && <Nav />}
+
+      <EditorialHero phase={phase} setPhase={setPhase} />
+
+      <AnimatePresence>
+        {phase !== "typing" && (
+          <motion.div
+            className="relative z-20 bg-transparent"
+            // Skip the slide-up animation when returning from photos so layout
+            // is stable before we attempt to scroll to #photos
+            initial={skipSpring.current ? false : { y: 60 }}
+            animate={{ y: 0 }}
+            transition={{
+              type: "spring",
+              stiffness: 60,
+              damping: 20,
+              mass: 0.8,
+              delay: 0.15,
+            }}
+            onAnimationComplete={() => {
+              window.dispatchEvent(new Event("layout-settled"));
+              setShowGlobe(true);
+            }}
+          >
+            <div className="relative z-10 -mt-12 rounded-t-[3rem] overflow-hidden shadow-[0_-8px_40px_rgba(0,0,0,0.12)]">
+              <About />
+            </div>
+
+            <div className="relative z-20 -mt-12 rounded-t-[3rem] overflow-hidden shadow-[0_-8px_40px_rgba(0,0,0,0.14)]">
+              <Experience />
+            </div>
+
+            <div className="relative z-30 -mt-12 rounded-t-[3rem] overflow-hidden shadow-[0_-8px_40px_rgba(0,0,0,0.16)]">
+              <Projects />
+            </div>
+
+            <div className="relative z-40 -mt-12 rounded-t-[3rem] overflow-hidden shadow-[0_-8px_40px_rgba(0,0,0,0.18)]">
+              {showGlobe && <GlobeSection />}
+            </div>
+
+            <div className="relative z-50 -mt-12 rounded-t-[3rem] overflow-hidden shadow-[0_-8px_40px_rgba(0,0,0,0.20)]">
+              <Contact />
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
   );
 }
