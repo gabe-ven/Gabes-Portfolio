@@ -24,12 +24,18 @@ interface MasonryProps {
 }
 
 const useMedia = (queries: string[], values: number[], defaultValue: number) => {
-  const get = () => values[queries.findIndex((q) => matchMedia(q).matches)] ?? defaultValue;
-  const [value, setValue] = useState(get);
+  const get = () => {
+    if (typeof window === "undefined") return defaultValue;
+    return values[queries.findIndex((q) => window.matchMedia(q).matches)] ?? defaultValue;
+  };
+  const [value, setValue] = useState(defaultValue);
+
   useEffect(() => {
-    const handler = () => setValue(get);
-    queries.forEach((q) => matchMedia(q).addEventListener("change", handler));
-    return () => queries.forEach((q) => matchMedia(q).removeEventListener("change", handler));
+    setValue(get());
+    const handler = () => setValue(get());
+    const mediaQueryLists = queries.map((q) => window.matchMedia(q));
+    mediaQueryLists.forEach((mql) => mql.addEventListener("change", handler));
+    return () => mediaQueryLists.forEach((mql) => mql.removeEventListener("change", handler));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return value;

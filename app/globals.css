@@ -108,16 +108,16 @@ html.dark {
   }
 }
 
-/* Projects section — pure white in light mode, pure black in dark mode */
+/* Projects section — dark in light mode, light in dark mode */
 .projects-section {
-  background: #ffffff;
-  color: #0d0d0d;
-  --projects-muted: rgba(13, 13, 13, 0.5);
-}
-html.dark .projects-section {
   background: #000000;
   color: #ffffff;
   --projects-muted: rgba(255, 255, 255, 0.5);
+}
+html.dark .projects-section {
+  background: #ffffff;
+  color: #0d0d0d;
+  --projects-muted: rgba(13, 13, 13, 0.5);
 }
 
 /* Dark mode meteor adjustment */

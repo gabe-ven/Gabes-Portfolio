@@ -101,7 +101,7 @@ function OrbitItem({ item, index, totalItems, path, itemSize, rotation, progress
         offsetDistance,
       }}
     >
-      <div style={{ transform: `rotate(${-rotation}deg)` }}>{item}</div>
+      <div style={{ width: itemSize, height: itemSize, overflow: 'hidden', transform: `rotate(${-rotation}deg)` }}>{item}</div>
     </motion.div>
   );
 }
@@ -228,7 +228,7 @@ export default function OrbitImages({
       src={src}
       alt={`${altPrefix} ${index + 1}`}
       draggable={false}
-      className="orbit-image rounded-full border-2 border-[#D97D5B]/30 object-cover shadow-sm bg-[#f0ede8] p-0.5"
+      className="orbit-image"
     />
   ));
 

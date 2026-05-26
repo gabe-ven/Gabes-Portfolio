@@ -3,9 +3,12 @@
 import StaggeredMenu from "./StaggeredMenu";
 
 const NAV_ITEMS = [
-  { label: "Home",     ariaLabel: "Go to top",       link: "#"        },
-  { label: "Projects", ariaLabel: "View my projects", link: "#projects" },
-  { label: "Contact",  ariaLabel: "Get in touch",     link: "#contact"  },
+  { label: "Home",       ariaLabel: "Go to top",           link: "#"           },
+  { label: "About",      ariaLabel: "About me",            link: "#about"      },
+  { label: "Experience", ariaLabel: "My experience",       link: "#experience" },
+  { label: "Projects",   ariaLabel: "View my projects",    link: "#projects"   },
+  { label: "Photos",     ariaLabel: "Browse my photos",    link: "#photos"     },
+  { label: "Contact",    ariaLabel: "Get in touch",        link: "#contact"    },
 ];
 
 const SOCIAL_ITEMS = [

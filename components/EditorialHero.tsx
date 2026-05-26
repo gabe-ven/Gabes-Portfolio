@@ -19,12 +19,12 @@ function BlobDef() {
       <defs>
         <clipPath id={BLOB_CLIP_ID} clipPathUnits="objectBoundingBox">
           <path d="
-            M 1,0.05
+            M 1,0
             L 1,1
             L 0,1
             C 0.05,0.88  0.24,0.74  0.18,0.58
             C 0.10,0.42  -0.05,0.28  0.22,0.14
-            C 0.38,0.04  1,0.0  1,0.05
+            C 0.38,0.04  1,0.0  1,0
             Z
           " />
         </clipPath>
@@ -66,8 +66,8 @@ export default function EditorialHero({ phase, setPhase }: EditorialHeroProps) {
         {/* Left column */}
         <div
           className={`flex flex-col justify-center w-full pt-28 pb-20 lg:py-0 px-8 sm:px-14 lg:px-20 ${settled
-              ? "items-center lg:items-start text-center lg:text-left"
-              : "items-center text-center"
+            ? "items-center lg:items-start text-center lg:text-left"
+            : "items-center text-center"
             }`}
         >
           <h1
@@ -149,21 +149,22 @@ export default function EditorialHero({ phase, setPhase }: EditorialHeroProps) {
                   fill
                   priority
                   className="object-cover"
-                  style={{ objectPosition: "50% 25%", transform: "scaleX(-1)" }}
+                  style={{ objectPosition: "50% 35%", transform: "scaleX(-1)" }}
                   sizes="(max-width: 1024px) 100vw, 55vw"
                 />
                 <Noise patternAlpha={22} patternRefreshInterval={3} />
               </div>
 
               <svg
-                className="absolute inset-0 w-full h-full pointer-events-none z-10 text-[#F5F5F3] dark:text-[#111111]"
+                className="absolute inset-0 w-full h-full pointer-events-none z-10 text-[#F5F5F3] dark:text-[#1c1c1c]"
                 viewBox="0 0 1 1"
                 preserveAspectRatio="none"
                 fill="none"
+                overflow="hidden"
                 aria-hidden
               >
                 <path
-                  d="M 1,0.05 L 1,1 L 0,1 C 0.05,0.88 0.24,0.74 0.18,0.58 C 0.10,0.42 -0.05,0.28 0.22,0.14 C 0.38,0.04 1,0.0 1,0.05 Z"
+                  d="M 1.06,0 L 1.06,1 L 0,1 C 0.05,0.88 0.24,0.74 0.18,0.58 C 0.10,0.42 -0.05,0.28 0.22,0.14 C 0.38,0.04 1,0.0 1.06,0 Z"
                   stroke="currentColor"
                   strokeWidth="8"
                   vectorEffect="non-scaling-stroke"

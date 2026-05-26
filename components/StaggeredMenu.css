@@ -241,29 +241,9 @@
   flex-wrap: wrap;
 }
 
-.sm-socials-list .sm-socials-link {
-  opacity: 1;
-}
-
-.sm-socials-list:hover .sm-socials-link {
-  opacity: 0.35;
-}
-
-.sm-socials-list:hover .sm-socials-link:hover {
-  opacity: 1;
-}
-
 .sm-socials-link:focus-visible {
   outline: 2px solid var(--sm-accent, #D97D5B);
   outline-offset: 3px;
-}
-
-.sm-socials-list:focus-within .sm-socials-link {
-  opacity: 0.35;
-}
-
-.sm-socials-list:focus-within .sm-socials-link:focus-visible {
-  opacity: 1;
 }
 
 .sm-socials-link {
@@ -313,23 +293,6 @@
   padding-right: 1.4em;
 }
 
-.staggered-menu-panel .sm-socials-list .sm-socials-link {
-  opacity: 1;
-  transition: opacity 0.3s ease;
-}
-
-.staggered-menu-panel .sm-socials-list:hover .sm-socials-link:not(:hover) {
-  opacity: 0.35;
-}
-
-.staggered-menu-panel .sm-socials-list:focus-within .sm-socials-link:not(:focus-visible) {
-  opacity: 0.35;
-}
-
-.staggered-menu-panel .sm-socials-list .sm-socials-link:hover,
-.staggered-menu-panel .sm-socials-list .sm-socials-link:focus-visible {
-  opacity: 1;
-}
 
 .sm-panel-close {
   position: absolute;

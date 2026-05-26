@@ -112,7 +112,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
               href={demoHref}
               target="_blank"
               rel="noreferrer"
-              className="w-20 h-20 rounded-full bg-black dark:bg-white flex items-center justify-center text-white dark:text-black hover:bg-[#D97D5B] hover:text-white dark:hover:bg-[#D97D5B] dark:hover:text-white hover:scale-95 transition-all duration-200 flex-shrink-0"
+              className="w-20 h-20 rounded-full bg-white dark:bg-black flex items-center justify-center text-black dark:text-white hover:bg-[#D97D5B] hover:text-white dark:hover:bg-[#D97D5B] dark:hover:text-white hover:scale-95 transition-all duration-200 flex-shrink-0"
               aria-label={`${project.title} live demo`}
             >
               <svg width="28" height="28" viewBox="0 0 18 18" fill="none">
@@ -125,7 +125,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
               href={githubHref}
               target="_blank"
               rel="noreferrer"
-              className="w-20 h-20 rounded-full bg-black dark:bg-white flex items-center justify-center text-white dark:text-black hover:bg-[#D97D5B] hover:text-white dark:hover:bg-[#D97D5B] dark:hover:text-white hover:scale-95 transition-all duration-200 flex-shrink-0"
+              className="w-20 h-20 rounded-full bg-white dark:bg-black flex items-center justify-center text-black dark:text-white hover:bg-[#D97D5B] hover:text-white dark:hover:bg-[#D97D5B] dark:hover:text-white hover:scale-95 transition-all duration-200 flex-shrink-0"
               aria-label={`${project.title} GitHub`}
             >
               <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
@@ -140,10 +140,10 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
           href={primaryHref}
           target="_blank"
           rel="noreferrer"
-          className="w-full flex items-center justify-center bg-black dark:bg-white rounded-full px-8 py-5 hover:scale-[0.98] transition-transform duration-200"
+          className="w-full flex items-center justify-center bg-white dark:bg-black rounded-full px-8 py-5 hover:scale-[0.98] transition-transform duration-200"
         >
           <span
-            className="text-white dark:text-black font-bold leading-none"
+            className="text-black dark:text-white font-bold leading-none"
             style={{ fontFamily: "var(--font-space-grotesk)", fontSize: "clamp(1.5rem, 4vw, 2.25rem)" }}
           >
             {project.title.toLowerCase()}
