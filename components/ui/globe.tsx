@@ -52,6 +52,8 @@ interface WorldProps {
   onMarkerClick?: (id: string) => void;
 }
 
+const GLOBE_RADIUS = 100;
+
 export function World({ globeConfig, markers = [], onMarkerClick }: WorldProps) {
   const mountRef = useRef<HTMLDivElement>(null);
 
@@ -129,24 +131,63 @@ export function World({ globeConfig, markers = [], onMarkerClick }: WorldProps) 
       mat.shininess = shininess * 100;
     });
 
-    // Marker dots (visible spheres on the surface)
+    // Custom pin meshes — terracotta sphere + tapered stem, added as globe children
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const g = globe as any;
+    const PIN_COLOR = "#D97D5B";
     if (markers.length > 0) {
-      globe
-        .pointsData(markers)
-        .pointLat((d: object) => (d as MarkerDef).lat)
-        .pointLng((d: object) => (d as MarkerDef).lng)
-        .pointColor((d: object) => (d as MarkerDef).color)
-        .pointAltitude(0.04)
-        .pointRadius(0.6)
-        .pointsMerge(false);
+      markers.forEach((m) => {
+        const phi   = (90 - m.lat) * (Math.PI / 180);
+        const theta = (90 - m.lng) * (Math.PI / 180);
+        const outward = new THREE.Vector3(
+          Math.sin(phi) * Math.cos(theta),
+          Math.cos(phi),
+          Math.sin(phi) * Math.sin(theta)
+        );
 
-      // Rings on marker cities
+        const group = new THREE.Group();
+
+        // Head sphere
+        const headGeo = new THREE.SphereGeometry(2.2, 20, 20);
+        const headMat = new THREE.MeshPhongMaterial({
+          color: new THREE.Color(PIN_COLOR),
+          emissive: new THREE.Color(PIN_COLOR),
+          emissiveIntensity: 0.55,
+          shininess: 90,
+          transparent: true,
+          opacity: 0.95,
+        });
+        const head = new THREE.Mesh(headGeo, headMat);
+        head.position.y = 5;
+        group.add(head);
+
+        // Stem — thin tapered cylinder
+        const stemGeo = new THREE.CylinderGeometry(0.35, 0.1, 4.5, 10);
+        const stemMat = new THREE.MeshPhongMaterial({
+          color: new THREE.Color(PIN_COLOR),
+          emissive: new THREE.Color(PIN_COLOR),
+          emissiveIntensity: 0.25,
+          transparent: true,
+          opacity: 0.75,
+        });
+        const stem = new THREE.Mesh(stemGeo, stemMat);
+        stem.position.y = 2.5;
+        group.add(stem);
+
+        // Position just above globe surface and orient outward
+        group.position.copy(outward.clone().multiplyScalar(GLOBE_RADIUS + 1));
+        const up = new THREE.Vector3(0, 1, 0);
+        group.setRotationFromQuaternion(
+          new THREE.Quaternion().setFromUnitVectors(up, outward)
+        );
+        globe.add(group);
+      });
+
+      // Pulse rings with terracotta colour
       g.ringsData(markers)
         .ringLat((d: MarkerDef) => d.lat)
         .ringLng((d: MarkerDef) => d.lng)
-        .ringColor((d: MarkerDef) => () => d.color)
+        .ringColor(() => () => PIN_COLOR)
         .ringMaxRadius(maxRings)
         .ringPropagationSpeed(3)
         .ringRepeatPeriod(1200);
@@ -154,7 +195,6 @@ export function World({ globeConfig, markers = [], onMarkerClick }: WorldProps) 
 
     // Detect marker clicks by projecting each marker's 3D position to screen space.
     // Formula matches three-globe's internal polar2Cartesian exactly.
-    const GLOBE_RADIUS = 100;
     const markerLocalPos = (m: MarkerDef) => {
       const phi   = (90 - m.lat) * (Math.PI / 180);
       const theta = (90 - m.lng) * (Math.PI / 180);

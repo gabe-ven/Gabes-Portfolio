@@ -1,9 +1,8 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
   output: "standalone",
-  experimental: {
-    optimizePackageImports: ["motion"],
-  },
+  transpilePackages: ["rough-notation", "gsap", "@gsap/react"],
 };
 
-module.exports = nextConfig;
+export default nextConfig;

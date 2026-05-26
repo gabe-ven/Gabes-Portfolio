@@ -1,50 +1,37 @@
-import { JetBrains_Mono, Press_Start_2P, Space_Grotesk } from "next/font/google";
+import { Space_Grotesk, JetBrains_Mono } from "next/font/google";
 import type { Metadata, Viewport } from "next";
+import { SmoothCursor } from "@/components/ui/smooth-cursor";
 import "./globals.css";
 
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ["latin"],
-  variable: "--font-jetbrains-mono",
-  display: "swap",
-});
-
 const spaceGrotesk = Space_Grotesk({
-  subsets: ["latin"],
+  subsets:  ["latin"],
   variable: "--font-space-grotesk",
-  display: "swap",
+  display:  "swap",
 });
 
-const pressStart2P = Press_Start_2P({
-  subsets: ["latin"],
-  weight: "400",
-  variable: "--font-press-start",
-  display: "optional",
+const jetbrainsMono = JetBrains_Mono({
+  subsets:  ["latin"],
+  variable: "--font-jetbrains-mono",
+  display:  "swap",
 });
 
 export const metadata: Metadata = {
-  title: "Gabriel Venezia - Portfolio",
-  description: "Portfolio website of Gabriel Venezia",
-  metadataBase: new URL("https://gabrielv.dev"),
-  other: {
-    "nextjs-portal": "hidden",
-  },
+  title:       "Gabriel Venezia",
+  description: "Software Engineer · UC Davis",
+  other:       { "nextjs-portal": "hidden" },
 };
 
-export const viewport: Viewport = {
-  width: "device-width",
-  initialScale: 1,
-};
+export const viewport: Viewport = { width: "device-width", initialScale: 1 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <body
-        className={`${jetbrainsMono.variable} ${pressStart2P.variable} ${spaceGrotesk.variable} font-mono antialiased bg-black text-white`}
-      >
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        {/* Apply saved theme before first paint to avoid flash */}
+        <script dangerouslySetInnerHTML={{ __html: `(function(){try{var t=localStorage.getItem('theme');if(t==='dark'||(t===null&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.classList.add('dark');}}catch(e){}})();` }} />
+      </head>
+      <body className={`${spaceGrotesk.variable} ${jetbrainsMono.variable}`} suppressHydrationWarning>
+        <SmoothCursor />
         {children}
       </body>
     </html>

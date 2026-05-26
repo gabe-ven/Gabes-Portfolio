@@ -51,9 +51,16 @@ const GALLERIES = galleriesData as Record<string, Gallery>;
 
 // ─── Section ─────────────────────────────────────────────────────────────────
 
-export default function GlobeSection() {
+interface GlobeSectionProps {
+  onOverlayChange?: (open: boolean) => void;
+}
+
+export default function GlobeSection({ onOverlayChange }: GlobeSectionProps) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const gallery = selectedId ? GALLERIES[selectedId] : null;
+
+  const openGallery = (id: string) => { setSelectedId(id); onOverlayChange?.(true); };
+  const closeGallery = () => { setSelectedId(null); onOverlayChange?.(false); };
 
   const sectionRef = useRef<HTMLElement>(null);
   const isInView = useInView(sectionRef, { once: false, margin: "-15%" });
@@ -70,21 +77,10 @@ export default function GlobeSection() {
       <section
         ref={sectionRef}
         id="photos"
-        className="relative overflow-hidden"
-        style={{ height: "100svh", scrollSnapAlign: "start", scrollSnapStop: "always" }}
+        className="relative overflow-hidden bg-white dark:bg-black"
+        style={{ minHeight: "100svh" }}
       >
-        {/* Ambient glow */}
-        <motion.div
-          className="pointer-events-none absolute inset-0 z-0"
-          animate={{ opacity: isInView ? 1 : 0 }}
-          transition={{ duration: 1.4 }}
-          style={{
-            background:
-              "radial-gradient(ellipse 55% 70% at 68% 52%, rgba(6,32,86,0.55) 0%, transparent 72%)",
-          }}
-        />
-
-        <div className="h-full flex flex-col md:flex-row items-center justify-center gap-4 md:gap-10 px-6 md:px-16 pt-16 md:pt-0 overflow-hidden relative z-10">
+        <div className="min-h-screen flex flex-col md:flex-row items-center justify-center gap-4 md:gap-10 px-6 md:px-16 py-24 md:py-0 overflow-hidden relative z-10">
           {/* Left: text */}
           <motion.div
             className="flex flex-col gap-3 md:gap-4 items-center md:items-start md:w-2/5 shrink-0 z-10"
@@ -96,25 +92,25 @@ export default function GlobeSection() {
             transition={{ duration: 0.85, delay: isInView ? 0.18 : 0, ease: [0.16, 1, 0.3, 1] }}
           >
             <h2
-              className="text-3xl md:text-5xl font-semibold tracking-[0.12em] md:tracking-[0.18em] uppercase text-center md:text-left"
-              style={{ fontFamily: "var(--font-space-grotesk)" }}
+              className="font-bold leading-none tracking-tighter text-center md:text-left"
+              style={{ fontSize: "clamp(2.8rem, 8vw, 5.5rem)" }}
             >
               <DecryptedText
                 key={entryKey}
-                text="MY PHOTO GALLERY"
+                text="Photos."
                 animateOn="view"
                 sequential
-                revealDirection="center"
-                speed={80}
+                revealDirection="start"
+                speed={60}
                 characters="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-                className="text-white/90"
-                encryptedClassName="text-white/25"
+                className="text-neutral-900 dark:text-white/90"
+                encryptedClassName="text-neutral-900/20 dark:text-white/20"
               />
             </h2>
             <p
-              className="text-sm text-white/45 max-w-xs mx-auto md:mx-0 text-center md:text-left leading-relaxed"
-              style={{ fontFamily: "var(--font-space-grotesk)" }}
+              className="text-sm text-neutral-500 dark:text-white/40 max-w-xs mx-auto md:mx-0 text-center md:text-left leading-relaxed"
             >
+              <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#D97D5B] mr-2 mb-0.5 align-middle" />
               Every pin is a place I&apos;ve been. Tap one to see it through my lens.
             </p>
           </motion.div>
@@ -137,22 +133,11 @@ export default function GlobeSection() {
               rotate: { duration: 0.9, ease: [0.16, 1, 0.3, 1] },
             }}
           >
-            <motion.div
-              className="pointer-events-none absolute inset-[-8%] rounded-full z-0"
-              animate={{ opacity: isInView ? 1 : 0, scale: isInView ? 1 : 0.6 }}
-              transition={{ delay: isInView ? 0.4 : 0, duration: 1.0, ease: [0.16, 1, 0.3, 1] }}
-              style={{
-                background:
-                  "radial-gradient(circle, transparent 42%, rgba(56,189,248,0.07) 58%, transparent 72%)",
-                boxShadow: "0 0 80px 20px rgba(56,189,248,0.06)",
-              }}
-            />
-            <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-1/3 bg-gradient-to-b from-transparent to-black" />
             <World
               data={[]}
               globeConfig={globeConfig}
               markers={MARKERS}
-              onMarkerClick={(id) => setSelectedId(id)}
+              onMarkerClick={openGallery}
             />
           </motion.div>
         </div>
@@ -163,7 +148,7 @@ export default function GlobeSection() {
         {gallery && selectedId && (
           <motion.div
             key={selectedId}
-            className="fixed inset-0 z-[100] overflow-y-auto bg-[#09090f]"
+            className="fixed inset-0 z-[200] overflow-y-auto bg-[#09090f]"
             style={{ fontFamily: "var(--font-space-grotesk)" }}
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
@@ -173,7 +158,7 @@ export default function GlobeSection() {
             {/* Header */}
             <div className="sticky top-0 z-10 flex items-center px-6 md:px-12 py-5 bg-[#09090f]/80 backdrop-blur-md border-b border-white/[0.06]">
               <button
-                onClick={() => setSelectedId(null)}
+                onClick={closeGallery}
                 className="flex items-center gap-1.5 text-white/50 hover:text-white transition-colors text-sm"
               >
                 <IconArrowLeft className="w-4 h-4" />
