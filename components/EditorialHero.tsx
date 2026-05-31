@@ -163,11 +163,15 @@ export default function EditorialHero({ phase, setPhase }: EditorialHeroProps) {
                 overflow="hidden"
                 aria-hidden
               >
-                <path
+                <motion.path
                   d="M 1.06,0 L 1.06,1 L 0,1 C 0.05,0.88 0.24,0.74 0.18,0.58 C 0.10,0.42 -0.05,0.28 0.22,0.14 C 0.38,0.04 1,0.0 1.06,0 Z"
                   stroke="currentColor"
                   strokeWidth="8"
                   vectorEffect="non-scaling-stroke"
+                  strokeDasharray={5000}
+                  initial={{ strokeDashoffset: -5000 }}
+                  animate={{ strokeDashoffset: 0 }}
+                  transition={{ duration: 2.4, ease: [0.16, 1, 0.3, 1], delay: 0.35 }}
                 />
               </svg>
             </div>

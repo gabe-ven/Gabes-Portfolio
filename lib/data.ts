@@ -27,6 +27,7 @@ export const PROJECTS: Project[] = [
     height: 1024,
     color: "#1a1a1a",
     github: "https://github.com/AICollectiveDavis/clothing-overconsumption-preventer",
+    demo:   "https://apps.apple.com/us/app/twiice/id6763200948",
   },
   {
     id: 10,

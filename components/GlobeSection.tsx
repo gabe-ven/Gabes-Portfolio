@@ -19,31 +19,32 @@ const BASE: Partial<COBEOptions> = {
   devicePixelRatio: 2,
   phi: 3.0,
   theta: 0.25,
-  diffuse: 1.4,
+  diffuse: 0.4,
   mapSamples: 16000,
-  mapBrightness: 6,
-  markerColor: [251 / 255, 100 / 255, 21 / 255],
+  mapBrightness: 1.2,
+  markerColor: [217 / 255, 125 / 255, 91 / 255],
   markers: [
     { location: [37.7749, -122.4194], size: 0.07 },
     { location: [35.6762,  139.6503], size: 0.07 },
   ],
   onRender: () => {},
+  width: 800, height: 800,
 };
 
+// Light mode: dark globe with white country dots against white background
 const LIGHT_CONFIG: COBEOptions = {
   ...(BASE as COBEOptions),
-  dark: 0,
-  baseColor:  [1, 1, 1],
-  glowColor:  [0.9, 0.9, 0.9],
-  width: 800, height: 800,
+  dark: 1,
+  baseColor: [1, 1, 1],
+  glowColor: [1, 1, 1],
 };
 
+// Dark mode: white globe against black background
 const DARK_CONFIG: COBEOptions = {
   ...(BASE as COBEOptions),
-  dark: 1,
-  baseColor:  [0.08, 0.08, 0.12],
-  glowColor:  [0.15, 0.15, 0.25],
-  width: 800, height: 800,
+  dark: 0,
+  baseColor: [1, 1, 1],
+  glowColor: [0, 0, 0],
 };
 
 // ─── Globe with marker-click support ─────────────────────────────────────────
@@ -69,7 +70,7 @@ function GlobeClickable({
   const dragTotal    = useRef(0);
 
   const r  = useMotionValue(0);
-  const rs = useSpring(r, { mass: 1, damping: 30, stiffness: 100 });
+  const rs = useSpring(r, { mass: 0.4, damping: 18, stiffness: 180 });
 
   const projectMarker = (marker: MarkerDef, phi: number, W: number) => {
     const theta = config.theta ?? 0.3;
@@ -188,7 +189,7 @@ function GlobeClickable({
         if (pointerDown.current !== null) {
           const delta = e.clientX - pointerDown.current;
           dragTotal.current += Math.abs(delta);
-          r.set(r.get() + delta / 400);
+          r.set(r.get() + delta / 180);
           pointerDown.current = e.clientX;
         } else {
           if (containerRef.current) containerRef.current.style.cursor = getCursor(e.clientX, e.clientY, false);
@@ -198,7 +199,7 @@ function GlobeClickable({
         if (e.touches[0] && pointerDown.current !== null) {
           const delta = e.touches[0].clientX - pointerDown.current;
           dragTotal.current += Math.abs(delta);
-          r.set(r.get() + delta / 400);
+          r.set(r.get() + delta / 180);
           pointerDown.current = e.touches[0].clientX;
         }
       }}
@@ -276,7 +277,6 @@ export default function GlobeSection() {
               />
             </h2>
             <p className="text-base md:text-lg text-neutral-500 dark:text-white/40 max-w-sm leading-relaxed">
-              <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#D97D5B] mr-2 mb-0.5 align-middle" />
               Every pin is a place I&apos;ve been. Tap the dot to see it through my lens.
             </p>
 

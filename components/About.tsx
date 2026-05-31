@@ -46,7 +46,7 @@ export default function About() {
             rotation={-8}
             responsive={true}
             showPath={true}
-            pathColor="rgba(217,125,91,0.25)"
+            pathColor="rgba(0,0,0,0.15)"
             pathWidth={1.5}
           />
         </motion.div>
